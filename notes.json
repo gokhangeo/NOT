@@ -9,7 +9,14 @@
   "MEZİTLİ": [],
   "MUT": [],
   "SİLİFKE": [],
-  "TARSUS": [],
+  "TARSUS": [
+    {
+      "text": "vcvc",
+      "date": "2025-10-06",
+      "done": false,
+      "reminderId": null
+    }
+  ],
   "TOROSLAR": [],
   "YENİŞEHİR": [],
   "DİĞER": []
