@@ -9,7 +9,13 @@
   "MEZİTLİ": [],
   "MUT": [],
   "SİLİFKE": [],
-  "TARSUS": [],
+  "TARSUS": [
+    {
+      "text": "F.K kontrol edilecek",
+      "done": false,
+      "reminderId": null
+    }
+  ],
   "TOROSLAR": [],
   "YENİŞEHİR": [],
   "DİĞER": []
