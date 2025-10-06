@@ -19,7 +19,7 @@
             transition: all 0.3s ease;
             word-break: break-word;
         }
-        .note-item.done span {
+        .note-item.done span.note-text {
             text-decoration: line-through;
             color: #9ca3af;
         }
@@ -73,28 +73,38 @@
 </head>
 <body class="p-4 md:p-8">
 
-    <div class="main-container bg-white rounded-2xl shadow-xl overflow-hidden">
-        <header class="p-6 bg-indigo-600 text-white text-center rounded-t-2xl relative">
-            <h1 class="text-2xl md:text-3xl font-bold">Mersin Hızlı Not Uygulaması</h1>
-            <p class="text-indigo-200 mt-1">İlçelere göre notlarınızı kolayca yönetin</p>
-            <div id="status-indicator" class="absolute top-4 right-4 text-xs font-semibold px-2 py-1 rounded-full opacity-0"></div>
-        </header>
+    <div class="main-container">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <header class="p-6 bg-indigo-600 text-white text-center rounded-t-2xl relative">
+                <h1 class="text-2xl md:text-3xl font-bold">Mersin Hızlı Not Uygulaması</h1>
+                <p class="text-indigo-200 mt-1">İlçelere göre notlarınızı kolayca yönetin</p>
+                <div id="status-indicator" class="absolute top-4 right-4 text-xs font-semibold px-2 py-1 rounded-full opacity-0"></div>
+            </header>
 
-        <div class="p-4 md:p-6">
-            <div id="tabs" class="flex flex-wrap gap-2 mb-6 border-b pb-4">
-                <!-- Tab butonları JavaScript ile oluşturulacak -->
-            </div>
-
-            <div id="note-container">
-                <div class="mb-4">
-                    <input type="text" id="note-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Yeni bir not ekle...">
-                    <button id="add-note-btn" class="w-full mt-2 bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 font-semibold transition shadow-md">Not Ekle</button>
+            <div class="p-4 md:p-6">
+                <div id="tabs" class="flex flex-wrap gap-2 mb-6 border-b pb-4">
+                    <!-- Tab butonları JavaScript ile oluşturulacak -->
                 </div>
-                <ul id="note-list" class="space-y-3">
-                    <!-- Not listesi JavaScript ile doldurulacak -->
-                </ul>
+
+                <div id="note-container">
+                    <div class="mb-4">
+                        <div class="flex flex-col sm:flex-row gap-2">
+                             <input type="text" id="note-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Yeni bir not ekle...">
+                             <input type="date" id="note-date-input" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition sm:w-auto">
+                        </div>
+                        <button id="add-note-btn" class="w-full mt-2 bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 font-semibold transition shadow-md">Not Ekle</button>
+                    </div>
+                    <ul id="note-list" class="space-y-3">
+                        <!-- Not listesi JavaScript ile doldurulacak -->
+                    </ul>
+                </div>
             </div>
         </div>
+    </div>
+
+    <!-- Hatırlatma Kartları Alanı -->
+    <div id="reminders-container" class="main-container mt-6 space-y-4">
+        <!-- Hatırlatma kartları buraya eklenecek -->
     </div>
 
     <!-- Bildirim Ayarlama Modalı -->
@@ -131,9 +141,11 @@
             // DOM Elements
             const tabsContainer = document.getElementById('tabs');
             const noteInput = document.getElementById('note-input');
+            const noteDateInput = document.getElementById('note-date-input');
             const addNoteBtn = document.getElementById('add-note-btn');
             const noteList = document.getElementById('note-list');
             const statusIndicator = document.getElementById('status-indicator');
+            const remindersContainer = document.getElementById('reminders-container');
 
             // Notification Modal Elements
             const modal = document.getElementById('notification-modal');
@@ -142,8 +154,6 @@
             const saveNotificationBtn = document.getElementById('save-notification-btn');
             const cancelNotificationBtn = document.getElementById('cancel-notification-btn');
 
-            // GÜVENLİK UYARISI: API anahtarını koda bu şekilde eklemek GÜVENLİ DEĞİLDİR.
-            // GitHub bu anahtarı tespit edip hesabınızı korumak için iptal edebilir.
             const tokenPart1 = 'ghp_2KS6iY7t1ka6bK';
             const tokenPart2 = 'yHwONJkXdwOUVhrU';
             const tokenPart3 = '3PqlSX';
@@ -191,44 +201,106 @@
                 renderNotes();
             }
 
+            function formatDateForDisplay(dateString) {
+                if (!dateString) return '';
+                const [year, month, day] = dateString.split('-');
+                return `${day}.${month}.${year}`;
+            }
+
             function renderNotes() {
                 noteList.innerHTML = '';
                 const districtNotes = notes[activeDistrict] || [];
 
                 if (districtNotes.length === 0) {
                     noteList.innerHTML = `<li class="text-center text-gray-500 p-4">Bu ilçe için henüz not yok.</li>`;
-                    return;
+                } else {
+                    districtNotes.forEach((note, index) => {
+                        const li = document.createElement('li');
+                        li.className = `note-item flex items-center justify-between p-3 bg-gray-50 rounded-lg border ${note.done ? 'done' : ''}`;
+                        li.innerHTML = `
+                            <div class="flex items-center flex-grow min-w-0">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3 flex-shrink-0" ${note.done ? 'checked' : ''}>
+                                <span class="note-text flex-grow">${note.text}</span>
+                                ${note.date ? `<span class="ml-3 text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full flex-shrink-0">${formatDateForDisplay(note.date)}</span>` : ''}
+                            </div>
+                            <div class="flex items-center space-x-3 ml-2 flex-shrink-0">
+                                 <svg class="notification-bell w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                <svg class="delete-btn w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </div>
+                        `;
+                        
+                        li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => toggleDone(e.target.checked, index));
+                        li.querySelector('.delete-btn').addEventListener('click', () => deleteNote(index));
+                        li.querySelector('.notification-bell').addEventListener('click', () => openNotificationModal(index));
+                        noteList.appendChild(li);
+                    });
+                }
+                renderReminders();
+            }
+            
+            function renderReminders() {
+                remindersContainer.innerHTML = '';
+                
+                const getFormattedDate = (date) => date.toISOString().split('T')[0];
+                const todayStr = getFormattedDate(new Date());
+                const tomorrowStr = getFormattedDate(new Date(Date.now() + 86400000));
+
+                const todayNotes = [];
+                const tomorrowNotes = [];
+
+                for (const district in notes) {
+                    notes[district].forEach(note => {
+                        if (!note.done) {
+                            if (note.date === todayStr) {
+                                todayNotes.push({ ...note, district });
+                            } else if (note.date === tomorrowStr) {
+                                tomorrowNotes.push({ ...note, district });
+                            }
+                        }
+                    });
                 }
 
-                districtNotes.forEach((note, index) => {
-                    const li = document.createElement('li');
-                    li.className = `note-item flex items-center justify-between p-3 bg-gray-50 rounded-lg border ${note.done ? 'done' : ''}`;
-                    li.innerHTML = `
-                        <div class="flex items-center flex-grow">
-                            <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3 flex-shrink-0" ${note.done ? 'checked' : ''}>
-                            <span class="flex-grow">${note.text}</span>
-                        </div>
-                        <div class="flex items-center space-x-3 ml-2 flex-shrink-0">
-                             <svg class="notification-bell w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                            <svg class="delete-btn w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </div>
-                    `;
-                    
-                    li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => toggleDone(e.target.checked, index));
-                    li.querySelector('.delete-btn').addEventListener('click', () => deleteNote(index));
-                    li.querySelector('.notification-bell').addEventListener('click', () => openNotificationModal(index));
-                    noteList.appendChild(li);
-                });
+                if (todayNotes.length > 0) {
+                    const card = createReminderCard('Bugünün Notları', todayNotes, 'yellow');
+                    remindersContainer.appendChild(card);
+                }
+                if (tomorrowNotes.length > 0) {
+                    const card = createReminderCard('Yarının Notları', tomorrowNotes, 'blue');
+                    remindersContainer.appendChild(card);
+                }
+            }
+
+            function createReminderCard(title, notes, color) {
+                const card = document.createElement('div');
+                const colors = {
+                    yellow: { bg: 'bg-yellow-100', border: 'border-yellow-500', text: 'text-yellow-800' },
+                    blue: { bg: 'bg-blue-100', border: 'border-blue-500', text: 'text-blue-800' }
+                };
+                card.className = `${colors[color].bg} border-l-4 ${colors[color].border} ${colors[color].text} p-4 rounded-lg shadow-md`;
+                
+                let listItems = notes.map(note => `
+                    <li class="mt-1">
+                        <span class="font-semibold">${note.district}:</span> ${note.text}
+                    </li>
+                `).join('');
+
+                card.innerHTML = `
+                    <h3 class="font-bold text-lg">${title}</h3>
+                    <ul class="list-disc list-inside ml-2">${listItems}</ul>
+                `;
+                return card;
             }
 
             function addNote() {
                 const text = noteInput.value.trim();
+                const date = noteDateInput.value;
                 if (text) {
                     if (!notes[activeDistrict]) {
                         notes[activeDistrict] = [];
                     }
-                    notes[activeDistrict].unshift({ text: text, done: false, reminderId: null });
+                    notes[activeDistrict].unshift({ text, date, done: false, reminderId: null });
                     noteInput.value = '';
+                    noteDateInput.value = '';
                     saveNotes();
                     renderNotes();
                 }
@@ -330,7 +402,6 @@
                     }
                     if (!response.ok) throw new Error(`GitHub API Hatası: ${response.statusText}`);
                     const data = await response.json();
-                    // DECODE from base64 and handle UTF-8 characters
                     const decodedContent = decodeURIComponent(escape(window.atob(data.content)));
                     notes = JSON.parse(decodedContent);
                     renderNotes();
@@ -351,7 +422,6 @@
                     });
                     if(getFileResponse.ok) sha = (await getFileResponse.json()).sha;
 
-                    // ENCODE to base64 handling UTF-8 characters
                     const contentToEncode = JSON.stringify(notes, null, 2);
                     const encodedContent = window.btoa(unescape(encodeURIComponent(contentToEncode)));
 
