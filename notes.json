@@ -19,5 +19,12 @@
   "TARSUS": [],
   "TOROSLAR": [],
   "YENİŞEHİR": [],
-  "DİĞER": []
+  "DİĞER": [
+    {
+      "text": "Lihkab Altay Uçan Müfettişe evrak getircek",
+      "date": "",
+      "done": false,
+      "reminderId": null
+    }
+  ]
 }
