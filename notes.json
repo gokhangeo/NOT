@@ -21,6 +21,12 @@
   "YENİŞEHİR": [],
   "DİĞER": [
     {
+      "text": "MERT",
+      "date": "2025-10-08",
+      "done": false,
+      "reminderId": null
+    },
+    {
       "text": "Güneykent Mezarlığı",
       "date": "2025-10-07",
       "done": false,
