@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mersin Hızlı Not</title>
+    <title>HIZLI NOT UYGULAMASI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -76,8 +76,7 @@
     <div class="main-container">
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
             <header class="p-6 bg-indigo-600 text-white text-center rounded-t-2xl relative">
-                <h1 class="text-2xl md:text-3xl font-bold">Mersin Hızlı Not Uygulaması</h1>
-                <p class="text-indigo-200 mt-1">İlçelere göre notlarınızı kolayca yönetin</p>
+                <h1 class="text-2xl md:text-3xl font-bold">HIZLI NOT UYGULAMASI</h1>
                 <div id="status-indicator" class="absolute top-4 right-4 text-xs font-semibold px-2 py-1 rounded-full opacity-0"></div>
             </header>
 
@@ -107,6 +106,11 @@
         <!-- Hatırlatma kartları buraya eklenecek -->
     </div>
 
+    <!-- Devam Eden Notlar Alanı -->
+    <div id="ongoing-notes-container" class="main-container mt-6 space-y-4">
+        <!-- Devam eden notlar buraya eklenecek -->
+    </div>
+
     <!-- Bildirim Ayarlama Modalı -->
     <div id="notification-modal" class="modal-backdrop hidden">
         <div class="modal-content">
@@ -126,6 +130,10 @@
             </div>
         </div>
     </div>
+    
+    <footer class="text-center text-sm text-gray-500 py-4 mt-4">
+        © Gökhan ELGÜL tarafından tasarlanmıştır.
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -146,6 +154,7 @@
             const noteList = document.getElementById('note-list');
             const statusIndicator = document.getElementById('status-indicator');
             const remindersContainer = document.getElementById('reminders-container');
+            const ongoingNotesContainer = document.getElementById('ongoing-notes-container');
 
             // Notification Modal Elements
             const modal = document.getElementById('notification-modal');
@@ -236,6 +245,37 @@
                     });
                 }
                 renderReminders();
+                renderOngoingNotes();
+            }
+
+            function renderOngoingNotes() {
+                ongoingNotesContainer.innerHTML = '';
+                const ongoingNotes = [];
+                for (const district in notes) {
+                    notes[district].forEach(note => {
+                        if (!note.done) {
+                            ongoingNotes.push({ ...note, district });
+                        }
+                    });
+                }
+
+                if (ongoingNotes.length > 0) {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-4 rounded-lg shadow-md';
+                    
+                    let listItems = ongoingNotes.map(note => `
+                        <li class="mt-1 flex justify-between items-center py-1 border-b border-gray-100">
+                            <span>${note.text} <span class="text-sm text-gray-500 font-medium">(${note.district})</span></span>
+                            ${note.date ? `<span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full flex-shrink-0">${formatDateForDisplay(note.date)}</span>` : ''}
+                        </li>
+                    `).join('');
+
+                    card.innerHTML = `
+                        <h3 class="font-bold text-lg text-gray-800">Açık Notlar</h3>
+                        <ul class="mt-2 space-y-1">${listItems}</ul>
+                    `;
+                    ongoingNotesContainer.appendChild(card);
+                }
             }
             
             function renderReminders() {
