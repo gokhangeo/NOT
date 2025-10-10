@@ -193,6 +193,8 @@
                 saveNotificationBtn.addEventListener('click', saveNotification);
                 cancelNotificationBtn.addEventListener('click', closeNotificationModal);
                 modal.addEventListener('click', (e) => { if (e.target === modal) closeNotificationModal(); });
+                addOngoingNotesEventListeners();
+
 
                 if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
                     Notification.requestPermission();
@@ -252,9 +254,9 @@
                 ongoingNotesContainer.innerHTML = '';
                 const ongoingNotes = [];
                 for (const district in notes) {
-                    notes[district].forEach(note => {
+                    notes[district].forEach((note, index) => {
                         if (!note.done) {
-                            ongoingNotes.push({ ...note, district });
+                            ongoingNotes.push({ ...note, district, originalIndex: index });
                         }
                     });
                 }
@@ -264,9 +266,18 @@
                     card.className = 'bg-white p-4 rounded-lg shadow-md';
                     
                     let listItems = ongoingNotes.map(note => `
-                        <li class="mt-1 flex justify-between items-center py-1 border-b border-gray-100">
-                            <span>${note.text} <span class="text-sm text-gray-500 font-medium">(${note.district})</span></span>
-                            ${note.date ? `<span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full flex-shrink-0">${formatDateForDisplay(note.date)}</span>` : ''}
+                        <li class="mt-1 flex justify-between items-center py-2 border-b border-gray-100" 
+                            data-district="${note.district}" 
+                            data-index="${note.originalIndex}">
+                            <div class="note-content-wrapper flex items-center flex-grow min-w-0 mr-2">
+                                <input type="checkbox" class="ongoing-checkbox h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3 flex-shrink-0">
+                                <span class="note-text-ongoing">${note.text}</span>
+                                <span class="district-label text-sm text-gray-500 font-medium ml-2">(${note.district})</span>
+                            </div>
+                            <div class="note-controls-wrapper flex items-center space-x-3 ml-2 flex-shrink-0">
+                                 ${note.date ? `<span class="date-tag text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">${formatDateForDisplay(note.date)}</span>` : ''}
+                                <svg class="edit-btn-ongoing cursor-pointer w-5 h-5 text-gray-400 hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z"></path></svg>
+                            </div>
                         </li>
                     `).join('');
 
@@ -278,6 +289,71 @@
                 }
             }
             
+            function addOngoingNotesEventListeners() {
+                ongoingNotesContainer.addEventListener('click', (e) => {
+                    const li = e.target.closest('li[data-district]');
+                    if (!li) return;
+
+                    const district = li.dataset.district;
+                    const index = parseInt(li.dataset.index, 10);
+                    
+                    // Handle checkbox click
+                    if (e.target.matches('.ongoing-checkbox')) {
+                        notes[district][index].done = true;
+                        saveNotes();
+                        renderNotes();
+                        return;
+                    }
+
+                    // Handle edit button click
+                    if (e.target.closest('.edit-btn-ongoing')) {
+                        if (ongoingNotesContainer.querySelector('.is-editing')) return; // Only one edit at a time
+                        li.classList.add('is-editing');
+
+                        const note = notes[district][index];
+                        const contentWrapper = li.querySelector('.note-content-wrapper');
+                        const controlsWrapper = li.querySelector('.note-controls-wrapper');
+
+                        contentWrapper.innerHTML = `
+                            <input type="text" value="${note.text}" class="ongoing-edit-input w-full p-1 border rounded border-indigo-400 text-sm">
+                        `;
+                        controlsWrapper.innerHTML = `
+                            <button class="save-ongoing-btn p-1 text-green-600 hover:bg-green-100 rounded-full">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </button>
+                             <button class="cancel-ongoing-btn p-1 text-red-600 hover:bg-red-100 rounded-full">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        `;
+
+                        const input = contentWrapper.querySelector('input');
+                        input.focus();
+                        input.select();
+
+                        const saveAction = () => {
+                            const newText = input.value.trim();
+                            if (newText) {
+                                notes[district][index].text = newText;
+                                saveNotes();
+                            }
+                            renderNotes();
+                        };
+
+                        const cancelAction = () => {
+                            renderNotes();
+                        };
+                        
+                        controlsWrapper.querySelector('.save-ongoing-btn').onclick = saveAction;
+                        controlsWrapper.querySelector('.cancel-ongoing-btn').onclick = cancelAction;
+                        input.onkeydown = (event) => {
+                            if (event.key === 'Enter') saveAction();
+                            if (event.key === 'Escape') cancelAction();
+                        };
+                    }
+                });
+            }
+
+
             function renderReminders() {
                 remindersContainer.innerHTML = '';
                 
