@@ -110,6 +110,25 @@
     <div id="ongoing-notes-container" class="main-container mt-6 space-y-4">
         <!-- Devam eden notlar buraya eklenecek -->
     </div>
+    
+    <!-- Global Tamamlanan Notlar Alanı -->
+    <div id="global-completed-container" class="main-container mt-6">
+        <div id="completed-notes-accordion" class="bg-white p-4 rounded-lg shadow-md hidden">
+            <button id="completed-notes-toggle" class="w-full flex justify-between items-center text-left text-gray-600 font-semibold">
+                <span>Tamamlanan Notlar (Tümü)</span>
+                <div class="flex items-center">
+                    <span id="completed-count" class="text-sm bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 mr-2">0</span>
+                    <svg id="completed-chevron" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </button>
+            <div id="completed-notes-panel" class="hidden mt-2">
+                <ul id="completed-note-list" class="space-y-2">
+                    <!-- Tamamlanan notlar buraya gelecek -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bildirim Ayarlama Modalı -->
     <div id="notification-modal" class="modal-backdrop hidden">
@@ -156,6 +175,11 @@
             const remindersContainer = document.getElementById('reminders-container');
             const ongoingNotesContainer = document.getElementById('ongoing-notes-container');
 
+            // Completed Notes Elements
+            const completedNotesToggle = document.getElementById('completed-notes-toggle');
+            const completedChevron = document.getElementById('completed-chevron');
+            const completedNotesPanel = document.getElementById('completed-notes-panel');
+
             // Notification Modal Elements
             const modal = document.getElementById('notification-modal');
             const notificationTimeInput = document.getElementById('notification-time');
@@ -193,7 +217,14 @@
                 saveNotificationBtn.addEventListener('click', saveNotification);
                 cancelNotificationBtn.addEventListener('click', closeNotificationModal);
                 modal.addEventListener('click', (e) => { if (e.target === modal) closeNotificationModal(); });
+                
                 addOngoingNotesEventListeners();
+                addGlobalCompletedNotesEventListeners();
+
+                completedNotesToggle.addEventListener('click', () => {
+                    completedNotesPanel.classList.toggle('hidden');
+                    completedChevron.classList.toggle('rotate-180');
+                });
 
 
                 if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
@@ -219,18 +250,21 @@
             }
 
             function renderNotes() {
-                noteList.innerHTML = '';
                 const districtNotes = notes[activeDistrict] || [];
+                const activeNotes = districtNotes.filter(note => !note.done);
 
-                if (districtNotes.length === 0) {
-                    noteList.innerHTML = `<li class="text-center text-gray-500 p-4">Bu ilçe için henüz not yok.</li>`;
+                // Render Active Notes
+                noteList.innerHTML = '';
+                if (activeNotes.length === 0) {
+                    noteList.innerHTML = `<li class="text-center text-gray-500 p-4">Bu ilçe için henüz aktif not yok.</li>`;
                 } else {
-                    districtNotes.forEach((note, index) => {
+                    activeNotes.forEach((note) => {
+                        const index = districtNotes.findIndex(n => n === note);
                         const li = document.createElement('li');
-                        li.className = `note-item flex items-center justify-between p-3 bg-gray-50 rounded-lg border ${note.done ? 'done' : ''}`;
+                        li.className = `note-item flex items-center justify-between p-3 bg-gray-50 rounded-lg border`;
                         li.innerHTML = `
                             <div class="flex items-center flex-grow min-w-0">
-                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3 flex-shrink-0" ${note.done ? 'checked' : ''}>
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3 flex-shrink-0">
                                 <span class="note-text flex-grow">${note.text}</span>
                                 ${note.date ? `<span class="ml-3 text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full flex-shrink-0">${formatDateForDisplay(note.date)}</span>` : ''}
                             </div>
@@ -246,9 +280,74 @@
                         noteList.appendChild(li);
                     });
                 }
+                
+                // Call global renderers
                 renderReminders();
                 renderOngoingNotes();
+                renderGlobalCompletedNotes();
             }
+            
+            function renderGlobalCompletedNotes() {
+                const completedAccordion = document.getElementById('completed-notes-accordion');
+                const completedList = document.getElementById('completed-note-list');
+                const completedCounter = document.getElementById('completed-count');
+
+                completedList.innerHTML = '';
+                const allCompletedNotes = [];
+                for (const district in notes) {
+                    notes[district].forEach((note, index) => {
+                        if (note.done) {
+                            allCompletedNotes.push({ ...note, district, originalIndex: index });
+                        }
+                    });
+                }
+
+                if (allCompletedNotes.length > 0) {
+                    completedAccordion.classList.remove('hidden');
+                    completedCounter.textContent = allCompletedNotes.length;
+                    
+                    allCompletedNotes.forEach(note => {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-center justify-between p-2 bg-gray-100 rounded-lg text-sm';
+                        li.dataset.district = note.district;
+                        li.dataset.index = note.originalIndex;
+                        li.innerHTML = `
+                            <span class="text-gray-500 line-through">${note.text} <span class="text-xs font-medium">(${note.district})</span></span>
+                            <div class="flex items-center space-x-2">
+                                <button class="reopen-btn p-1 text-blue-500 hover:bg-blue-100 rounded-full" title="Yeniden Aç">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"></path></svg>
+                                </button>
+                                <button class="delete-btn-completed p-1 text-red-500 hover:bg-red-100 rounded-full" title="Sil">
+                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        `;
+                        completedList.appendChild(li);
+                    });
+
+                } else {
+                    completedAccordion.classList.add('hidden');
+                }
+            }
+            
+            function addGlobalCompletedNotesEventListeners() {
+                const completedList = document.getElementById('completed-note-list');
+                completedList.addEventListener('click', (e) => {
+                    const li = e.target.closest('li[data-district]');
+                    if (!li) return;
+
+                    const district = li.dataset.district;
+                    const index = parseInt(li.dataset.index, 10);
+
+                    if (e.target.closest('.reopen-btn')) {
+                        toggleDone(false, index, district);
+                    }
+                    if (e.target.closest('.delete-btn-completed')) {
+                        deleteNote(index, district);
+                    }
+                });
+            }
+
 
             function renderOngoingNotes() {
                 ongoingNotesContainer.innerHTML = '';
@@ -297,17 +396,13 @@
                     const district = li.dataset.district;
                     const index = parseInt(li.dataset.index, 10);
                     
-                    // Handle checkbox click
                     if (e.target.matches('.ongoing-checkbox')) {
-                        notes[district][index].done = true;
-                        saveNotes();
-                        renderNotes();
+                        toggleDone(true, index, district);
                         return;
                     }
 
-                    // Handle edit button click
                     if (e.target.closest('.edit-btn-ongoing')) {
-                        if (ongoingNotesContainer.querySelector('.is-editing')) return; // Only one edit at a time
+                        if (ongoingNotesContainer.querySelector('.is-editing')) return;
                         li.classList.add('is-editing');
 
                         const note = notes[district][index];
@@ -422,22 +517,22 @@
                 }
             }
 
-            function toggleDone(isDone, index) {
-                notes[activeDistrict][index].done = isDone;
+            function toggleDone(isDone, index, district = activeDistrict) {
+                notes[district][index].done = isDone;
                 saveNotes();
                 renderNotes();
             }
 
-            function deleteNote(index) {
-                const note = notes[activeDistrict][index];
+            function deleteNote(index, district = activeDistrict) {
+                const note = notes[district][index];
                 if (note.reminderId) clearTimeout(note.reminderId);
-                notes[activeDistrict].splice(index, 1);
+                notes[district].splice(index, 1);
                 saveNotes();
                 renderNotes();
             }
 
             function openNotificationModal(index) {
-                currentNoteForNotification = index;
+                currentNoteForNotification = { district: activeDistrict, index };
                 modal.classList.remove('hidden');
                 notificationTimeInput.value = '5';
                 notificationUnitSelect.value = 'minutes';
@@ -450,6 +545,7 @@
 
             function saveNotification() {
                 if (currentNoteForNotification === null) return;
+                const { district, index } = currentNoteForNotification;
                 const time = parseInt(notificationTimeInput.value);
                 const unit = notificationUnitSelect.value;
 
@@ -461,7 +557,7 @@
                 else if (unit === 'hours') delay = time * 3600 * 1000;
                 else if (unit === 'days') delay = time * 86400 * 1000;
 
-                const note = notes[activeDistrict][currentNoteForNotification];
+                const note = notes[district][index];
                 if(note.reminderId) clearTimeout(note.reminderId);
 
                 note.reminderId = setTimeout(() => {
