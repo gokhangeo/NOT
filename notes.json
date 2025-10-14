@@ -4,7 +4,14 @@
   "AYDINCIK": [],
   "BOZYAZI": [],
   "ÇAMLIYAYLA": [],
-  "ERDEMLİ": [],
+  "ERDEMLİ": [
+    {
+      "text": "Laptop gönderilecek",
+      "date": "",
+      "done": false,
+      "reminderId": null
+    }
+  ],
   "GÜLNAR": [],
   "MEZİTLİ": [],
   "MUT": [
