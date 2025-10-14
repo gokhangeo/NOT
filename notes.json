@@ -7,7 +7,14 @@
   "ERDEMLİ": [],
   "GÜLNAR": [],
   "MEZİTLİ": [],
-  "MUT": [],
+  "MUT": [
+    {
+      "text": "Arşiv ve Girişe Salon Tipi Klima gerekiyor.(mevcutlar çalışmıyor)",
+      "date": "",
+      "done": false,
+      "reminderId": null
+    }
+  ],
   "SİLİFKE": [
     {
       "text": "Bina",
