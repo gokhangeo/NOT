@@ -30,7 +30,14 @@
       "reminderId": null
     }
   ],
-  "TARSUS": [],
+  "TARSUS": [
+    {
+      "text": "A3 yazıcı bozuk yenisi verilecek",
+      "date": "",
+      "done": false,
+      "reminderId": null
+    }
+  ],
   "TOROSLAR": [],
   "YENİŞEHİR": [],
   "DİĞER": [
