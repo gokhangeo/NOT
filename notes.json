@@ -1,5 +1,12 @@
 {
-  "AKDENİZ": [],
+  "AKDENİZ": [
+    {
+      "text": "Hebilli muhtarı(Bilirkişi ücretleri yatmadı)",
+      "date": "",
+      "done": false,
+      "reminderId": null
+    }
+  ],
   "ANAMUR": [],
   "AYDINCIK": [],
   "BOZYAZI": [],
