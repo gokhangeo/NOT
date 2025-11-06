@@ -150,16 +150,21 @@
                 <textarea id="note-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Yeni bir not ekle..." rows="3"></textarea>
                 <div class="flex flex-col sm:flex-row gap-4">
                     <input type="date" id="note-date-input" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 sm:w-1/2">
-                    <select id="note-category-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white">
+                    <select id="note-category-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white sm:w-1/2">
                         <option value="İş">İş</option>
                         <option value="Kişisel">Kişisel</option>
                         <option value="Market">Market</option>
                     </select>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end space-x-3">
-                <button id="cancel-add-note-btn" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">İptal</button>
-                <button id="add-note-btn" class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Kaydet</button>
+            <div class="mt-6 flex justify-between items-center">
+                <button id="start-speech-btn" class="p-3 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition" title="Sesli Not Ekle">
+                    <i data-lucide="mic" class="w-5 h-5"></i>
+                </button>
+                <div class="space-x-3">
+                    <button id="cancel-add-note-btn" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">İptal</button>
+                    <button id="add-note-btn" class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Kaydet</button>
+                </div>
             </div>
         </div>
     </div>
@@ -217,6 +222,23 @@
             const noteDateInput = document.getElementById('note-date-input');
             const noteCategoryInput = document.getElementById('note-category-input');
 
+            // --- YENİ EKLENDİ (SES TANIMA) ---
+            const startSpeechBtn = document.getElementById('start-speech-btn');
+            let recognition;
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let isRecording = false;
+
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'tr-TR';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+            } else {
+                startSpeechBtn.style.display = 'none'; // Tarayıcı desteklemiyorsa butonu gizle
+                console.warn("Tarayıcınız ses tanımayı desteklemiyor.");
+            }
+            // --- YENİ EKLENDİ SONU ---
+
             // Completed Notes Elements
             const completedNotesToggle = document.getElementById('completed-notes-toggle');
             const completedChevron = document.getElementById('completed-chevron');
@@ -250,6 +272,40 @@
                 cancelAddNoteBtn.addEventListener('click', closeAddNoteModal);
                 addNoteBtn.addEventListener('click', addNote);
                 addNoteModal.addEventListener('click', (e) => { if (e.target === addNoteModal) closeAddNoteModal(); });
+
+                // --- YENİ EKLENDİ (SES TANIMA) ---
+                if (SpeechRecognition) {
+                    startSpeechBtn.addEventListener('click', toggleSpeechRecognition);
+                    
+                    recognition.onstart = () => {
+                        isRecording = true;
+                        startSpeechBtn.classList.add('bg-red-500', 'text-white');
+                        startSpeechBtn.innerHTML = '<i data-lucide="mic-off" class="w-5 h-5"></i>';
+                        lucide.createIcons();
+                    };
+                    
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        noteInput.value = transcript;
+                    };
+                    
+                    recognition.onerror = (event) => {
+                        console.error("Ses tanıma hatası:", event.error);
+                        if(event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                            showStatus("Lütfen mikrofon izni verin.", true);
+                        } else {
+                            showStatus("Ses anlaşılamadı", true);
+                        }
+                    };
+                    
+                    recognition.onend = () => {
+                        isRecording = false;
+                        startSpeechBtn.classList.remove('bg-red-500', 'text-white');
+                        startSpeechBtn.innerHTML = '<i data-lucide="mic" class="w-5 h-5"></i>';
+                        lucide.createIcons();
+                    };
+                }
+                // --- YENİ EKLENDİ SONU ---
 
                 // Notification Modal Listeners
                 saveNotificationBtn.addEventListener('click', saveNotification);
@@ -294,6 +350,23 @@
                 renderGlobalCompletedNotes();
                 lucide.createIcons(); // İkonları yeniden render et
             }
+            
+            // --- YENİ EKLENDİ (SES TANIMA) ---
+            function toggleSpeechRecognition() {
+                if (isRecording) {
+                    recognition.stop();
+                    isRecording = false;
+                } else {
+                    try {
+                        recognition.start();
+                    } catch(e) {
+                        console.error("Mikrofon başlatılamadı (muhtemelen zaten açıktı):", e);
+                        // Bazen kullanıcı butona çok hızlı basarsa hata verebiliyor, 
+                        // onend() bunu zaten düzeltecektir.
+                    }
+                }
+            }
+            // --- YENİ EKLENDİ SONU ---
 
             function renderCategories() {
                 const categories = ['İş', 'Kişisel', 'Market'];
