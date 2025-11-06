@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cepte Not</title>
+    <title>Cepte Not (v2)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Lucide İkonları (Düzeltildi) -->
+    <!-- Lucide İkonları -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     
     <style>
@@ -50,7 +50,11 @@
             animation: fadeIn 0.3s ease-out;
             transition: all 0.3s ease-out;
             word-break: break-word;
-            border-top-width: 4px;
+            /* GÜNCELLENDİ: Sol kenar şeridi için */
+            border-left-width: 5px; 
+            border-top-width: 1px;
+            border-right-width: 1px;
+            border-bottom-width: 1px;
         }
         .note-card.exiting {
             opacity: 0;
@@ -75,18 +79,20 @@
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.5);
         }
         
-        /* Renkler */
-        .cat-is { border-color: #3b82f6; --cat-color: #3b82f6; } /* Mavi */
-        .cat-kisisel { border-color: #10b981; --cat-color: #10b981; } /* Yeşil */
-        .cat-market { border-color: #f59e0b; --cat-color: #f59e0b; } /* Turuncu */
+        /* Kategori Renkleri (Sadece Etiket ve Filtre için) */
+        .cat-label-İş { background-color: #3b82f6; }
+        .cat-label-Kişisel { background-color: #10b981; }
+        .cat-label-Market { background-color: #f59e0b; }
         
-        .cat-label-is { background-color: #3b82f6; }
-        .cat-label-kisisel { background-color: #10b981; }
-        .cat-label-market { background-color: #f59e0b; }
-        
-        .cat-filter-is.active { background-color: #3b82f6; color: white; }
-        .cat-filter-kisisel.active { background-color: #10b981; color: white; }
-        .cat-filter-market.active { background-color: #f59e0b; color: white; }
+        .cat-filter-İş.active { background-color: #3b82f6; color: white; }
+        .cat-filter-Kişisel.active { background-color: #10b981; color: white; }
+        .cat-filter-Market.active { background-color: #f59e0b; color: white; }
+
+        /* YENİ: Öncelik Renkleri (Kenar şeridi için) */
+        .priority-Yüksek { border-color: #ef4444; } /* Kırmızı */
+        .priority-Normal { border-color: #3b82f6; } /* Mavi */
+        .priority-Düşük { border-color: #6b7280; } /* Gri */
+
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -100,6 +106,12 @@
             <p class="text-xs text-white opacity-75 mt-1">© Gökhan ELGÜL tarafından tasarlanmıştır.</p>
             <div id="status-indicator" class="absolute top-4 right-4 text-xs font-semibold px-2 py-1 rounded-full opacity-0 transition-opacity"></div>
         </header>
+
+        <!-- YENİ: Arama Çubuğu -->
+        <div class="mb-8 relative">
+            <input type="search" id="search-input" placeholder="Notlarda ara..." class="w-full p-4 pl-12 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
 
         <!-- Kategori Filtreleri -->
         <div id="category-filters" class="flex flex-wrap justify-center gap-3 mb-8">
@@ -150,7 +162,6 @@
             <div class="flex flex-col gap-4">
                 <textarea id="note-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Yeni bir not ekle..." rows="3"></textarea>
                 
-                <!-- YENİ EKLENDİ: Resim Ekleme Alanı -->
                 <div class="flex items-center gap-4">
                     <label for="image-input" class="cursor-pointer p-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm flex items-center gap-2">
                         <i data-lucide="image" class="w-4 h-4"></i>
@@ -164,16 +175,23 @@
                         </button>
                     </div>
                 </div>
-                <!-- YENİ EKLENDİ SONU -->
 
                 <div class="flex flex-col sm:flex-row gap-4">
                     <input type="date" id="note-date-input" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 sm:w-1/2">
                     <select id="note-category-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white sm:w-1/2">
                         <option value="İş">İş</option>
-                        <option value="Kişisel">Kişisel</option>
+                        <option value="Kişisel" selected>Kişisel</option>
                         <option value="Market">Market</option>
                     </select>
                 </div>
+                
+                <!-- YENİ: Öncelik Ekleme -->
+                <select id="note-priority-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white">
+                    <option value="Normal" selected>Öncelik: Normal</option>
+                    <option value="Yüksek">Öncelik: Yüksek</option>
+                    <option value="Düşük">Öncelik: Düşük</option>
+                </select>
+
             </div>
             <div class="mt-6 flex justify-between items-center">
                 <button id="start-speech-btn" class="p-3 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition" title="Sesli Not Ekle">
@@ -187,13 +205,57 @@
         </div>
     </div>
 
+    <!-- YENİ: Not Düzenleme Modalı -->
+    <div id="edit-note-modal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 opacity-0 hidden">
+        <div class="modal-content bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md">
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">Notu Düzenle</h3>
+            <div class="flex flex-col gap-4">
+                <textarea id="edit-note-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" rows="3"></textarea>
+                
+                <div class="flex items-center gap-4">
+                    <label for="edit-image-input" class="cursor-pointer p-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm flex items-center gap-2">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Resmi Değiştir (Max 250KB)</span>
+                    </label>
+                    <input type="file" id="edit-image-input" class="hidden" accept="image/*">
+                    <div id="edit-image-preview-container" class="hidden items-center gap-2">
+                        <img id="edit-image-preview" src="" alt="Resim Önizleme" class="w-12 h-12 object-cover rounded-lg border">
+                        <button id="edit-remove-image-btn" class="p-1 text-red-500 hover:bg-red-100 rounded-full" title="Resmi Kaldır">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="date" id="edit-note-date-input" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 sm:w-1/2">
+                    <select id="edit-note-category-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white sm:w-1/2">
+                        <option value="İş">İş</option>
+                        <option value="Kişisel">Kişisel</option>
+                        <option value="Market">Market</option>
+                    </select>
+                </div>
+                
+                <select id="edit-note-priority-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white">
+                    <option value="Normal">Öncelik: Normal</option>
+                    <option value="Yüksek">Öncelik: Yüksek</option>
+                    <option value="Düşük">Öncelik: Düşük</option>
+                </select>
+
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="cancel-edit-note-btn" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">İptal</button>
+                <button id="save-edit-note-btn" class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Bildirim Ayarlama Modalı -->
     <div id="notification-modal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 opacity-0 hidden">
         <div class="modal-content bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md">
             <h3 class="text-xl font-semibold mb-4 text-gray-800">Bildirim Ayarla</h3>
             <p class="text-gray-600 mb-4">Bu not için ne zaman hatırlatma istersiniz?</p>
             <div class="flex items-center space-x-2">
-                <input type="number" id="notification-time" min="1" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="5">
+                <input type="number" id="notification-time" min="1" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="5" value="5">
                 <select id="notification-unit" class="p-2 border border-gray-300 rounded-lg">
                     <option value="minutes">dakika sonra</option>
                     <option value="hours">saat sonra</option>
@@ -216,22 +278,38 @@
             let allNotes = [];
             let currentNoteForNotification = null;
             let activeCategoryFilter = 'Tümü';
-            let currentBase64Image = null; // --- YENİ EKLENDİ ---
-            const IMAGE_MAX_SIZE = 250 * 1024; // 250KB limit --- YENİ EKLENDİ ---
+            let currentBase64Image = null; // Add modal için
+            let currentBase64ImageEdit = null; // Edit modal için
+            let currentEditingNoteId = null; // YENİ
+            const IMAGE_MAX_SIZE = 250 * 1024; // 250KB limit
             
-            // Kategori Renk Eşlemesi
+            // Kategori Renk Eşlemesi (Sadece etiket ve filtre için)
             const categoryClasses = {
-                'İş': { border: 'cat-is', label: 'cat-label-is', filter: 'cat-filter-is' },
-                'Kişisel': { border: 'cat-kisisel', label: 'cat-label-kisisel', filter: 'cat-filter-kisisel' },
-                'Market': { border: 'cat-market', label: 'cat-label-market', filter: 'cat-filter-market' }
+                'İş': { label: 'cat-label-İş', filter: 'cat-filter-İş' },
+                'Kişisel': { label: 'cat-label-Kişisel', filter: 'cat-filter-Kişisel' },
+                'Market': { label: 'cat-label-Market', filter: 'cat-filter-Market' }
             };
-            const defaultCategory = 'Kişisel'; // Varsayılan
+            const defaultCategory = 'Kişisel';
+
+            // YENİ: Öncelik Eşlemesi
+            const priorityClasses = {
+                'Yüksek': { border: 'priority-Yüksek', color: 'text-red-500' },
+                'Normal': { border: 'priority-Normal', color: 'text-blue-500' },
+                'Düşük': { border: 'priority-Düşük', color: 'text-gray-500' }
+            };
+            const priorityIcons = {
+                'Yüksek': '🔥',
+                'Normal': '🔵',
+                'Düşük': '🔽'
+            };
+            const defaultPriority = 'Normal';
 
             // DOM Elements
             const noteList = document.getElementById('note-list');
             const statusIndicator = document.getElementById('status-indicator');
             const remindersContainer = document.getElementById('reminders-container');
             const categoryFiltersContainer = document.getElementById('category-filters');
+            const searchInput = document.getElementById('search-input'); // YENİ
 
             // Add Note Modal Elements
             const addNoteModal = document.getElementById('add-note-modal');
@@ -241,15 +319,27 @@
             const noteInput = document.getElementById('note-input');
             const noteDateInput = document.getElementById('note-date-input');
             const noteCategoryInput = document.getElementById('note-category-input');
-
-            // --- YENİ EKLENDİ: Resim Ekleme DOM Elemanları ---
+            const notePriorityInput = document.getElementById('note-priority-input'); // YENİ
             const imageInput = document.getElementById('image-input');
             const imagePreviewContainer = document.getElementById('image-preview-container');
             const imagePreview = document.getElementById('image-preview');
             const removeImageBtn = document.getElementById('remove-image-btn');
-            // --- YENİ EKLENDİ SONU ---
 
-            // --- YENİ EKLENDİ (SES TANIMA) ---
+            // YENİ: Edit Note Modal Elements
+            const editNoteModal = document.getElementById('edit-note-modal');
+            const cancelEditNoteBtn = document.getElementById('cancel-edit-note-btn');
+            const saveEditNoteBtn = document.getElementById('save-edit-note-btn');
+            const editNoteInput = document.getElementById('edit-note-input');
+            const editNoteDateInput = document.getElementById('edit-note-date-input');
+            const editNoteCategoryInput = document.getElementById('edit-note-category-input');
+            const editNotePriorityInput = document.getElementById('edit-note-priority-input');
+            const editImageInput = document.getElementById('edit-image-input');
+            const editImagePreviewContainer = document.getElementById('edit-image-preview-container');
+            const editImagePreview = document.getElementById('edit-image-preview');
+            const editRemoveImageBtn = document.getElementById('edit-remove-image-btn');
+
+
+            // Ses Tanıma
             const startSpeechBtn = document.getElementById('start-speech-btn');
             let recognition;
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -261,10 +351,9 @@
                 recognition.interimResults = false;
                 recognition.maxAlternatives = 1;
             } else {
-                startSpeechBtn.style.display = 'none'; // Tarayıcı desteklemiyorsa butonu gizle
+                startSpeechBtn.style.display = 'none';
                 console.warn("Tarayıcınız ses tanımayı desteklemiyor.");
             }
-            // --- YENİ EKLENDİ SONU ---
 
             // Completed Notes Elements
             const completedNotesToggle = document.getElementById('completed-notes-toggle');
@@ -299,28 +388,32 @@
                 cancelAddNoteBtn.addEventListener('click', closeAddNoteModal);
                 addNoteBtn.addEventListener('click', addNote);
                 addNoteModal.addEventListener('click', (e) => { if (e.target === addNoteModal) closeAddNoteModal(); });
+                imageInput.addEventListener('change', (e) => handleImageUpload(e, 'add'));
+                removeImageBtn.addEventListener('click', () => removeImage('add'));
 
-                // --- YENİ EKLENDİ: Resim Ekleme Listeners ---
-                imageInput.addEventListener('change', handleImageUpload);
-                removeImageBtn.addEventListener('click', removeImage);
-                // --- YENİ EKLENDİ SONU ---
+                // YENİ: Edit Note Modal Listeners
+                cancelEditNoteBtn.addEventListener('click', closeEditModal);
+                saveEditNoteBtn.addEventListener('click', saveEditNote);
+                editNoteModal.addEventListener('click', (e) => { if (e.target === editNoteModal) closeEditModal(); });
+                editImageInput.addEventListener('change', (e) => handleImageUpload(e, 'edit'));
+                editRemoveImageBtn.addEventListener('click', () => removeImage('edit'));
 
-                // --- YENİ EKLENDİ (SES TANIMA) ---
+                // YENİ: Search Listener
+                searchInput.addEventListener('input', renderAll);
+
+                // Ses Tanıma Listeners
                 if (SpeechRecognition) {
                     startSpeechBtn.addEventListener('click', toggleSpeechRecognition);
-                    
                     recognition.onstart = () => {
                         isRecording = true;
                         startSpeechBtn.classList.add('bg-red-500', 'text-white');
                         startSpeechBtn.innerHTML = '<i data-lucide="mic-off" class="w-5 h-5"></i>';
                         lucide.createIcons();
                     };
-                    
                     recognition.onresult = (event) => {
                         const transcript = event.results[0][0].transcript;
                         noteInput.value = transcript;
                     };
-                    
                     recognition.onerror = (event) => {
                         console.error("Ses tanıma hatası:", event.error);
                         if(event.error === 'not-allowed' || event.error === 'service-not-allowed') {
@@ -329,7 +422,6 @@
                             showStatus("Ses anlaşılamadı", true);
                         }
                     };
-                    
                     recognition.onend = () => {
                         isRecording = false;
                         startSpeechBtn.classList.remove('bg-red-500', 'text-white');
@@ -337,7 +429,6 @@
                         lucide.createIcons();
                     };
                 }
-                // --- YENİ EKLENDİ SONU ---
 
                 // Notification Modal Listeners
                 saveNotificationBtn.addEventListener('click', saveNotification);
@@ -355,14 +446,19 @@
                     Notification.requestPermission();
                 }
                 
-                // Lucide ikonlarını yükle
                 lucide.createIcons();
             }
             
             function openAddNoteModal() {
                 addNoteModal.classList.remove('hidden');
                 setTimeout(() => addNoteModal.classList.add('open'), 10);
-                removeImage(); // --- YENİ EKLENDİ: Modalı açarken resim önizlemeyi temizle ---
+                
+                // Formu sıfırla
+                noteInput.value = '';
+                noteDateInput.value = '';
+                noteCategoryInput.value = 'Kişisel';
+                notePriorityInput.value = 'Normal';
+                removeImage('add');
             }
             
             function closeAddNoteModal() {
@@ -384,7 +480,6 @@
                 lucide.createIcons(); // İkonları yeniden render et
             }
             
-            // --- YENİ EKLENDİ (SES TANIMA) ---
             function toggleSpeechRecognition() {
                 if (isRecording) {
                     recognition.stop();
@@ -394,43 +489,58 @@
                         recognition.start();
                     } catch(e) {
                         console.error("Mikrofon başlatılamadı (muhtemelen zaten açıktı):", e);
-                        // Bazen kullanıcı butona çok hızlı basarsa hata verebiliyor, 
-                        // onend() bunu zaten düzeltecektir.
                     }
                 }
             }
-            // --- YENİ EKLENDİ SONU ---
 
-            // --- YENİ EKLENDİ: Resim İşleme Fonksiyonları ---
-            function handleImageUpload(event) {
+            function handleImageUpload(event, mode = 'add') {
                 const file = event.target.files[0];
                 if (!file) return;
 
                 if (file.size > IMAGE_MAX_SIZE) {
                     showStatus(`Resim 250KB'den büyük olamaz.`, true);
-                    imageInput.value = null; // Clear the input
+                    if (mode === 'add') {
+                        imageInput.value = null;
+                    } else {
+                        editImageInput.value = null;
+                    }
                     return;
                 }
 
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    currentBase64Image = e.target.result;
-                    imagePreview.src = currentBase64Image;
-                    imagePreviewContainer.classList.remove('hidden');
-                    imagePreviewContainer.classList.add('flex');
+                    if (mode === 'add') {
+                        currentBase64Image = e.target.result;
+                        imagePreview.src = currentBase64Image;
+                        imagePreviewContainer.classList.remove('hidden');
+                        imagePreviewContainer.classList.add('flex');
+                    } else {
+                        currentBase64ImageEdit = e.target.result;
+                        editImagePreview.src = currentBase64ImageEdit;
+                        editImagePreviewContainer.classList.remove('hidden');
+                        editImagePreviewContainer.classList.add('flex');
+                    }
                 };
                 reader.readAsDataURL(file);
             }
 
-            function removeImage() {
-                currentBase64Image = null;
-                imageInput.value = null; // Dosya seçimini sıfırla
-                imagePreview.src = '';
-                imagePreviewContainer.classList.add('hidden');
-                imagePreviewContainer.classList.remove('flex');
+            function removeImage(mode = 'add') {
+                if (mode === 'add') {
+                    currentBase64Image = null;
+                    imageInput.value = null;
+                    imagePreview.src = '';
+                    imagePreviewContainer.classList.add('hidden');
+                    imagePreviewContainer.classList.remove('flex');
+                } else {
+                    // Düzenleme modunda, resmi kaldırmak null olarak ayarlamaktır.
+                    currentBase64ImageEdit = null; 
+                    editImageInput.value = null;
+                    editImagePreview.src = '';
+                    editImagePreviewContainer.classList.add('hidden');
+                    editImagePreviewContainer.classList.remove('flex');
+                }
             }
-            // --- YENİ EKLENDİ SONU ---
-
+            
             function renderCategories() {
                 const categories = ['İş', 'Kişisel', 'Market'];
                 categoryFiltersContainer.innerHTML = '';
@@ -456,27 +566,39 @@
 
             function renderNotes() {
                 noteList.innerHTML = '';
-                const activeNotes = allNotes.filter(note => 
-                    !note.done && (activeCategoryFilter === 'Tümü' || (note.category || defaultCategory) === activeCategoryFilter)
-                );
+                const searchTerm = searchInput.value.toLowerCase(); // YENİ
+
+                const activeNotes = allNotes.filter(note => {
+                    const matchesCategory = activeCategoryFilter === 'Tümü' || (note.category || defaultCategory) === activeCategoryFilter;
+                    const matchesSearch = !searchTerm || note.text.toLowerCase().includes(searchTerm);
+                    const isDone = note.done;
+                    return !isDone && matchesCategory && matchesSearch;
+                });
 
                 if (activeNotes.length === 0) {
-                    noteList.innerHTML = `<li class="text-center text-gray-500 p-4 col-span-1 md:col-span-2 lg:col-span-3">Bu kategoride aktif not yok.</li>`;
+                    const message = searchTerm ? 'Arama sonucuyla eşleşen not yok.' : 'Bu kategoride aktif not yok.';
+                    noteList.innerHTML = `<li class="text-center text-gray-500 p-4 col-span-1 md:col-span-2 lg:col-span-3">${message}</li>`;
                 } else {
                     activeNotes.forEach((note) => {
                         const li = document.createElement('li');
                         const category = note.category || defaultCategory;
-                        const catClass = categoryClasses[category]?.border || categoryClasses[defaultCategory].border;
-                        const catLabel = categoryClasses[category]?.label || categoryClasses[defaultCategory].label;
+                        const priority = note.priority || defaultPriority;
                         
-                        // --- GÜNCELLENDİ: Kart yapısı (padding ve resim için) ---
-                        li.className = `note-card flex flex-col justify-between bg-white rounded-lg shadow-md ${catClass} overflow-hidden`; // p-4 kaldırıldı, overflow-hidden eklendi
+                        const catLabel = categoryClasses[category]?.label || categoryClasses[defaultCategory].label;
+                        const priorityClass = priorityClasses[priority]?.border || priorityClasses[defaultPriority].border;
+                        const priorityIcon = priorityIcons[priority] || priorityIcons[defaultPriority];
+                        const priorityColor = priorityClasses[priority]?.color || priorityClasses[defaultPriority].color;
+
+                        li.className = `note-card flex flex-col justify-between bg-white rounded-lg shadow-md ${priorityClass} overflow-hidden`;
                         li.dataset.id = note.id;
                         li.innerHTML = `
                             ${note.image ? `<img src="${note.image}" alt="Not Görseli" class="w-full h-32 object-cover">` : ''}
                             <div class="p-4 flex-grow flex flex-col justify-between">
                                 <div>
-                                    <span class="text-xs font-semibold ${catLabel} text-white px-2 py-0.5 rounded-full mb-3 inline-block">${category}</span>
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="text-xs font-semibold ${catLabel} text-white px-2 py-0.5 rounded-full inline-block">${category}</span>
+                                        <span class="text-lg ${priorityColor}" title="Öncelik: ${priority}">${priorityIcon}</span>
+                                    </div>
                                     <p class="note-text text-gray-800 mb-4">${note.text}</p>
                                 </div>
                                 <div class="flex items-center justify-between text-gray-500">
@@ -485,6 +607,10 @@
                                         ${formatDateForDisplay(note.date) || 'Tarih yok'}
                                     </span>
                                     <div class="flex items-center space-x-1">
+                                        <!-- YENİ: Düzenle Butonu -->
+                                        <button class="edit-btn p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-blue-500 transition" title="Düzenle">
+                                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                                        </button>
                                         <button class="notification-btn p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-indigo-500 transition" title="Hatırlatma Kur">
                                             <i data-lucide="bell" class="w-4 h-4"></i>
                                         </button>
@@ -498,6 +624,7 @@
                         
                         li.querySelector('.delete-btn').addEventListener('click', () => deleteNote(note.id, li));
                         li.querySelector('.notification-btn').addEventListener('click', () => openNotificationModal(note.id));
+                        li.querySelector('.edit-btn').addEventListener('click', () => openEditModal(note.id)); // YENİ
                         noteList.appendChild(li);
                     });
                 }
@@ -594,6 +721,7 @@
                 const text = noteInput.value.trim();
                 const date = noteDateInput.value;
                 const category = noteCategoryInput.value;
+                const priority = notePriorityInput.value; // YENİ
                 
                 if (text) {
                     const newNote = { 
@@ -601,19 +729,78 @@
                         text, 
                         date, 
                         category, 
-                        image: currentBase64Image, // --- YENİ EKLENDİ ---
+                        priority, // YENİ
+                        image: currentBase64Image,
                         done: false, 
                         reminderId: null 
                     };
                     allNotes.unshift(newNote);
-                    noteInput.value = '';
-                    noteDateInput.value = '';
-                    noteCategoryInput.value = 'İş';
-                    removeImage(); // --- YENİ EKLENDİ: Kayıttan sonra resmi temizle ---
                     saveNotes();
                     renderAll();
                     closeAddNoteModal();
                 }
+            }
+
+            // YENİ: Not Düzenleme Fonksiyonları
+            function openEditModal(id) {
+                const note = allNotes.find(n => n.id === id);
+                if (!note) return;
+
+                currentEditingNoteId = id;
+                
+                editNoteInput.value = note.text;
+                editNoteDateInput.value = note.date || '';
+                editNoteCategoryInput.value = note.category || defaultCategory;
+                editNotePriorityInput.value = note.priority || defaultPriority;
+                
+                // Resmi ayarla
+                currentBase64ImageEdit = note.image || null;
+                if (note.image) {
+                    editImagePreview.src = note.image;
+                    editImagePreviewContainer.classList.remove('hidden');
+                    editImagePreviewContainer.classList.add('flex');
+                } else {
+                    removeImage('edit');
+                }
+
+                editNoteModal.classList.remove('hidden');
+                setTimeout(() => editNoteModal.classList.add('open'), 10);
+            }
+
+            function closeEditModal() {
+                editNoteModal.classList.remove('open');
+                setTimeout(() => editNoteModal.classList.add('hidden'), 300);
+                currentEditingNoteId = null;
+                currentBase64ImageEdit = null;
+                editImageInput.value = null;
+            }
+
+            function saveEditNote() {
+                if (!currentEditingNoteId) return;
+
+                const noteIndex = allNotes.findIndex(n => n.id === currentEditingNoteId);
+                if (noteIndex === -1) return;
+
+                const text = editNoteInput.value.trim();
+                if (!text) {
+                    showStatus("Not metni boş olamaz.", true);
+                    return;
+                }
+
+                const updatedNote = {
+                    ...allNotes[noteIndex],
+                    text: text,
+                    date: editNoteDateInput.value,
+                    category: editNoteCategoryInput.value,
+                    priority: editNotePriorityInput.value,
+                    image: currentBase64ImageEdit // Bu, 'removeImage' ile null yapılmış olabilir veya yeni resimle güncellenmiş olabilir
+                };
+
+                allNotes[noteIndex] = updatedNote;
+                saveNotes();
+                renderAll();
+                closeEditModal();
+                showStatus("Not güncellendi", false);
             }
 
             function toggleDone(id, isDone, element) {
@@ -680,11 +867,11 @@
                 const unit = notificationUnitSelect.value;
 
                 if (!time || time <= 0) {
-                    alert('Lütfen geçerli bir zaman girin.');
+                    showStatus('Lütfen geçerli bir zaman girin.', true);
                     return;
                 }
                 if (Notification.permission !== 'granted') {
-                    alert('Lütfen bildirimlere izin verin.');
+                    showStatus('Lütfen bildirimlere izin verin.', true);
                     return;
                 }
 
@@ -797,8 +984,8 @@
                         })
                     });
                      if (response.status === 401) {
-                         showStatus("Geçersiz API Anahtarı", true);
-                         return;
+                        showStatus("Geçersiz API Anahtarı", true);
+                        return;
                     }
                     if (!response.ok) throw new Error(`GitHub API Hatası: ${response.statusText}`);
                     showStatus("Notlar GitHub'a kaydedildi");
