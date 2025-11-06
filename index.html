@@ -149,6 +149,23 @@
             <h3 class="text-xl font-semibold mb-4 text-gray-800">Yeni Not Ekle</h3>
             <div class="flex flex-col gap-4">
                 <textarea id="note-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Yeni bir not ekle..." rows="3"></textarea>
+                
+                <!-- YENİ EKLENDİ: Resim Ekleme Alanı -->
+                <div class="flex items-center gap-4">
+                    <label for="image-input" class="cursor-pointer p-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm flex items-center gap-2">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Resim Seç (Max 250KB)</span>
+                    </label>
+                    <input type="file" id="image-input" class="hidden" accept="image/*">
+                    <div id="image-preview-container" class="hidden items-center gap-2">
+                        <img id="image-preview" src="" alt="Resim Önizleme" class="w-12 h-12 object-cover rounded-lg border">
+                        <button id="remove-image-btn" class="p-1 text-red-500 hover:bg-red-100 rounded-full" title="Resmi Kaldır">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- YENİ EKLENDİ SONU -->
+
                 <div class="flex flex-col sm:flex-row gap-4">
                     <input type="date" id="note-date-input" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 sm:w-1/2">
                     <select id="note-category-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white sm:w-1/2">
@@ -199,6 +216,8 @@
             let allNotes = [];
             let currentNoteForNotification = null;
             let activeCategoryFilter = 'Tümü';
+            let currentBase64Image = null; // --- YENİ EKLENDİ ---
+            const IMAGE_MAX_SIZE = 250 * 1024; // 250KB limit --- YENİ EKLENDİ ---
             
             // Kategori Renk Eşlemesi
             const categoryClasses = {
@@ -222,6 +241,13 @@
             const noteInput = document.getElementById('note-input');
             const noteDateInput = document.getElementById('note-date-input');
             const noteCategoryInput = document.getElementById('note-category-input');
+
+            // --- YENİ EKLENDİ: Resim Ekleme DOM Elemanları ---
+            const imageInput = document.getElementById('image-input');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const removeImageBtn = document.getElementById('remove-image-btn');
+            // --- YENİ EKLENDİ SONU ---
 
             // --- YENİ EKLENDİ (SES TANIMA) ---
             const startSpeechBtn = document.getElementById('start-speech-btn');
@@ -273,6 +299,11 @@
                 cancelAddNoteBtn.addEventListener('click', closeAddNoteModal);
                 addNoteBtn.addEventListener('click', addNote);
                 addNoteModal.addEventListener('click', (e) => { if (e.target === addNoteModal) closeAddNoteModal(); });
+
+                // --- YENİ EKLENDİ: Resim Ekleme Listeners ---
+                imageInput.addEventListener('change', handleImageUpload);
+                removeImageBtn.addEventListener('click', removeImage);
+                // --- YENİ EKLENDİ SONU ---
 
                 // --- YENİ EKLENDİ (SES TANIMA) ---
                 if (SpeechRecognition) {
@@ -331,6 +362,7 @@
             function openAddNoteModal() {
                 addNoteModal.classList.remove('hidden');
                 setTimeout(() => addNoteModal.classList.add('open'), 10);
+                removeImage(); // --- YENİ EKLENDİ: Modalı açarken resim önizlemeyi temizle ---
             }
             
             function closeAddNoteModal() {
@@ -366,6 +398,36 @@
                         // onend() bunu zaten düzeltecektir.
                     }
                 }
+            }
+            // --- YENİ EKLENDİ SONU ---
+
+            // --- YENİ EKLENDİ: Resim İşleme Fonksiyonları ---
+            function handleImageUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (file.size > IMAGE_MAX_SIZE) {
+                    showStatus(`Resim 250KB'den büyük olamaz.`, true);
+                    imageInput.value = null; // Clear the input
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentBase64Image = e.target.result;
+                    imagePreview.src = currentBase64Image;
+                    imagePreviewContainer.classList.remove('hidden');
+                    imagePreviewContainer.classList.add('flex');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function removeImage() {
+                currentBase64Image = null;
+                imageInput.value = null; // Dosya seçimini sıfırla
+                imagePreview.src = '';
+                imagePreviewContainer.classList.add('hidden');
+                imagePreviewContainer.classList.remove('flex');
             }
             // --- YENİ EKLENDİ SONU ---
 
@@ -407,30 +469,33 @@
                         const catClass = categoryClasses[category]?.border || categoryClasses[defaultCategory].border;
                         const catLabel = categoryClasses[category]?.label || categoryClasses[defaultCategory].label;
                         
-                        li.className = `note-card flex flex-col justify-between p-4 bg-white rounded-lg shadow-md ${catClass}`;
+                        // --- GÜNCELLENDİ: Kart yapısı (padding ve resim için) ---
+                        li.className = `note-card flex flex-col justify-between bg-white rounded-lg shadow-md ${catClass} overflow-hidden`; // p-4 kaldırıldı, overflow-hidden eklendi
                         li.dataset.id = note.id;
                         li.innerHTML = `
-                            <div class="flex-grow">
-                                <span class="text-xs font-semibold ${catLabel} text-white px-2 py-0.5 rounded-full mb-3 inline-block">${category}</span>
-                                <p class="note-text text-gray-800 mb-4">${note.text}</p>
-                            </div>
-    </div>
-    
-    <!-- <footer class="text-center text-sm text-gray-500 py-4 mt-8">
-        © Gökhan ELGÜL tarafından tasarlanmıştır.
-    </footer> -->
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-                                    </button>
-                                    <button class="delete-btn p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-red-500 transition">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                    </button>
+                            ${note.image ? `<img src="${note.image}" alt="Not Görseli" class="w-full h-32 object-cover">` : ''}
+                            <div class="p-4 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <span class="text-xs font-semibold ${catLabel} text-white px-2 py-0.5 rounded-full mb-3 inline-block">${category}</span>
+                                    <p class="note-text text-gray-800 mb-4">${note.text}</p>
+                                </div>
+                                <div class="flex items-center justify-between text-gray-500">
+                                    <span class="text-xs font-medium flex items-center">
+                                        <i data-lucide="calendar" class="w-3.5 h-3.5 mr-1.5"></i>
+                                        ${formatDateForDisplay(note.date) || 'Tarih yok'}
+                                    </span>
+                                    <div class="flex items-center space-x-1">
+                                        <button class="notification-btn p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-indigo-500 transition" title="Hatırlatma Kur">
+                                            <i data-lucide="bell" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="delete-btn p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-red-500 transition" title="Sil">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         `;
                         
-                        li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => toggleDone(note.id, e.target.checked, li));
                         li.querySelector('.delete-btn').addEventListener('click', () => deleteNote(note.id, li));
                         li.querySelector('.notification-btn').addEventListener('click', () => openNotificationModal(note.id));
                         noteList.appendChild(li);
@@ -536,6 +601,7 @@
                         text, 
                         date, 
                         category, 
+                        image: currentBase64Image, // --- YENİ EKLENDİ ---
                         done: false, 
                         reminderId: null 
                     };
@@ -543,6 +609,7 @@
                     noteInput.value = '';
                     noteDateInput.value = '';
                     noteCategoryInput.value = 'İş';
+                    removeImage(); // --- YENİ EKLENDİ: Kayıttan sonra resmi temizle ---
                     saveNotes();
                     renderAll();
                     closeAddNoteModal();
