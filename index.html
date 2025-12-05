@@ -1,1 +1,957 @@
-<!DOCTYPE html> <html lang="tr"> <head>     <meta charset="UTF-8">     <meta name="viewport" content="width=device-width, initial-scale=1.0">     <title>Cepte Not v3.1</title>     <script src="https://cdn.tailwindcss.com"></script>     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">     <!-- Lucide İkonları -->     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>     <!-- Konfeti Efekti -->     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>          <style>         :root {             --bg-color: #f7f8fc;             --text-color: #1f2937;             --card-bg: #ffffff;             --input-bg: #ffffff;             --input-border: #e5e7eb;             --modal-bg: #ffffff;         }          body.dark {             --bg-color: #111827;             --text-color: #f3f4f6;             --card-bg: #1f2937;             --input-bg: #374151;             --input-border: #4b5563;             --modal-bg: #1f2937;         }          body {             font-family: 'Inter', sans-serif;             background-color: var(--bg-color);             color: var(--text-color);             transition: background-color 0.3s, color 0.3s;         }          .main-container {             max-width: 900px;             margin: auto;         }                  .header-gradient {             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);         }          .bg-theme-card { background-color: var(--card-bg); transition: background-color 0.3s; }         .text-theme { color: var(--text-color); }         .input-theme {              background-color: var(--input-bg);              border-color: var(--input-border);              color: var(--text-color);         }         .input-theme::placeholder { color: #9ca3af; }          .modal-backdrop { transition: opacity 0.3s ease; }         .modal-content {             background-color: var(--modal-bg);             transition: all 0.3s ease;             transform: translateY(20px) scale(0.95);             opacity: 0;         }         .modal-backdrop.open { opacity: 1; }         .modal-backdrop.open .modal-content { transform: translateY(0) scale(1); opacity: 1; }          @keyframes fadeIn {             from { opacity: 0; transform: translateY(10px); }             to { opacity: 1; transform: translateY(0); }         }         .note-card {             animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);             transition: all 0.3s ease;             border-left-width: 5px;              border-top-width: 1px;             border-right-width: 1px;             border-bottom-width: 1px;             border-color: var(--input-border);         }         .note-card:hover {             transform: translateY(-3px);             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);         }         .note-card.exiting { opacity: 0; transform: scale(0.95); }                  .fab {             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);         }         .fab:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.5); }                  /* Dinleme Animasyonu (YENİ) */         @keyframes pulse-red {             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }             70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }         }         .listening-active {             animation: pulse-red 1.5s infinite;             background-color: #ef4444 !important; /* Kırmızı */             color: white !important;         }          .cat-label-İş { background-color: #3b82f6; }         .cat-label-Kişisel { background-color: #10b981; }         .cat-label-Market { background-color: #f59e0b; }                  .category-filter { transition: all 0.2s ease; border: 1px solid transparent; }         .category-filter.active { transform: scale(1.05); }         .cat-filter-İş.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }         .cat-filter-Kişisel.active { background-color: #10b981; color: white; border-color: #10b981; }         .cat-filter-Market.active { background-color: #f59e0b; color: white; border-color: #f59e0b; }          .priority-Yüksek { border-left-color: #ef4444; }         .priority-Normal { border-left-color: #3b82f6; }         .priority-Düşük { border-left-color: #6b7280; }          .stat-card {             background-color: var(--card-bg);             border: 1px solid var(--input-border);             transition: transform 0.2s;         }         .stat-card:hover { transform: translateY(-2px); }     </style> </head> <body class="p-4 md:p-8 transition-colors duration-300">      <div class="main-container">              <!-- Header -->         <header class="p-6 header-gradient text-white rounded-2xl shadow-lg relative mb-6 flex flex-col md:flex-row justify-between items-center gap-4">             <div class="text-center md:text-left">                 <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-2">                     <i data-lucide="notebook-pen" class="w-8 h-8"></i> Cepte Not                 </h1>                 <p class="text-xs text-white opacity-80 mt-1">Müdürüm, işleriniz kontrol altında.</p>             </div>                          <div class="flex items-center gap-3">                 <button id="export-btn" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition" title="Notları İndir">                     <i data-lucide="download" class="w-5 h-5"></i>                 </button>                 <button id="theme-toggle" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition" title="Karanlık Mod">                     <i data-lucide="moon" class="w-5 h-5"></i>                 </button>             </div>                          <div id="status-indicator" class="absolute top-4 right-4 md:top-auto md:bottom-4 md:right-4 text-xs font-semibold px-2 py-1 rounded-full opacity-0 transition-opacity bg-white text-indigo-600 shadow"></div>         </header>          <!-- İstatistik Paneli -->         <div class="grid grid-cols-3 gap-3 mb-6">             <div class="stat-card p-3 rounded-xl shadow-sm text-center">                 <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Toplam</p>                 <p id="stat-total" class="text-xl font-bold text-indigo-600 dark:text-indigo-400">0</p>             </div>             <div class="stat-card p-3 rounded-xl shadow-sm text-center">                 <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Bekleyen</p>                 <p id="stat-pending" class="text-xl font-bold text-orange-500">0</p>             </div>             <div class="stat-card p-3 rounded-xl shadow-sm text-center">                 <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Biten</p>                 <p id="stat-completed" class="text-xl font-bold text-green-500">0</p>             </div>         </div>          <!-- Arama ve Filtreleme -->         <div class="flex flex-col md:flex-row gap-4 mb-8">             <div class="relative flex-grow">                 <input type="search" id="search-input" placeholder="Notlarda ara..." class="input-theme w-full p-3 pl-10 rounded-xl shadow-sm border focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">                 <i data-lucide="search" class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>             </div>             <div id="category-filters" class="flex flex-wrap justify-center gap-2">                 <!-- JS ile dolacak -->             </div>         </div>          <!-- Not Listesi -->         <div id="note-list-container">             <ul id="note-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">                 <!-- JS ile dolacak -->             </ul>         </div>                  <!-- Hatırlatma Kartları -->         <div id="reminders-container" class="mt-8 space-y-4"></div>                  <!-- Tamamlanan Notlar -->         <div id="global-completed-container" class="mt-8">             <div id="completed-notes-accordion" class="bg-theme-card p-4 rounded-xl shadow-md hidden border border-gray-200 dark:border-gray-700">                 <button id="completed-notes-toggle" class="w-full flex justify-between items-center text-left text-theme font-semibold">                     <span class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-500"></i> Tamamlananlar</span>                     <div class="flex items-center">                         <span id="completed-count" class="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 rounded-full px-2.5 py-0.5 mr-2 font-bold">0</span>                         <i data-lucide="chevron-down" id="completed-chevron" class="w-5 h-5 transition-transform"></i>                     </div>                 </button>                 <div id="completed-notes-panel" class="hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">                     <ul id="completed-note-list" class="space-y-2"></ul>                 </div>             </div>         </div>      </div>      <!-- FAB -->     <button id="open-add-note-modal" class="fab w-14 h-14 md:w-16 md:h-16 rounded-full fixed bottom-6 right-6 md:bottom-8 md:right-8 flex items-center justify-center text-white shadow-2xl z-40 hover:rotate-90 transition-transform">         <i data-lucide="plus" class="w-8 h-8"></i>     </button>          <!-- Ekleme Modalı -->     <div id="add-note-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">         <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700">             <h3 class="text-xl font-bold mb-4 text-theme">Yeni Not Oluştur</h3>             <div class="flex flex-col gap-4">                 <textarea id="note-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 min-h-[100px]" placeholder="Yazın veya mikrofona basın Müdürüm..."></textarea>                                  <div class="flex items-center gap-3">                     <label for="image-input" class="cursor-pointer flex-1 p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm flex items-center justify-center gap-2">                         <i data-lucide="image" class="w-4 h-4"></i>                         <span>Görsel Ekle</span>                     </label>                     <input type="file" id="image-input" class="hidden" accept="image/*">                     <div id="image-preview-container" class="hidden relative w-12 h-12 shrink-0">                         <img id="image-preview" src="" class="w-full h-full object-cover rounded-lg border dark:border-gray-600">                         <button id="remove-image-btn" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-sm"><i data-lucide="x" class="w-3 h-3"></i></button>                     </div>                 </div>                  <div class="grid grid-cols-2 gap-3">                     <input type="date" id="note-date-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">                     <select id="note-category-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">                         <option value="İş">İş</option>                         <option value="Kişisel" selected>Kişisel</option>                         <option value="Market">Market</option>                     </select>                 </div>                                  <select id="note-priority-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">                     <option value="Normal" selected>Öncelik: Normal 🔵</option>                     <option value="Yüksek">Öncelik: Yüksek 🔥</option>                     <option value="Düşük">Öncelik: Düşük 🔽</option>                 </select>             </div>             <div class="mt-6 flex justify-between items-center">                 <button id="start-speech-btn" class="p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition relative group" title="Sesli Yaz">                     <i data-lucide="mic" class="w-6 h-6"></i>                     <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">Konuş</span>                 </button>                 <div class="flex gap-3">                     <button id="cancel-add-note-btn" class="px-5 py-2 text-gray-500 hover:text-theme transition">İptal</button>                     <button id="add-note-btn" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-500/30 transition transform active:scale-95">Kaydet</button>                 </div>             </div>         </div>     </div>      <!-- Düzenleme Modalı -->     <div id="edit-note-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">         <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700">             <h3 class="text-xl font-bold mb-4 text-theme">Notu Düzenle</h3>             <div class="flex flex-col gap-4">                 <textarea id="edit-note-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 min-h-[100px]"></textarea>                                  <div class="flex items-center gap-3">                     <label for="edit-image-input" class="cursor-pointer flex-1 p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm flex items-center justify-center gap-2">                         <i data-lucide="image" class="w-4 h-4"></i>                         <span>Görseli Değiştir</span>                     </label>                     <input type="file" id="edit-image-input" class="hidden" accept="image/*">                     <div id="edit-image-preview-container" class="hidden relative w-12 h-12 shrink-0">                         <img id="edit-image-preview" src="" class="w-full h-full object-cover rounded-lg border dark:border-gray-600">                         <button id="edit-remove-image-btn" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-sm"><i data-lucide="x" class="w-3 h-3"></i></button>                     </div>                 </div>                  <div class="grid grid-cols-2 gap-3">                     <input type="date" id="edit-note-date-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">                     <select id="edit-note-category-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">                         <option value="İş">İş</option>                         <option value="Kişisel">Kişisel</option>                         <option value="Market">Market</option>                     </select>                 </div>                                  <select id="edit-note-priority-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">                     <option value="Normal">Öncelik: Normal 🔵</option>                     <option value="Yüksek">Öncelik: Yüksek 🔥</option>                     <option value="Düşük">Öncelik: Düşük 🔽</option>                 </select>             </div>             <div class="mt-6 flex justify-end gap-3">                 <button id="cancel-edit-note-btn" class="px-5 py-2 text-gray-500 hover:text-theme transition">İptal</button>                 <button id="save-edit-note-btn" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-500/30 transition transform active:scale-95">Güncelle</button>             </div>         </div>     </div>      <!-- Bildirim Modalı -->     <div id="notification-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">         <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-gray-200 dark:border-gray-700 text-center">             <div class="mx-auto w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mb-4">                 <i data-lucide="bell" class="w-6 h-6 text-indigo-600 dark:text-indigo-300"></i>             </div>             <h3 class="text-lg font-bold mb-2 text-theme">Hatırlatma Kur</h3>             <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Bu notu size ne zaman hatırlatayım?</p>                          <div class="flex items-center gap-2 mb-6">                 <input type="number" id="notification-time" min="1" class="input-theme w-20 p-2 border rounded-lg text-center font-bold" value="5">                 <select id="notification-unit" class="input-theme flex-1 p-2 border rounded-lg">                     <option value="minutes">Dakika Sonra</option>                     <option value="hours">Saat Sonra</option>                     <option value="days">Gün Sonra</option>                 </select>             </div>                          <div class="flex justify-center gap-3">                 <button id="cancel-notification-btn" class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-theme rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">Vazgeç</button>                 <button id="save-notification-btn" class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-lg shadow-indigo-500/30">Kur</button>             </div>         </div>     </div>          <footer class="text-center text-xs text-gray-400 py-6 mt-8">         © Gökhan ELGÜL tarafından tasarlanmıştır. v3.1     </footer>      <script>         document.addEventListener('DOMContentLoaded', () => {             let allNotes = [];             let currentNoteForNotification = null;             let activeCategoryFilter = 'Tümü';             let currentBase64Image = null;              let currentBase64ImageEdit = null;             let currentEditingNoteId = null;             const IMAGE_MAX_SIZE = 250 * 1024;                          const categoryClasses = {                 'İş': { label: 'cat-label-İş', filter: 'cat-filter-İş' },                 'Kişisel': { label: 'cat-label-Kişisel', filter: 'cat-filter-Kişisel' },                 'Market': { label: 'cat-label-Market', filter: 'cat-filter-Market' }             };             const defaultCategory = 'Kişisel';              const priorityClasses = {                 'Yüksek': { border: 'priority-Yüksek', color: 'text-red-500' },                 'Normal': { border: 'priority-Normal', color: 'text-blue-500' },                 'Düşük': { border: 'priority-Düşük', color: 'text-gray-500' }             };             const priorityIcons = { 'Yüksek': '🔥', 'Normal': '🔵', 'Düşük': '🔽' };             const defaultPriority = 'Normal';              // DOM Elements             const noteList = document.getElementById('note-list');             const statusIndicator = document.getElementById('status-indicator');             const remindersContainer = document.getElementById('reminders-container');             const categoryFiltersContainer = document.getElementById('category-filters');             const searchInput = document.getElementById('search-input');             const themeToggleBtn = document.getElementById('theme-toggle');             const exportBtn = document.getElementById('export-btn');             const body = document.body;              // Stats Elements             const statTotal = document.getElementById('stat-total');             const statPending = document.getElementById('stat-pending');             const statCompleted = document.getElementById('stat-completed');              // Add Modal             const addNoteModal = document.getElementById('add-note-modal');             const openAddNoteModalBtn = document.getElementById('open-add-note-modal');             const cancelAddNoteBtn = document.getElementById('cancel-add-note-btn');             const addNoteBtn = document.getElementById('add-note-btn');             const noteInput = document.getElementById('note-input');             const noteDateInput = document.getElementById('note-date-input');             const noteCategoryInput = document.getElementById('note-category-input');             const notePriorityInput = document.getElementById('note-priority-input');             const imageInput = document.getElementById('image-input');             const imagePreviewContainer = document.getElementById('image-preview-container');             const imagePreview = document.getElementById('image-preview');             const removeImageBtn = document.getElementById('remove-image-btn');              // Edit Modal             const editNoteModal = document.getElementById('edit-note-modal');             const cancelEditNoteBtn = document.getElementById('cancel-edit-note-btn');             const saveEditNoteBtn = document.getElementById('save-edit-note-btn');             const editNoteInput = document.getElementById('edit-note-input');             const editNoteDateInput = document.getElementById('edit-note-date-input');             const editNoteCategoryInput = document.getElementById('edit-note-category-input');             const editNotePriorityInput = document.getElementById('edit-note-priority-input');             const editImageInput = document.getElementById('edit-image-input');             const editImagePreviewContainer = document.getElementById('edit-image-preview-container');             const editImagePreview = document.getElementById('edit-image-preview');             const editRemoveImageBtn = document.getElementById('edit-remove-image-btn');              // Speech             const startSpeechBtn = document.getElementById('start-speech-btn');             let recognition;             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;             let isRecording = false;              // Completed Notes             const completedNotesToggle = document.getElementById('completed-notes-toggle');             const completedChevron = document.getElementById('completed-chevron');             const completedNotesPanel = document.getElementById('completed-notes-panel');             const completedNoteList = document.getElementById('completed-note-list');             const completedCount = document.getElementById('completed-count');                          // Notification Modal             const notificationModal = document.getElementById('notification-modal');             const notificationTimeInput = document.getElementById('notification-time');             const notificationUnitSelect = document.getElementById('notification-unit');             const saveNotificationBtn = document.getElementById('save-notification-btn');             const cancelNotificationBtn = document.getElementById('cancel-notification-btn');              // GitHub Config             const tokenPart1 = 'ghp_2KS6iY7t1ka6bK';             const tokenPart2 = 'yHwONJkXdwOUVhrU';             const tokenPart3 = '3PqlSX';             const GITHUB_CONFIG = {                 token: tokenPart1 + tokenPart2 + tokenPart3,                 owner: 'gokhangeo',                 repo: 'NOT',                 path: 'notes.json'             };              function init() {                 fetchNotesFromGitHub();                 loadTheme();                                  // Listeners                 openAddNoteModalBtn.addEventListener('click', openAddNoteModal);                 cancelAddNoteBtn.addEventListener('click', closeAddNoteModal);                 addNoteBtn.addEventListener('click', addNote);                 addNoteModal.addEventListener('click', (e) => { if (e.target === addNoteModal) closeAddNoteModal(); });                 imageInput.addEventListener('change', (e) => handleImageUpload(e, 'add'));                 removeImageBtn.addEventListener('click', () => removeImage('add'));                  cancelEditNoteBtn.addEventListener('click', closeEditModal);                 saveEditNoteBtn.addEventListener('click', saveEditNote);                 editNoteModal.addEventListener('click', (e) => { if (e.target === editNoteModal) closeEditModal(); });                 editImageInput.addEventListener('change', (e) => handleImageUpload(e, 'edit'));                 editRemoveImageBtn.addEventListener('click', () => removeImage('edit'));                  searchInput.addEventListener('input', renderAll);                 themeToggleBtn.addEventListener('click', toggleTheme);                 exportBtn.addEventListener('click', exportNotes);                  // --- SESLİ YAZMA ÖZELLİĞİ ---                 if (SpeechRecognition) {                     recognition = new SpeechRecognition();                     recognition.lang = 'tr-TR';                     recognition.interimResults = true; // Gerçek zamanlı yazma                     recognition.continuous = true; // Sürekli dinleme                                          startSpeechBtn.addEventListener('click', toggleSpeechRecognition);                                          recognition.onstart = () => {                         isRecording = true;                         startSpeechBtn.classList.add('listening-active'); // Kırmızı yanıp sönme                         showStatus("Dinliyorum...", false);                     };                                          recognition.onresult = (event) => {                         // Sonuçları birleştir                         const transcript = Array.from(event.results)                             .map(result => result[0])                             .map(result => result.transcript)                             .join('');                                                  noteInput.value = transcript;                     };                                          recognition.onerror = (event) => {                         console.error("Ses Hatası:", event.error);                         stopRecordingVisuals();                         if(event.error === 'not-allowed') showStatus("Mikrofon izni gerekli", true);                     };                                          recognition.onend = () => {                         if(isRecording) {                             // Bazen durabilir, tekrar başlatmaya çalışalım (isteğe bağlı)                             // recognition.start();                              stopRecordingVisuals();                         }                     };                 } else {                     startSpeechBtn.style.display = 'none';                     console.log("Tarayıcı ses tanımayı desteklemiyor.");                 }                  // Notification Listeners                 saveNotificationBtn.addEventListener('click', saveNotification);                 cancelNotificationBtn.addEventListener('click', closeNotificationModal);                 notificationModal.addEventListener('click', (e) => { if (e.target === notificationModal) closeNotificationModal(); });                                  addGlobalCompletedNotesEventListeners();                  completedNotesToggle.addEventListener('click', () => {                     completedNotesPanel.classList.toggle('hidden');                     completedChevron.classList.toggle('rotate-180');                 });                  if (Notification.permission !== 'granted' && Notification.permission !== 'denied') Notification.requestPermission();                 lucide.createIcons();             }              function stopRecordingVisuals() {                 isRecording = false;                 startSpeechBtn.classList.remove('listening-active');             }              // --- Tema Yönetimi (Dark Mode) ---             function toggleTheme() {                 body.classList.toggle('dark');                 const isDark = body.classList.contains('dark');                 localStorage.setItem('theme', isDark ? 'dark' : 'light');                 const icon = isDark ? 'sun' : 'moon';                 themeToggleBtn.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i>`;                 lucide.createIcons();             }              function loadTheme() {                 const savedTheme = localStorage.getItem('theme');                 if (savedTheme === 'dark') {                     body.classList.add('dark');                     themeToggleBtn.innerHTML = `<i data-lucide="sun" class="w-5 h-5"></i>`;                 }             }              // --- Export / Yedekleme ---             function exportNotes() {                 if (allNotes.length === 0) {                     showStatus("İndirilecek not yok.", true);                     return;                 }                 let textContent = "CEPTE NOT - YEDEKLERİM\n\n";                 allNotes.forEach(note => {                     const status = note.done ? "[TAMAMLANDI]" : "[BEKLIYOR]";                     textContent += `--- ${status} ---\nTarih: ${note.date || 'Yok'}\nKategori: ${note.category}\nÖncelik: ${note.priority || 'Normal'}\nİçerik: ${note.text}\n\n`;                 });                  const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });                 const link = document.createElement("a");                 link.href = URL.createObjectURL(blob);                 link.download = `notlarim_${new Date().toLocaleDateString()}.txt`;                 link.click();                 showStatus("Notlar indirildi.");             }              // --- İstatistik Güncelleme ---             function updateStats() {                 const total = allNotes.length;                 const completed = allNotes.filter(n => n.done).length;                 const pending = total - completed;                  statTotal.textContent = total;                 statPending.textContent = pending;                 statCompleted.textContent = completed;             }                          // --- Modal İşlemleri ---             function openAddNoteModal() {                 addNoteModal.classList.remove('hidden');                 setTimeout(() => addNoteModal.classList.add('open'), 10);                 noteInput.value = '';                 noteDateInput.value = '';                 noteCategoryInput.value = 'Kişisel';                 notePriorityInput.value = 'Normal';                 removeImage('add');                 noteInput.focus();                                  // Modalı açarken ses butonunu sıfırla                 stopRecordingVisuals();                 if(isRecording && recognition) recognition.stop();             }                          function closeAddNoteModal() {                 addNoteModal.classList.remove('open');                 setTimeout(() => addNoteModal.classList.add('hidden'), 300);                 if(isRecording && recognition) {                     recognition.stop();                     stopRecordingVisuals();                 }             }              function openEditModal(id) {                 const note = allNotes.find(n => n.id === id);                 if (!note) return;                 currentEditingNoteId = id;                 editNoteInput.value = note.text;                 editNoteDateInput.value = note.date || '';                 editNoteCategoryInput.value = note.category || defaultCategory;                 editNotePriorityInput.value = note.priority || defaultPriority;                                  currentBase64ImageEdit = note.image || null;                 if (note.image) {                     editImagePreview.src = note.image;                     editImagePreviewContainer.classList.remove('hidden');                 } else {                     removeImage('edit');                 }                 editNoteModal.classList.remove('hidden');                 setTimeout(() => editNoteModal.classList.add('open'), 10);             }              function closeEditModal() {                 editNoteModal.classList.remove('open');                 setTimeout(() => editNoteModal.classList.add('hidden'), 300);                 currentEditingNoteId = null;             }              // --- Notification Modal Functions ---             function openNotificationModal(id) {                 currentNoteForNotification = id;                 notificationModal.classList.remove('hidden');                 setTimeout(() => notificationModal.classList.add('open'), 10);                 notificationTimeInput.value = '5';                 notificationUnitSelect.value = 'minutes';             }              function closeNotificationModal() {                  notificationModal.classList.remove('open');                 setTimeout(() => notificationModal.classList.add('hidden'), 300);                  currentNoteForNotification = null;             }              // --- Resim İşlemleri ---             function handleImageUpload(event, mode) {                 const file = event.target.files[0];                 if (!file) return;                 if (file.size > IMAGE_MAX_SIZE) {                     showStatus(`Resim çok büyük (Max 250KB)`, true);                     event.target.value = null;                     return;                 }                 const reader = new FileReader();                 reader.onload = (e) => {                     if (mode === 'add') {                         currentBase64Image = e.target.result;                         imagePreview.src = currentBase64Image;                         imagePreviewContainer.classList.remove('hidden');                     } else {                         currentBase64ImageEdit = e.target.result;                         editImagePreview.src = currentBase64ImageEdit;                         editImagePreviewContainer.classList.remove('hidden');                     }                 };                 reader.readAsDataURL(file);             }              function removeImage(mode) {                 if (mode === 'add') {                     currentBase64Image = null;                     imageInput.value = null;                     imagePreviewContainer.classList.add('hidden');                 } else {                     currentBase64ImageEdit = null;                     editImageInput.value = null;                     editImagePreviewContainer.classList.add('hidden');                 }             }              // --- Render ve Logic ---             function renderAll() {                 renderCategories();                 renderNotes();                 renderReminders();                 renderGlobalCompletedNotes();                 updateStats();                 lucide.createIcons();             }              function renderCategories() {                 const categories = ['İş', 'Kişisel', 'Market'];                 categoryFiltersContainer.innerHTML = '';                 ['Tümü', ...categories].forEach(category => {                     const button = document.createElement('button');                     button.textContent = category;                     let cls = 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600';                     if (category !== 'Tümü') cls += ` ${categoryClasses[category].filter}`;                     button.className = `category-filter px-3 py-1.5 text-xs font-bold rounded-lg shadow-sm ${category === activeCategoryFilter ? 'active' : cls}`;                     if (category === activeCategoryFilter && category === 'Tümü') button.classList.add('bg-indigo-600', 'text-white', 'dark:bg-indigo-500');                                          button.onclick = () => { activeCategoryFilter = category; renderAll(); };                     categoryFiltersContainer.appendChild(button);                 });             }              function renderNotes() {                 noteList.innerHTML = '';                 const searchTerm = searchInput.value.toLowerCase();                 const activeNotes = allNotes.filter(note => {                     const matchesCategory = activeCategoryFilter === 'Tümü' || (note.category || defaultCategory) === activeCategoryFilter;                     const matchesSearch = !searchTerm || note.text.toLowerCase().includes(searchTerm);                     return !note.done && matchesCategory && matchesSearch;                 });                  if (activeNotes.length === 0) {                     noteList.innerHTML = `<li class="col-span-full text-center text-gray-400 py-10 flex flex-col items-center"><i data-lucide="clipboard-list" class="w-10 h-10 mb-2 opacity-50"></i><p>Burada gösterilecek not yok Müdürüm.</p></li>`;                 } else {                     activeNotes.forEach(note => {                         const li = document.createElement('li');                         const category = note.category || defaultCategory;                         const priority = note.priority || defaultPriority;                         const pClass = priorityClasses[priority];                                                  li.className = `note-card bg-theme-card rounded-xl shadow-sm flex flex-col overflow-hidden ${pClass.border}`;                         li.dataset.id = note.id;                         li.innerHTML = `                             ${note.image ? `<div class="h-32 overflow-hidden relative"><img src="${note.image}" class="w-full h-full object-cover transition-transform hover:scale-105 duration-500"></div>` : ''}                             <div class="p-4 flex-grow flex flex-col">                                 <div class="flex justify-between items-start mb-2">                                     <span class="text-[10px] uppercase font-bold tracking-wider ${categoryClasses[category].label} text-white px-2 py-1 rounded-md shadow-sm">${category}</span>                                     <div class="flex items-center gap-1">                                          <button class="check-btn p-1.5 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-400 hover:bg-green-50 hover:text-green-500 transition" title="Tamamla"><i data-lucide="check" class="w-4 h-4"></i></button>                                          <span class="text-sm ml-1" title="${priority}">${priorityIcons[priority]}</span>                                     </div>                                 </div>                                 <p class="text-theme text-sm leading-relaxed mb-4 flex-grow whitespace-pre-wrap">${note.text}</p>                                 <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">                                     <span class="text-xs text-gray-400 font-medium flex items-center">                                         ${note.date ? `<i data-lucide="calendar-days" class="w-3 h-3 mr-1"></i> ${note.date.split('-').reverse().join('.')}` : ''}                                     </span>                                     <div class="flex items-center gap-1">                                         <button class="edit-btn p-1.5 text-gray-400 hover:text-indigo-500 transition" title="Düzenle"><i data-lucide="pencil" class="w-4 h-4"></i></button>                                         <button class="notif-btn p-1.5 text-gray-400 hover:text-orange-500 transition" title="Hatırlat"><i data-lucide="bell" class="w-4 h-4"></i></button>                                         <button class="del-btn p-1.5 text-gray-400 hover:text-red-500 transition" title="Sil"><i data-lucide="trash-2" class="w-4 h-4"></i></button>                                     </div>                                 </div>                             </div>                         `;                         li.querySelector('.check-btn').onclick = () => toggleDone(note.id, true, li);                         li.querySelector('.del-btn').onclick = () => deleteNote(note.id, li);                         li.querySelector('.notif-btn').onclick = () => openNotificationModal(note.id);                         li.querySelector('.edit-btn').onclick = () => openEditModal(note.id);                         noteList.appendChild(li);                     });                 }             }              function renderGlobalCompletedNotes() {                 completedNoteList.innerHTML = '';                 const doneNotes = allNotes.filter(n => n.done);                                  if (doneNotes.length > 0) {                     document.getElementById('completed-notes-accordion').classList.remove('hidden');                     completedCount.textContent = doneNotes.length;                     doneNotes.forEach(note => {                         const li = document.createElement('li');                         li.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 group';                         li.dataset.id = note.id;                         li.innerHTML = `                             <div class="flex items-center gap-3 overflow-hidden">                                 <div class="w-5 h-5 rounded-full border-2 border-green-500 flex items-center justify-center bg-green-500"><i data-lucide="check" class="w-3 h-3 text-white"></i></div>                                 <span class="text-gray-400 line-through text-sm truncate">${note.text}</span>                             </div>                             <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">                                 <button class="reopen-btn text-blue-400 hover:bg-blue-50 p-1 rounded"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>                                 <button class="delete-btn-completed text-red-400 hover:bg-red-50 p-1 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button>                             </div>                         `;                         completedNoteList.appendChild(li);                     });                 } else {                     document.getElementById('completed-notes-accordion').classList.add('hidden');                 }             }              // --- Actions ---             function addNote() {                 const text = noteInput.value.trim();                 if (text) {                     const newNote = {                          id: Date.now().toString(),                          text,                          date: noteDateInput.value,                          category: noteCategoryInput.value,                          priority: notePriorityInput.value,                         image: currentBase64Image,                         done: false                      };                     allNotes.unshift(newNote);                     saveNotes();                     renderAll();                     closeAddNoteModal();                     showStatus("Not eklendi.");                 }             }              function saveEditNote() {                 if (!currentEditingNoteId) return;                 const idx = allNotes.findIndex(n => n.id === currentEditingNoteId);                 if (idx === -1) return;                                  const text = editNoteInput.value.trim();                 if (!text) { showStatus("Boş not olmaz.", true); return; }                  allNotes[idx] = {                     ...allNotes[idx],                     text,                     date: editNoteDateInput.value,                     category: editNoteCategoryInput.value,                     priority: editNotePriorityInput.value,                     image: currentBase64ImageEdit                 };                 saveNotes();                 renderAll();                 closeEditModal();                 showStatus("Not güncellendi.");             }              function toggleDone(id, isDone, element) {                 const note = allNotes.find(n => n.id == id);                 if (note) {                     note.done = isDone;                     if(isDone) {                         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); // KUTLAMA!                     }                     const action = () => { saveNotes(); renderAll(); };                     if (element && isDone) {                         element.classList.add('exiting');                         setTimeout(action, 300);                     } else {                         action();                     }                 }             }              function deleteNote(id, element) {                 if(!confirm("Silmek istediğine emin misin Müdürüm?")) return;                 const idx = allNotes.findIndex(n => n.id == id);                 if (idx > -1) {                     const action = () => { allNotes.splice(idx, 1); saveNotes(); renderAll(); };                     if (element) {                         element.classList.add('exiting');                         setTimeout(action, 300);                     } else {                         action();                     }                 }             }                          // --- Helpers ---             function addGlobalCompletedNotesEventListeners() {                 completedNoteList.addEventListener('click', (e) => {                     const li = e.target.closest('li');                     if (!li) return;                     const id = li.dataset.id;                     if (e.target.closest('.reopen-btn')) toggleDone(id, false, null);                     if (e.target.closest('.delete-btn-completed')) deleteNote(id, null);                 });             }              function renderReminders() {                 // Basit hatırlatma kartları (Bugün/Yarın)                 remindersContainer.innerHTML = '';                 const today = new Date().toISOString().split('T')[0];                 const notes = allNotes.filter(n => !n.done && n.date === today);                 if(notes.length > 0) {                     remindersContainer.innerHTML = `                         <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 rounded-r-lg">                             <h4 class="font-bold text-orange-700 dark:text-orange-400 mb-2 flex items-center"><i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Bugünün İşleri</h4>                             <ul class="list-disc list-inside text-sm text-orange-800 dark:text-orange-300">${notes.map(n => `<li>${n.text}</li>`).join('')}</ul>                         </div>`;                 }             }              function saveNotification() {                 if (!currentNoteForNotification) return;                 const note = allNotes.find(n => n.id == currentNoteForNotification);                 const val = parseInt(notificationTimeInput.value);                 const mult = notificationUnitSelect.value === 'minutes' ? 60000 : notificationUnitSelect.value === 'hours' ? 3600000 : 86400000;                                  if (Notification.permission === 'granted') {                     setTimeout(() => {                         new Notification("Hatırlatma: Cepte Not", { body: note.text });                     }, val * mult);                     showStatus("Hatırlatma kuruldu.");                 } else {                     showStatus("İzin verilmedi.", true);                 }                 closeNotificationModal();             }              function showStatus(msg, err = false) {                 statusIndicator.textContent = msg;                 statusIndicator.className = `absolute top-4 right-4 md:top-auto md:bottom-4 md:right-4 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transition-opacity duration-300 ${err ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'} opacity-100`;                 setTimeout(() => statusIndicator.classList.replace('opacity-100', 'opacity-0'), 3000);             }              function saveNotes() {                 localStorage.setItem('mersinNotes', JSON.stringify(allNotes));                 saveNotesToGitHub();             }              function toggleSpeechRecognition() {                 if(isRecording) {                     recognition.stop();                     stopRecordingVisuals();                 } else {                     recognition.start();                 }             }              async function fetchNotesFromGitHub() {                 if (!GITHUB_CONFIG.token) {                     const local = localStorage.getItem('mersinNotes');                     allNotes = local ? JSON.parse(local) : [];                     renderAll();                     return;                 }                 try {                     const res = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {                         headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` }                     });                     if (res.ok) {                         const data = await res.json();                         allNotes = JSON.parse(decodeURIComponent(escape(window.atob(data.content))));                         renderAll();                         showStatus("Senkronize edildi.");                     } else {                         throw new Error();                     }                 } catch (e) {                     const local = localStorage.getItem('mersinNotes');                     allNotes = local ? JSON.parse(local) : [];                     renderAll();                 }             }              async function saveNotesToGitHub() {                 if (!GITHUB_CONFIG.token) return;                 try {                     const getRes = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, { headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` } });                     const sha = getRes.ok ? (await getRes.json()).sha : null;                                          await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {                         method: 'PUT',                         headers: { 'Authorization': `token ${GITHUB_CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' },                         body: JSON.stringify({                             message: 'Update via Cepte Not v3',                             content: window.btoa(unescape(encodeURIComponent(JSON.stringify(allNotes)))),                             sha                         })                     });                 } catch (e) { console.error(e); }             }              init();         });     </script> </body> </html>  
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cepte Not v3.1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide İkonları -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Konfeti Efekti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #f7f8fc;
+            --text-color: #1f2937;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --input-border: #e5e7eb;
+            --modal-bg: #ffffff;
+        }
+
+        body.dark {
+            --bg-color: #111827;
+            --text-color: #f3f4f6;
+            --card-bg: #1f2937;
+            --input-bg: #374151;
+            --input-border: #4b5563;
+            --modal-bg: #1f2937;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: auto;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+
+        .bg-theme-card { background-color: var(--card-bg); transition: background-color 0.3s; }
+        .text-theme { color: var(--text-color); }
+        .input-theme { 
+            background-color: var(--input-bg); 
+            border-color: var(--input-border); 
+            color: var(--text-color);
+        }
+        .input-theme::placeholder { color: #9ca3af; }
+
+        .modal-backdrop { transition: opacity 0.3s ease; }
+        .modal-content {
+            background-color: var(--modal-bg);
+            transition: all 0.3s ease;
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+        }
+        .modal-backdrop.open { opacity: 1; }
+        .modal-backdrop.open .modal-content { transform: translateY(0) scale(1); opacity: 1; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .note-card {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
+            border-left-width: 5px; 
+            border-top-width: 1px;
+            border-right-width: 1px;
+            border-bottom-width: 1px;
+            border-color: var(--input-border);
+        }
+        .note-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .note-card.exiting { opacity: 0; transform: scale(0.95); }
+        
+        .fab {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .fab:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.5); }
+        
+        /* Dinleme Animasyonu (YENİ) */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .listening-active {
+            animation: pulse-red 1.5s infinite;
+            background-color: #ef4444 !important; /* Kırmızı */
+            color: white !important;
+        }
+
+        .cat-label-İş { background-color: #3b82f6; }
+        .cat-label-Kişisel { background-color: #10b981; }
+        .cat-label-Market { background-color: #f59e0b; }
+        
+        .category-filter { transition: all 0.2s ease; border: 1px solid transparent; }
+        .category-filter.active { transform: scale(1.05); }
+        .cat-filter-İş.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        .cat-filter-Kişisel.active { background-color: #10b981; color: white; border-color: #10b981; }
+        .cat-filter-Market.active { background-color: #f59e0b; color: white; border-color: #f59e0b; }
+
+        .priority-Yüksek { border-left-color: #ef4444; }
+        .priority-Normal { border-left-color: #3b82f6; }
+        .priority-Düşük { border-left-color: #6b7280; }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--input-border);
+            transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body class="p-4 md:p-8 transition-colors duration-300">
+
+    <div class="main-container">
+    
+        <!-- Header -->
+        <header class="p-6 header-gradient text-white rounded-2xl shadow-lg relative mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-2">
+                    <i data-lucide="notebook-pen" class="w-8 h-8"></i> Cepte Not
+                </h1>
+                <p class="text-xs text-white opacity-80 mt-1">Müdürüm, işleriniz kontrol altında.</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button id="export-btn" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition" title="Notları İndir">
+                    <i data-lucide="download" class="w-5 h-5"></i>
+                </button>
+                <button id="theme-toggle" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition" title="Karanlık Mod">
+                    <i data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div id="status-indicator" class="absolute top-4 right-4 md:top-auto md:bottom-4 md:right-4 text-xs font-semibold px-2 py-1 rounded-full opacity-0 transition-opacity bg-white text-indigo-600 shadow"></div>
+        </header>
+
+        <!-- İstatistik Paneli -->
+        <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="stat-card p-3 rounded-xl shadow-sm text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Toplam</p>
+                <p id="stat-total" class="text-xl font-bold text-indigo-600 dark:text-indigo-400">0</p>
+            </div>
+            <div class="stat-card p-3 rounded-xl shadow-sm text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Bekleyen</p>
+                <p id="stat-pending" class="text-xl font-bold text-orange-500">0</p>
+            </div>
+            <div class="stat-card p-3 rounded-xl shadow-sm text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Biten</p>
+                <p id="stat-completed" class="text-xl font-bold text-green-500">0</p>
+            </div>
+        </div>
+
+        <!-- Arama ve Filtreleme -->
+        <div class="flex flex-col md:flex-row gap-4 mb-8">
+            <div class="relative flex-grow">
+                <input type="search" id="search-input" placeholder="Notlarda ara..." class="input-theme w-full p-3 pl-10 rounded-xl shadow-sm border focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+                <i data-lucide="search" class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <div id="category-filters" class="flex flex-wrap justify-center gap-2">
+                <!-- JS ile dolacak -->
+            </div>
+        </div>
+
+        <!-- Not Listesi -->
+        <div id="note-list-container">
+            <ul id="note-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- JS ile dolacak -->
+            </ul>
+        </div>
+        
+        <!-- Hatırlatma Kartları -->
+        <div id="reminders-container" class="mt-8 space-y-4"></div>
+        
+        <!-- Tamamlanan Notlar -->
+        <div id="global-completed-container" class="mt-8">
+            <div id="completed-notes-accordion" class="bg-theme-card p-4 rounded-xl shadow-md hidden border border-gray-200 dark:border-gray-700">
+                <button id="completed-notes-toggle" class="w-full flex justify-between items-center text-left text-theme font-semibold">
+                    <span class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-500"></i> Tamamlananlar</span>
+                    <div class="flex items-center">
+                        <span id="completed-count" class="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 rounded-full px-2.5 py-0.5 mr-2 font-bold">0</span>
+                        <i data-lucide="chevron-down" id="completed-chevron" class="w-5 h-5 transition-transform"></i>
+                    </div>
+                </button>
+                <div id="completed-notes-panel" class="hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <ul id="completed-note-list" class="space-y-2"></ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FAB -->
+    <button id="open-add-note-modal" class="fab w-14 h-14 md:w-16 md:h-16 rounded-full fixed bottom-6 right-6 md:bottom-8 md:right-8 flex items-center justify-center text-white shadow-2xl z-40 hover:rotate-90 transition-transform">
+        <i data-lucide="plus" class="w-8 h-8"></i>
+    </button>
+    
+    <!-- Ekleme Modalı -->
+    <div id="add-note-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">
+        <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700">
+            <h3 class="text-xl font-bold mb-4 text-theme">Yeni Not Oluştur</h3>
+            <div class="flex flex-col gap-4">
+                <textarea id="note-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 min-h-[100px]" placeholder="Yazın veya mikrofona basın Müdürüm..."></textarea>
+                
+                <div class="flex items-center gap-3">
+                    <label for="image-input" class="cursor-pointer flex-1 p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm flex items-center justify-center gap-2">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Görsel Ekle</span>
+                    </label>
+                    <input type="file" id="image-input" class="hidden" accept="image/*">
+                    <div id="image-preview-container" class="hidden relative w-12 h-12 shrink-0">
+                        <img id="image-preview" src="" class="w-full h-full object-cover rounded-lg border dark:border-gray-600">
+                        <button id="remove-image-btn" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-sm"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="date" id="note-date-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
+                    <select id="note-category-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
+                        <option value="İş">İş</option>
+                        <option value="Kişisel" selected>Kişisel</option>
+                        <option value="Market">Market</option>
+                    </select>
+                </div>
+                
+                <select id="note-priority-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
+                    <option value="Normal" selected>Öncelik: Normal 🔵</option>
+                    <option value="Yüksek">Öncelik: Yüksek 🔥</option>
+                    <option value="Düşük">Öncelik: Düşük 🔽</option>
+                </select>
+            </div>
+            <div class="mt-6 flex justify-between items-center">
+                <button id="start-speech-btn" class="p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition relative group" title="Sesli Yaz">
+                    <i data-lucide="mic" class="w-6 h-6"></i>
+                    <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">Konuş</span>
+                </button>
+                <div class="flex gap-3">
+                    <button id="cancel-add-note-btn" class="px-5 py-2 text-gray-500 hover:text-theme transition">İptal</button>
+                    <button id="add-note-btn" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-500/30 transition transform active:scale-95">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Düzenleme Modalı -->
+    <div id="edit-note-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">
+        <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700">
+            <h3 class="text-xl font-bold mb-4 text-theme">Notu Düzenle</h3>
+            <div class="flex flex-col gap-4">
+                <textarea id="edit-note-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 min-h-[100px]"></textarea>
+                
+                <div class="flex items-center gap-3">
+                    <label for="edit-image-input" class="cursor-pointer flex-1 p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm flex items-center justify-center gap-2">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Görseli Değiştir</span>
+                    </label>
+                    <input type="file" id="edit-image-input" class="hidden" accept="image/*">
+                    <div id="edit-image-preview-container" class="hidden relative w-12 h-12 shrink-0">
+                        <img id="edit-image-preview" src="" class="w-full h-full object-cover rounded-lg border dark:border-gray-600">
+                        <button id="edit-remove-image-btn" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-sm"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="date" id="edit-note-date-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
+                    <select id="edit-note-category-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
+                        <option value="İş">İş</option>
+                        <option value="Kişisel">Kişisel</option>
+                        <option value="Market">Market</option>
+                    </select>
+                </div>
+                
+                <select id="edit-note-priority-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
+                    <option value="Normal">Öncelik: Normal 🔵</option>
+                    <option value="Yüksek">Öncelik: Yüksek 🔥</option>
+                    <option value="Düşük">Öncelik: Düşük 🔽</option>
+                </select>
+            </div>
+            <div class="mt-6 flex justify-end gap-3">
+                <button id="cancel-edit-note-btn" class="px-5 py-2 text-gray-500 hover:text-theme transition">İptal</button>
+                <button id="save-edit-note-btn" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-500/30 transition transform active:scale-95">Güncelle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bildirim Modalı -->
+    <div id="notification-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">
+        <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-gray-200 dark:border-gray-700 text-center">
+            <div class="mx-auto w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="bell" class="w-6 h-6 text-indigo-600 dark:text-indigo-300"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-2 text-theme">Hatırlatma Kur</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Bu notu size ne zaman hatırlatayım?</p>
+            
+            <div class="flex items-center gap-2 mb-6">
+                <input type="number" id="notification-time" min="1" class="input-theme w-20 p-2 border rounded-lg text-center font-bold" value="5">
+                <select id="notification-unit" class="input-theme flex-1 p-2 border rounded-lg">
+                    <option value="minutes">Dakika Sonra</option>
+                    <option value="hours">Saat Sonra</option>
+                    <option value="days">Gün Sonra</option>
+                </select>
+            </div>
+            
+            <div class="flex justify-center gap-3">
+                <button id="cancel-notification-btn" class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-theme rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">Vazgeç</button>
+                <button id="save-notification-btn" class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-lg shadow-indigo-500/30">Kur</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="text-center text-xs text-gray-400 py-6 mt-8">
+        © Gökhan ELGÜL tarafından tasarlanmıştır. v3.1
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let allNotes = [];
+            let currentNoteForNotification = null;
+            let activeCategoryFilter = 'Tümü';
+            let currentBase64Image = null; 
+            let currentBase64ImageEdit = null;
+            let currentEditingNoteId = null;
+            const IMAGE_MAX_SIZE = 250 * 1024;
+            
+            const categoryClasses = {
+                'İş': { label: 'cat-label-İş', filter: 'cat-filter-İş' },
+                'Kişisel': { label: 'cat-label-Kişisel', filter: 'cat-filter-Kişisel' },
+                'Market': { label: 'cat-label-Market', filter: 'cat-filter-Market' }
+            };
+            const defaultCategory = 'Kişisel';
+
+            const priorityClasses = {
+                'Yüksek': { border: 'priority-Yüksek', color: 'text-red-500' },
+                'Normal': { border: 'priority-Normal', color: 'text-blue-500' },
+                'Düşük': { border: 'priority-Düşük', color: 'text-gray-500' }
+            };
+            const priorityIcons = { 'Yüksek': '🔥', 'Normal': '🔵', 'Düşük': '🔽' };
+            const defaultPriority = 'Normal';
+
+            // DOM Elements
+            const noteList = document.getElementById('note-list');
+            const statusIndicator = document.getElementById('status-indicator');
+            const remindersContainer = document.getElementById('reminders-container');
+            const categoryFiltersContainer = document.getElementById('category-filters');
+            const searchInput = document.getElementById('search-input');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const exportBtn = document.getElementById('export-btn');
+            const body = document.body;
+
+            // Stats Elements
+            const statTotal = document.getElementById('stat-total');
+            const statPending = document.getElementById('stat-pending');
+            const statCompleted = document.getElementById('stat-completed');
+
+            // Add Modal
+            const addNoteModal = document.getElementById('add-note-modal');
+            const openAddNoteModalBtn = document.getElementById('open-add-note-modal');
+            const cancelAddNoteBtn = document.getElementById('cancel-add-note-btn');
+            const addNoteBtn = document.getElementById('add-note-btn');
+            const noteInput = document.getElementById('note-input');
+            const noteDateInput = document.getElementById('note-date-input');
+            const noteCategoryInput = document.getElementById('note-category-input');
+            const notePriorityInput = document.getElementById('note-priority-input');
+            const imageInput = document.getElementById('image-input');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const removeImageBtn = document.getElementById('remove-image-btn');
+
+            // Edit Modal
+            const editNoteModal = document.getElementById('edit-note-modal');
+            const cancelEditNoteBtn = document.getElementById('cancel-edit-note-btn');
+            const saveEditNoteBtn = document.getElementById('save-edit-note-btn');
+            const editNoteInput = document.getElementById('edit-note-input');
+            const editNoteDateInput = document.getElementById('edit-note-date-input');
+            const editNoteCategoryInput = document.getElementById('edit-note-category-input');
+            const editNotePriorityInput = document.getElementById('edit-note-priority-input');
+            const editImageInput = document.getElementById('edit-image-input');
+            const editImagePreviewContainer = document.getElementById('edit-image-preview-container');
+            const editImagePreview = document.getElementById('edit-image-preview');
+            const editRemoveImageBtn = document.getElementById('edit-remove-image-btn');
+
+            // Speech
+            const startSpeechBtn = document.getElementById('start-speech-btn');
+            let recognition;
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let isRecording = false;
+
+            // Completed Notes
+            const completedNotesToggle = document.getElementById('completed-notes-toggle');
+            const completedChevron = document.getElementById('completed-chevron');
+            const completedNotesPanel = document.getElementById('completed-notes-panel');
+            const completedNoteList = document.getElementById('completed-note-list');
+            const completedCount = document.getElementById('completed-count');
+            
+            // Notification Modal
+            const notificationModal = document.getElementById('notification-modal');
+            const notificationTimeInput = document.getElementById('notification-time');
+            const notificationUnitSelect = document.getElementById('notification-unit');
+            const saveNotificationBtn = document.getElementById('save-notification-btn');
+            const cancelNotificationBtn = document.getElementById('cancel-notification-btn');
+
+            // GitHub Config
+            const tokenPart1 = 'ghp_2KS6iY7t1ka6bK';
+            const tokenPart2 = 'yHwONJkXdwOUVhrU';
+            const tokenPart3 = '3PqlSX';
+            const GITHUB_CONFIG = {
+                token: tokenPart1 + tokenPart2 + tokenPart3,
+                owner: 'gokhangeo',
+                repo: 'NOT',
+                path: 'notes.json'
+            };
+
+            function init() {
+                fetchNotesFromGitHub();
+                loadTheme();
+                
+                // Listeners
+                openAddNoteModalBtn.addEventListener('click', openAddNoteModal);
+                cancelAddNoteBtn.addEventListener('click', closeAddNoteModal);
+                addNoteBtn.addEventListener('click', addNote);
+                addNoteModal.addEventListener('click', (e) => { if (e.target === addNoteModal) closeAddNoteModal(); });
+                imageInput.addEventListener('change', (e) => handleImageUpload(e, 'add'));
+                removeImageBtn.addEventListener('click', () => removeImage('add'));
+
+                cancelEditNoteBtn.addEventListener('click', closeEditModal);
+                saveEditNoteBtn.addEventListener('click', saveEditNote);
+                editNoteModal.addEventListener('click', (e) => { if (e.target === editNoteModal) closeEditModal(); });
+                editImageInput.addEventListener('change', (e) => handleImageUpload(e, 'edit'));
+                editRemoveImageBtn.addEventListener('click', () => removeImage('edit'));
+
+                searchInput.addEventListener('input', renderAll);
+                themeToggleBtn.addEventListener('click', toggleTheme);
+                exportBtn.addEventListener('click', exportNotes);
+
+                // --- SESLİ YAZMA ÖZELLİĞİ ---
+                if (SpeechRecognition) {
+                    recognition = new SpeechRecognition();
+                    recognition.lang = 'tr-TR';
+                    recognition.interimResults = true; // Gerçek zamanlı yazma
+                    recognition.continuous = true; // Sürekli dinleme
+                    
+                    startSpeechBtn.addEventListener('click', toggleSpeechRecognition);
+                    
+                    recognition.onstart = () => {
+                        isRecording = true;
+                        startSpeechBtn.classList.add('listening-active'); // Kırmızı yanıp sönme
+                        showStatus("Dinliyorum...", false);
+                    };
+                    
+                    recognition.onresult = (event) => {
+                        // Sonuçları birleştir
+                        const transcript = Array.from(event.results)
+                            .map(result => result[0])
+                            .map(result => result.transcript)
+                            .join('');
+                        
+                        noteInput.value = transcript;
+                    };
+                    
+                    recognition.onerror = (event) => {
+                        console.error("Ses Hatası:", event.error);
+                        stopRecordingVisuals();
+                        if(event.error === 'not-allowed') showStatus("Mikrofon izni gerekli", true);
+                    };
+                    
+                    recognition.onend = () => {
+                        if(isRecording) {
+                            // Bazen durabilir, tekrar başlatmaya çalışalım (isteğe bağlı)
+                            // recognition.start(); 
+                            stopRecordingVisuals();
+                        }
+                    };
+                } else {
+                    startSpeechBtn.style.display = 'none';
+                    console.log("Tarayıcı ses tanımayı desteklemiyor.");
+                }
+
+                // Notification Listeners
+                saveNotificationBtn.addEventListener('click', saveNotification);
+                cancelNotificationBtn.addEventListener('click', closeNotificationModal);
+                notificationModal.addEventListener('click', (e) => { if (e.target === notificationModal) closeNotificationModal(); });
+                
+                addGlobalCompletedNotesEventListeners();
+
+                completedNotesToggle.addEventListener('click', () => {
+                    completedNotesPanel.classList.toggle('hidden');
+                    completedChevron.classList.toggle('rotate-180');
+                });
+
+                if (Notification.permission !== 'granted' && Notification.permission !== 'denied') Notification.requestPermission();
+                lucide.createIcons();
+            }
+
+            function stopRecordingVisuals() {
+                isRecording = false;
+                startSpeechBtn.classList.remove('listening-active');
+            }
+
+            // --- Tema Yönetimi (Dark Mode) ---
+            function toggleTheme() {
+                body.classList.toggle('dark');
+                const isDark = body.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                const icon = isDark ? 'sun' : 'moon';
+                themeToggleBtn.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i>`;
+                lucide.createIcons();
+            }
+
+            function loadTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark') {
+                    body.classList.add('dark');
+                    themeToggleBtn.innerHTML = `<i data-lucide="sun" class="w-5 h-5"></i>`;
+                }
+            }
+
+            // --- Export / Yedekleme ---
+            function exportNotes() {
+                if (allNotes.length === 0) {
+                    showStatus("İndirilecek not yok.", true);
+                    return;
+                }
+                let textContent = "CEPTE NOT - YEDEKLERİM\n\n";
+                allNotes.forEach(note => {
+                    const status = note.done ? "[TAMAMLANDI]" : "[BEKLIYOR]";
+                    textContent += `--- ${status} ---\nTarih: ${note.date || 'Yok'}\nKategori: ${note.category}\nÖncelik: ${note.priority || 'Normal'}\nİçerik: ${note.text}\n\n`;
+                });
+
+                const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `notlarim_${new Date().toLocaleDateString()}.txt`;
+                link.click();
+                showStatus("Notlar indirildi.");
+            }
+
+            // --- İstatistik Güncelleme ---
+            function updateStats() {
+                const total = allNotes.length;
+                const completed = allNotes.filter(n => n.done).length;
+                const pending = total - completed;
+
+                statTotal.textContent = total;
+                statPending.textContent = pending;
+                statCompleted.textContent = completed;
+            }
+            
+            // --- Modal İşlemleri ---
+            function openAddNoteModal() {
+                addNoteModal.classList.remove('hidden');
+                setTimeout(() => addNoteModal.classList.add('open'), 10);
+                noteInput.value = '';
+                noteDateInput.value = '';
+                noteCategoryInput.value = 'Kişisel';
+                notePriorityInput.value = 'Normal';
+                removeImage('add');
+                noteInput.focus();
+                
+                // Modalı açarken ses butonunu sıfırla
+                stopRecordingVisuals();
+                if(isRecording && recognition) recognition.stop();
+            }
+            
+            function closeAddNoteModal() {
+                addNoteModal.classList.remove('open');
+                setTimeout(() => addNoteModal.classList.add('hidden'), 300);
+                if(isRecording && recognition) {
+                    recognition.stop();
+                    stopRecordingVisuals();
+                }
+            }
+
+            function openEditModal(id) {
+                const note = allNotes.find(n => n.id === id);
+                if (!note) return;
+                currentEditingNoteId = id;
+                editNoteInput.value = note.text;
+                editNoteDateInput.value = note.date || '';
+                editNoteCategoryInput.value = note.category || defaultCategory;
+                editNotePriorityInput.value = note.priority || defaultPriority;
+                
+                currentBase64ImageEdit = note.image || null;
+                if (note.image) {
+                    editImagePreview.src = note.image;
+                    editImagePreviewContainer.classList.remove('hidden');
+                } else {
+                    removeImage('edit');
+                }
+                editNoteModal.classList.remove('hidden');
+                setTimeout(() => editNoteModal.classList.add('open'), 10);
+            }
+
+            function closeEditModal() {
+                editNoteModal.classList.remove('open');
+                setTimeout(() => editNoteModal.classList.add('hidden'), 300);
+                currentEditingNoteId = null;
+            }
+
+            // --- Notification Modal Functions ---
+            function openNotificationModal(id) {
+                currentNoteForNotification = id;
+                notificationModal.classList.remove('hidden');
+                setTimeout(() => notificationModal.classList.add('open'), 10);
+                notificationTimeInput.value = '5';
+                notificationUnitSelect.value = 'minutes';
+            }
+
+            function closeNotificationModal() {
+                 notificationModal.classList.remove('open');
+                setTimeout(() => notificationModal.classList.add('hidden'), 300);
+                 currentNoteForNotification = null;
+            }
+
+            // --- Resim İşlemleri ---
+            function handleImageUpload(event, mode) {
+                const file = event.target.files[0];
+                if (!file) return;
+                if (file.size > IMAGE_MAX_SIZE) {
+                    showStatus(`Resim çok büyük (Max 250KB)`, true);
+                    event.target.value = null;
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (mode === 'add') {
+                        currentBase64Image = e.target.result;
+                        imagePreview.src = currentBase64Image;
+                        imagePreviewContainer.classList.remove('hidden');
+                    } else {
+                        currentBase64ImageEdit = e.target.result;
+                        editImagePreview.src = currentBase64ImageEdit;
+                        editImagePreviewContainer.classList.remove('hidden');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function removeImage(mode) {
+                if (mode === 'add') {
+                    currentBase64Image = null;
+                    imageInput.value = null;
+                    imagePreviewContainer.classList.add('hidden');
+                } else {
+                    currentBase64ImageEdit = null;
+                    editImageInput.value = null;
+                    editImagePreviewContainer.classList.add('hidden');
+                }
+            }
+
+            // --- Render ve Logic ---
+            function renderAll() {
+                renderCategories();
+                renderNotes();
+                renderReminders();
+                renderGlobalCompletedNotes();
+                updateStats();
+                lucide.createIcons();
+            }
+
+            function renderCategories() {
+                const categories = ['İş', 'Kişisel', 'Market'];
+                categoryFiltersContainer.innerHTML = '';
+                ['Tümü', ...categories].forEach(category => {
+                    const button = document.createElement('button');
+                    button.textContent = category;
+                    let cls = 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600';
+                    if (category !== 'Tümü') cls += ` ${categoryClasses[category].filter}`;
+                    button.className = `category-filter px-3 py-1.5 text-xs font-bold rounded-lg shadow-sm ${category === activeCategoryFilter ? 'active' : cls}`;
+                    if (category === activeCategoryFilter && category === 'Tümü') button.classList.add('bg-indigo-600', 'text-white', 'dark:bg-indigo-500');
+                    
+                    button.onclick = () => { activeCategoryFilter = category; renderAll(); };
+                    categoryFiltersContainer.appendChild(button);
+                });
+            }
+
+            function renderNotes() {
+                noteList.innerHTML = '';
+                const searchTerm = searchInput.value.toLowerCase();
+                const activeNotes = allNotes.filter(note => {
+                    const matchesCategory = activeCategoryFilter === 'Tümü' || (note.category || defaultCategory) === activeCategoryFilter;
+                    const matchesSearch = !searchTerm || note.text.toLowerCase().includes(searchTerm);
+                    return !note.done && matchesCategory && matchesSearch;
+                });
+
+                if (activeNotes.length === 0) {
+                    noteList.innerHTML = `<li class="col-span-full text-center text-gray-400 py-10 flex flex-col items-center"><i data-lucide="clipboard-list" class="w-10 h-10 mb-2 opacity-50"></i><p>Burada gösterilecek not yok Müdürüm.</p></li>`;
+                } else {
+                    activeNotes.forEach(note => {
+                        const li = document.createElement('li');
+                        const category = note.category || defaultCategory;
+                        const priority = note.priority || defaultPriority;
+                        const pClass = priorityClasses[priority];
+                        
+                        li.className = `note-card bg-theme-card rounded-xl shadow-sm flex flex-col overflow-hidden ${pClass.border}`;
+                        li.dataset.id = note.id;
+                        li.innerHTML = `
+                            ${note.image ? `<div class="h-32 overflow-hidden relative"><img src="${note.image}" class="w-full h-full object-cover transition-transform hover:scale-105 duration-500"></div>` : ''}
+                            <div class="p-4 flex-grow flex flex-col">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[10px] uppercase font-bold tracking-wider ${categoryClasses[category].label} text-white px-2 py-1 rounded-md shadow-sm">${category}</span>
+                                    <div class="flex items-center gap-1">
+                                         <button class="check-btn p-1.5 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-400 hover:bg-green-50 hover:text-green-500 transition" title="Tamamla"><i data-lucide="check" class="w-4 h-4"></i></button>
+                                         <span class="text-sm ml-1" title="${priority}">${priorityIcons[priority]}</span>
+                                    </div>
+                                </div>
+                                <p class="text-theme text-sm leading-relaxed mb-4 flex-grow whitespace-pre-wrap">${note.text}</p>
+                                <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
+                                    <span class="text-xs text-gray-400 font-medium flex items-center">
+                                        ${note.date ? `<i data-lucide="calendar-days" class="w-3 h-3 mr-1"></i> ${note.date.split('-').reverse().join('.')}` : ''}
+                                    </span>
+                                    <div class="flex items-center gap-1">
+                                        <button class="edit-btn p-1.5 text-gray-400 hover:text-indigo-500 transition" title="Düzenle"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                                        <button class="notif-btn p-1.5 text-gray-400 hover:text-orange-500 transition" title="Hatırlat"><i data-lucide="bell" class="w-4 h-4"></i></button>
+                                        <button class="del-btn p-1.5 text-gray-400 hover:text-red-500 transition" title="Sil"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        li.querySelector('.check-btn').onclick = () => toggleDone(note.id, true, li);
+                        li.querySelector('.del-btn').onclick = () => deleteNote(note.id, li);
+                        li.querySelector('.notif-btn').onclick = () => openNotificationModal(note.id);
+                        li.querySelector('.edit-btn').onclick = () => openEditModal(note.id);
+                        noteList.appendChild(li);
+                    });
+                }
+            }
+
+            function renderGlobalCompletedNotes() {
+                completedNoteList.innerHTML = '';
+                const doneNotes = allNotes.filter(n => n.done);
+                
+                if (doneNotes.length > 0) {
+                    document.getElementById('completed-notes-accordion').classList.remove('hidden');
+                    completedCount.textContent = doneNotes.length;
+                    doneNotes.forEach(note => {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 group';
+                        li.dataset.id = note.id;
+                        li.innerHTML = `
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <div class="w-5 h-5 rounded-full border-2 border-green-500 flex items-center justify-center bg-green-500"><i data-lucide="check" class="w-3 h-3 text-white"></i></div>
+                                <span class="text-gray-400 line-through text-sm truncate">${note.text}</span>
+                            </div>
+                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button class="reopen-btn text-blue-400 hover:bg-blue-50 p-1 rounded"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
+                                <button class="delete-btn-completed text-red-400 hover:bg-red-50 p-1 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        `;
+                        completedNoteList.appendChild(li);
+                    });
+                } else {
+                    document.getElementById('completed-notes-accordion').classList.add('hidden');
+                }
+            }
+
+            // --- Actions ---
+            function addNote() {
+                const text = noteInput.value.trim();
+                if (text) {
+                    const newNote = { 
+                        id: Date.now().toString(), 
+                        text, 
+                        date: noteDateInput.value, 
+                        category: noteCategoryInput.value, 
+                        priority: notePriorityInput.value,
+                        image: currentBase64Image,
+                        done: false 
+                    };
+                    allNotes.unshift(newNote);
+                    saveNotes();
+                    renderAll();
+                    closeAddNoteModal();
+                    showStatus("Not eklendi.");
+                }
+            }
+
+            function saveEditNote() {
+                if (!currentEditingNoteId) return;
+                const idx = allNotes.findIndex(n => n.id === currentEditingNoteId);
+                if (idx === -1) return;
+                
+                const text = editNoteInput.value.trim();
+                if (!text) { showStatus("Boş not olmaz.", true); return; }
+
+                allNotes[idx] = {
+                    ...allNotes[idx],
+                    text,
+                    date: editNoteDateInput.value,
+                    category: editNoteCategoryInput.value,
+                    priority: editNotePriorityInput.value,
+                    image: currentBase64ImageEdit
+                };
+                saveNotes();
+                renderAll();
+                closeEditModal();
+                showStatus("Not güncellendi.");
+            }
+
+            function toggleDone(id, isDone, element) {
+                const note = allNotes.find(n => n.id == id);
+                if (note) {
+                    note.done = isDone;
+                    if(isDone) {
+                        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); // KUTLAMA!
+                    }
+                    const action = () => { saveNotes(); renderAll(); };
+                    if (element && isDone) {
+                        element.classList.add('exiting');
+                        setTimeout(action, 300);
+                    } else {
+                        action();
+                    }
+                }
+            }
+
+            function deleteNote(id, element) {
+                if(!confirm("Silmek istediğine emin misin Müdürüm?")) return;
+                const idx = allNotes.findIndex(n => n.id == id);
+                if (idx > -1) {
+                    const action = () => { allNotes.splice(idx, 1); saveNotes(); renderAll(); };
+                    if (element) {
+                        element.classList.add('exiting');
+                        setTimeout(action, 300);
+                    } else {
+                        action();
+                    }
+                }
+            }
+            
+            // --- Helpers ---
+            function addGlobalCompletedNotesEventListeners() {
+                completedNoteList.addEventListener('click', (e) => {
+                    const li = e.target.closest('li');
+                    if (!li) return;
+                    const id = li.dataset.id;
+                    if (e.target.closest('.reopen-btn')) toggleDone(id, false, null);
+                    if (e.target.closest('.delete-btn-completed')) deleteNote(id, null);
+                });
+            }
+
+            function renderReminders() {
+                // Basit hatırlatma kartları (Bugün/Yarın)
+                remindersContainer.innerHTML = '';
+                const today = new Date().toISOString().split('T')[0];
+                const notes = allNotes.filter(n => !n.done && n.date === today);
+                if(notes.length > 0) {
+                    remindersContainer.innerHTML = `
+                        <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 rounded-r-lg">
+                            <h4 class="font-bold text-orange-700 dark:text-orange-400 mb-2 flex items-center"><i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Bugünün İşleri</h4>
+                            <ul class="list-disc list-inside text-sm text-orange-800 dark:text-orange-300">${notes.map(n => `<li>${n.text}</li>`).join('')}</ul>
+                        </div>`;
+                }
+            }
+
+            function saveNotification() {
+                if (!currentNoteForNotification) return;
+                const note = allNotes.find(n => n.id == currentNoteForNotification);
+                const val = parseInt(notificationTimeInput.value);
+                const mult = notificationUnitSelect.value === 'minutes' ? 60000 : notificationUnitSelect.value === 'hours' ? 3600000 : 86400000;
+                
+                if (Notification.permission === 'granted') {
+                    setTimeout(() => {
+                        new Notification("Hatırlatma: Cepte Not", { body: note.text });
+                    }, val * mult);
+                    showStatus("Hatırlatma kuruldu.");
+                } else {
+                    showStatus("İzin verilmedi.", true);
+                }
+                closeNotificationModal();
+            }
+
+            function showStatus(msg, err = false) {
+                statusIndicator.textContent = msg;
+                statusIndicator.className = `absolute top-4 right-4 md:top-auto md:bottom-4 md:right-4 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transition-opacity duration-300 ${err ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'} opacity-100`;
+                setTimeout(() => statusIndicator.classList.replace('opacity-100', 'opacity-0'), 3000);
+            }
+
+            function saveNotes() {
+                localStorage.setItem('mersinNotes', JSON.stringify(allNotes));
+                saveNotesToGitHub();
+            }
+
+            function toggleSpeechRecognition() {
+                if(isRecording) {
+                    recognition.stop();
+                    stopRecordingVisuals();
+                } else {
+                    recognition.start();
+                }
+            }
+
+            async function fetchNotesFromGitHub() {
+                if (!GITHUB_CONFIG.token) {
+                    const local = localStorage.getItem('mersinNotes');
+                    allNotes = local ? JSON.parse(local) : [];
+                    renderAll();
+                    return;
+                }
+                try {
+                    const res = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
+                        headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        allNotes = JSON.parse(decodeURIComponent(escape(window.atob(data.content))));
+                        renderAll();
+                        showStatus("Senkronize edildi.");
+                    } else {
+                        throw new Error();
+                    }
+                } catch (e) {
+                    const local = localStorage.getItem('mersinNotes');
+                    allNotes = local ? JSON.parse(local) : [];
+                    renderAll();
+                }
+            }
+
+            async function saveNotesToGitHub() {
+                if (!GITHUB_CONFIG.token) return;
+                try {
+                    const getRes = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, { headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` } });
+                    const sha = getRes.ok ? (await getRes.json()).sha : null;
+                    
+                    await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
+                        method: 'PUT',
+                        headers: { 'Authorization': `token ${GITHUB_CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' },
+                        body: JSON.stringify({
+                            message: 'Update via Cepte Not v3',
+                            content: window.btoa(unescape(encodeURIComponent(JSON.stringify(allNotes)))),
+                            sha
+                        })
+                    });
+                } catch (e) { console.error(e); }
+            }
+
+            init();
+        });
+    </script>
+</body>
+</html>
+
+
+
