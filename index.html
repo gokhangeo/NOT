@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cepte Not v3.2</title>
+    <title>Cepte Not v3.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide İkonları -->
@@ -93,13 +93,14 @@
         /* Dinleme Animasyonu */
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         .listening-active {
             animation: pulse-red 1.5s infinite;
             background-color: #ef4444 !important; /* Kırmızı */
             color: white !important;
+            border-color: #ef4444 !important;
         }
 
         .cat-label-İş { background-color: #3b82f6; }
@@ -244,7 +245,7 @@
                 </select>
             </div>
             <div class="mt-6 flex justify-between items-center">
-                <button id="start-speech-btn" class="p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition relative group" title="Sesli Yaz">
+                <button id="start-speech-btn" class="p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition relative group border-2 border-transparent" title="Sesli Yaz">
                     <i data-lucide="mic" class="w-6 h-6"></i>
                     <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">Konuş</span>
                 </button>
@@ -323,7 +324,7 @@
     </div>
     
     <footer class="text-center text-xs text-gray-400 py-6 mt-8">
-        © Gökhan ELGÜL tarafından tasarlanmıştır. v3.2
+        © Gökhan ELGÜL tarafından tasarlanmıştır. v3.4
     </footer>
 
     <script>
@@ -453,6 +454,8 @@
                     recognition.lang = 'tr-TR';
                     recognition.interimResults = true;
                     recognition.continuous = true;
+                    // YENİ: Düşük güvenli sonuçları da yakalamaya çalış
+                    recognition.maxAlternatives = 3;
                     
                     startSpeechBtn.addEventListener('click', toggleSpeechRecognition);
                     
@@ -483,14 +486,23 @@
                     
                     recognition.onerror = (event) => {
                         console.error("Ses Hatası:", event.error);
-                        stopRecordingVisuals();
+                        // Eğer hata 'no-speech' ise ve biz hala kaydediyorsak, görseli durdurma, yeniden deneyeceğiz
+                        if (event.error !== 'no-speech') {
+                            stopRecordingVisuals();
+                        }
                         if(event.error === 'not-allowed') showStatus("Mikrofon izni gerekli", true);
                     };
                     
                     recognition.onend = () => {
-                        // Eğer kullanıcı manuel durdurmadıysa ve hata almadıysa yeniden başlatabilirdik
-                        // Ama manuel kontrol daha güvenli
-                        if(isRecording) {
+                        // YENİ: Otomatik yeniden başlatma döngüsü (Auto-Restart)
+                        if (isRecording) {
+                             console.log("Sessizlik nedeniyle durdu, yeniden başlatılıyor...");
+                             try {
+                                 recognition.start();
+                             } catch(e) {
+                                 console.log("Zaten çalışıyor olabilir:", e);
+                             }
+                        } else {
                              stopRecordingVisuals();
                         }
                     };
@@ -511,7 +523,7 @@
                     completedChevron.classList.toggle('rotate-180');
                 });
 
-                if (Notification.permission !== 'granted' && Notification.permission !== 'denied') Notification.requestPermission();
+                if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') Notification.requestPermission();
                 lucide.createIcons();
             }
 
@@ -580,6 +592,7 @@
                 removeImage('add');
                 noteInput.focus();
                 
+                // Modalı açarken sıfırla ama konuşma hemen başlamasın, butona basınca başlasın
                 stopRecordingVisuals();
                 if(isRecording && recognition) recognition.stop();
             }
@@ -587,7 +600,9 @@
             function closeAddNoteModal() {
                 addNoteModal.classList.remove('open');
                 setTimeout(() => addNoteModal.classList.add('hidden'), 300);
+                // Modalı kapatınca durdur
                 if(isRecording && recognition) {
+                    isRecording = false; // Döngüyü kır
                     recognition.stop();
                     stopRecordingVisuals();
                 }
@@ -881,13 +896,17 @@
                 const val = parseInt(notificationTimeInput.value);
                 const mult = notificationUnitSelect.value === 'minutes' ? 60000 : notificationUnitSelect.value === 'hours' ? 3600000 : 86400000;
                 
-                if (Notification.permission === 'granted') {
+                if ('Notification' in window && Notification.permission === 'granted') {
                     setTimeout(() => {
                         new Notification("Hatırlatma: Cepte Not", { body: note.text });
                     }, val * mult);
                     showStatus("Hatırlatma kuruldu.");
                 } else {
-                    showStatus("İzin verilmedi.", true);
+                    if (!('Notification' in window)) {
+                         showStatus("Bu tarayıcı bildirimleri desteklemiyor.", true);
+                    } else {
+                         showStatus("İzin verilmedi.", true);
+                    }
                 }
                 closeNotificationModal();
             }
@@ -905,6 +924,8 @@
 
             function toggleSpeechRecognition() {
                 if(isRecording) {
+                    // Kullanıcı manuel durduruyor, döngüyü kır
+                    isRecording = false; 
                     recognition.stop();
                     stopRecordingVisuals();
                 } else {
