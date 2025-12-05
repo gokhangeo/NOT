@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cepte Not v3.1</title>
+    <title>Cepte Not v3.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide İkonları -->
@@ -90,7 +90,7 @@
         }
         .fab:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.5); }
         
-        /* Dinleme Animasyonu (YENİ) */
+        /* Dinleme Animasyonu */
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
@@ -323,7 +323,7 @@
     </div>
     
     <footer class="text-center text-xs text-gray-400 py-6 mt-8">
-        © Gökhan ELGÜL tarafından tasarlanmıştır. v3.1
+        © Gökhan ELGÜL tarafından tasarlanmıştır. v3.2
     </footer>
 
     <script>
@@ -393,11 +393,12 @@
             const editImagePreview = document.getElementById('edit-image-preview');
             const editRemoveImageBtn = document.getElementById('edit-remove-image-btn');
 
-            // Speech
+            // Speech Variables
             const startSpeechBtn = document.getElementById('start-speech-btn');
             let recognition;
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             let isRecording = false;
+            let finalTranscript = ''; // Stores finalized text
 
             // Completed Notes
             const completedNotesToggle = document.getElementById('completed-notes-toggle');
@@ -446,29 +447,38 @@
                 themeToggleBtn.addEventListener('click', toggleTheme);
                 exportBtn.addEventListener('click', exportNotes);
 
-                // --- SESLİ YAZMA ÖZELLİĞİ ---
+                // --- GÜÇLENDİRİLMİŞ SESLİ YAZMA ÖZELLİĞİ ---
                 if (SpeechRecognition) {
                     recognition = new SpeechRecognition();
                     recognition.lang = 'tr-TR';
-                    recognition.interimResults = true; // Gerçek zamanlı yazma
-                    recognition.continuous = true; // Sürekli dinleme
+                    recognition.interimResults = true;
+                    recognition.continuous = true;
                     
                     startSpeechBtn.addEventListener('click', toggleSpeechRecognition);
                     
                     recognition.onstart = () => {
                         isRecording = true;
-                        startSpeechBtn.classList.add('listening-active'); // Kırmızı yanıp sönme
+                        startSpeechBtn.classList.add('listening-active');
                         showStatus("Dinliyorum...", false);
+                        // Var olan metni koru
+                        finalTranscript = noteInput.value;
+                        if (finalTranscript && !finalTranscript.endsWith(' ')) {
+                            finalTranscript += ' ';
+                        }
                     };
                     
                     recognition.onresult = (event) => {
-                        // Sonuçları birleştir
-                        const transcript = Array.from(event.results)
-                            .map(result => result[0])
-                            .map(result => result.transcript)
-                            .join('');
+                        let interimTranscript = '';
                         
-                        noteInput.value = transcript;
+                        for (let i = event.resultIndex; i < event.results.length; ++i) {
+                            if (event.results[i].isFinal) {
+                                finalTranscript += event.results[i][0].transcript + ' ';
+                            } else {
+                                interimTranscript += event.results[i][0].transcript;
+                            }
+                        }
+                        
+                        noteInput.value = finalTranscript + interimTranscript;
                     };
                     
                     recognition.onerror = (event) => {
@@ -478,10 +488,10 @@
                     };
                     
                     recognition.onend = () => {
+                        // Eğer kullanıcı manuel durdurmadıysa ve hata almadıysa yeniden başlatabilirdik
+                        // Ama manuel kontrol daha güvenli
                         if(isRecording) {
-                            // Bazen durabilir, tekrar başlatmaya çalışalım (isteğe bağlı)
-                            // recognition.start(); 
-                            stopRecordingVisuals();
+                             stopRecordingVisuals();
                         }
                     };
                 } else {
@@ -570,7 +580,6 @@
                 removeImage('add');
                 noteInput.focus();
                 
-                // Modalı açarken ses butonunu sıfırla
                 stopRecordingVisuals();
                 if(isRecording && recognition) recognition.stop();
             }
@@ -952,6 +961,3 @@
     </script>
 </body>
 </html>
-
-
-
