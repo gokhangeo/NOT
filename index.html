@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cepte Not v3.4</title>
+    <title>Cepte Not v4.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide İkonları -->
@@ -90,7 +90,6 @@
         }
         .fab:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.5); }
         
-        /* Dinleme Animasyonu */
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
@@ -98,7 +97,7 @@
         }
         .listening-active {
             animation: pulse-red 1.5s infinite;
-            background-color: #ef4444 !important; /* Kırmızı */
+            background-color: #ef4444 !important; 
             color: white !important;
             border-color: #ef4444 !important;
         }
@@ -123,6 +122,42 @@
             transition: transform 0.2s;
         }
         .stat-card:hover { transform: translateY(-2px); }
+
+        /* Yeni Eklenen: Liste elemanları için stiller */
+        .list-item-done {
+            text-decoration: line-through;
+            color: #9ca3af; /* gri renk */
+            transition: all 0.3s ease;
+        }
+        .custom-checkbox {
+            appearance: none;
+            width: 1rem;
+            height: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+            display: inline-grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .custom-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            background-color: white;
+            transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .custom-checkbox:checked {
+            background-color: #10b981; /* Tailwind emerald-500 */
+            border-color: #10b981;
+        }
+        .custom-checkbox:checked::before {
+            transform: scale(1);
+        }
     </style>
 </head>
 <body class="p-4 md:p-8 transition-colors duration-300">
@@ -214,8 +249,10 @@
     <div id="add-note-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">
         <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700">
             <h3 class="text-xl font-bold mb-4 text-theme">Yeni Not Oluştur</h3>
+            <p class="text-xs text-gray-500 mb-2">İpucu: Her yeni satır otomatik olarak bir liste maddesi olur.</p>
             <div class="flex flex-col gap-4">
-                <textarea id="note-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 min-h-[100px]" placeholder="Yazın veya mikrofona basın Müdürüm..."></textarea>
+                <!-- Textarea for input -->
+                <textarea id="note-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 min-h-[100px]" placeholder="- ŞANTİYE DEFTERİ&#10;- KONTROL DEFTERİ&#10;- BİLGİLENDİRME TOPL."></textarea>
                 
                 <div class="flex items-center gap-3">
                     <label for="image-input" class="cursor-pointer flex-1 p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm flex items-center justify-center gap-2">
@@ -324,11 +361,14 @@
     </div>
     
     <footer class="text-center text-xs text-gray-400 py-6 mt-8">
-        © Gökhan ELGÜL tarafından tasarlanmıştır. v3.4
+        © Gökhan ELGÜL tarafından tasarlanmıştır. v4.0
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Veri yapısı güncellendi: 'text' artık doğrudan gösterilmiyor, 
+            // text içindeki satırlar 'items' arrayine dönüştürülecek.
+            // Fakat geriye dönük uyumluluk için ana yapıyı bozmayacağız.
             let allNotes = [];
             let currentNoteForNotification = null;
             let activeCategoryFilter = 'Tümü';
@@ -399,7 +439,7 @@
             let recognition;
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             let isRecording = false;
-            let finalTranscript = ''; // Stores finalized text
+            let finalTranscript = ''; 
 
             // Completed Notes
             const completedNotesToggle = document.getElementById('completed-notes-toggle');
@@ -448,13 +488,12 @@
                 themeToggleBtn.addEventListener('click', toggleTheme);
                 exportBtn.addEventListener('click', exportNotes);
 
-                // --- GÜÇLENDİRİLMİŞ SESLİ YAZMA ÖZELLİĞİ ---
+                // GÜÇLENDİRİLMİŞ SESLİ YAZMA ÖZELLİĞİ
                 if (SpeechRecognition) {
                     recognition = new SpeechRecognition();
                     recognition.lang = 'tr-TR';
                     recognition.interimResults = true;
                     recognition.continuous = true;
-                    // YENİ: Düşük güvenli sonuçları da yakalamaya çalış
                     recognition.maxAlternatives = 3;
                     
                     startSpeechBtn.addEventListener('click', toggleSpeechRecognition);
@@ -463,45 +502,37 @@
                         isRecording = true;
                         startSpeechBtn.classList.add('listening-active');
                         showStatus("Dinliyorum...", false);
-                        // Var olan metni koru
                         finalTranscript = noteInput.value;
-                        if (finalTranscript && !finalTranscript.endsWith(' ')) {
-                            finalTranscript += ' ';
+                        if (finalTranscript && !finalTranscript.endsWith('\n')) {
+                            // Cümle sonuna yeni satır ekle ki maddeler alta alta gelsin
+                            finalTranscript += '\n- ';
+                        } else if (!finalTranscript) {
+                             finalTranscript += '- '; // İlk başta tire koy
                         }
                     };
                     
                     recognition.onresult = (event) => {
                         let interimTranscript = '';
-                        
                         for (let i = event.resultIndex; i < event.results.length; ++i) {
                             if (event.results[i].isFinal) {
-                                finalTranscript += event.results[i][0].transcript + ' ';
+                                // Cümle bitince yeni satıra geç ve tire koy
+                                finalTranscript += event.results[i][0].transcript + '\n- ';
                             } else {
                                 interimTranscript += event.results[i][0].transcript;
                             }
                         }
-                        
                         noteInput.value = finalTranscript + interimTranscript;
                     };
                     
                     recognition.onerror = (event) => {
                         console.error("Ses Hatası:", event.error);
-                        // Eğer hata 'no-speech' ise ve biz hala kaydediyorsak, görseli durdurma, yeniden deneyeceğiz
-                        if (event.error !== 'no-speech') {
-                            stopRecordingVisuals();
-                        }
+                        if (event.error !== 'no-speech') stopRecordingVisuals();
                         if(event.error === 'not-allowed') showStatus("Mikrofon izni gerekli", true);
                     };
                     
                     recognition.onend = () => {
-                        // YENİ: Otomatik yeniden başlatma döngüsü (Auto-Restart)
                         if (isRecording) {
-                             console.log("Sessizlik nedeniyle durdu, yeniden başlatılıyor...");
-                             try {
-                                 recognition.start();
-                             } catch(e) {
-                                 console.log("Zaten çalışıyor olabilir:", e);
-                             }
+                             try { recognition.start(); } catch(e) {}
                         } else {
                              stopRecordingVisuals();
                         }
@@ -511,7 +542,6 @@
                     console.log("Tarayıcı ses tanımayı desteklemiyor.");
                 }
 
-                // Notification Listeners
                 saveNotificationBtn.addEventListener('click', saveNotification);
                 cancelNotificationBtn.addEventListener('click', closeNotificationModal);
                 notificationModal.addEventListener('click', (e) => { if (e.target === notificationModal) closeNotificationModal(); });
@@ -532,7 +562,6 @@
                 startSpeechBtn.classList.remove('listening-active');
             }
 
-            // --- Tema Yönetimi (Dark Mode) ---
             function toggleTheme() {
                 body.classList.toggle('dark');
                 const isDark = body.classList.contains('dark');
@@ -550,7 +579,6 @@
                 }
             }
 
-            // --- Export / Yedekleme ---
             function exportNotes() {
                 if (allNotes.length === 0) {
                     showStatus("İndirilecek not yok.", true);
@@ -559,7 +587,7 @@
                 let textContent = "CEPTE NOT - YEDEKLERİM\n\n";
                 allNotes.forEach(note => {
                     const status = note.done ? "[TAMAMLANDI]" : "[BEKLIYOR]";
-                    textContent += `--- ${status} ---\nTarih: ${note.date || 'Yok'}\nKategori: ${note.category}\nÖncelik: ${note.priority || 'Normal'}\nİçerik: ${note.text}\n\n`;
+                    textContent += `--- ${status} ---\nTarih: ${note.date || 'Yok'}\nKategori: ${note.category}\nÖncelik: ${note.priority || 'Normal'}\nİçerik:\n${note.text}\n\n`;
                 });
 
                 const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
@@ -570,7 +598,6 @@
                 showStatus("Notlar indirildi.");
             }
 
-            // --- İstatistik Güncelleme ---
             function updateStats() {
                 const total = allNotes.length;
                 const completed = allNotes.filter(n => n.done).length;
@@ -580,8 +607,7 @@
                 statPending.textContent = pending;
                 statCompleted.textContent = completed;
             }
-            
-            // --- Modal İşlemleri ---
+
             function openAddNoteModal() {
                 addNoteModal.classList.remove('hidden');
                 setTimeout(() => addNoteModal.classList.add('open'), 10);
@@ -592,7 +618,6 @@
                 removeImage('add');
                 noteInput.focus();
                 
-                // Modalı açarken sıfırla ama konuşma hemen başlamasın, butona basınca başlasın
                 stopRecordingVisuals();
                 if(isRecording && recognition) recognition.stop();
             }
@@ -600,9 +625,8 @@
             function closeAddNoteModal() {
                 addNoteModal.classList.remove('open');
                 setTimeout(() => addNoteModal.classList.add('hidden'), 300);
-                // Modalı kapatınca durdur
                 if(isRecording && recognition) {
-                    isRecording = false; // Döngüyü kır
+                    isRecording = false; 
                     recognition.stop();
                     stopRecordingVisuals();
                 }
@@ -612,7 +636,13 @@
                 const note = allNotes.find(n => n.id === id);
                 if (!note) return;
                 currentEditingNoteId = id;
-                editNoteInput.value = note.text;
+                // Textbox'ta gösterirken, eğer items arrayi varsa text'i oluştur, yoksa eski usül texti bas
+                let textToShow = note.text;
+                if(note.items && note.items.length > 0) {
+                     textToShow = note.items.map(item => item.text).join('\n');
+                }
+
+                editNoteInput.value = textToShow;
                 editNoteDateInput.value = note.date || '';
                 editNoteCategoryInput.value = note.category || defaultCategory;
                 editNotePriorityInput.value = note.priority || defaultPriority;
@@ -634,7 +664,6 @@
                 currentEditingNoteId = null;
             }
 
-            // --- Notification Modal Functions ---
             function openNotificationModal(id) {
                 currentNoteForNotification = id;
                 notificationModal.classList.remove('hidden');
@@ -649,7 +678,6 @@
                  currentNoteForNotification = null;
             }
 
-            // --- Resim İşlemleri ---
             function handleImageUpload(event, mode) {
                 const file = event.target.files[0];
                 if (!file) return;
@@ -685,7 +713,6 @@
                 }
             }
 
-            // --- Render ve Logic ---
             function renderAll() {
                 renderCategories();
                 renderNotes();
@@ -716,7 +743,12 @@
                 const searchTerm = searchInput.value.toLowerCase();
                 const activeNotes = allNotes.filter(note => {
                     const matchesCategory = activeCategoryFilter === 'Tümü' || (note.category || defaultCategory) === activeCategoryFilter;
-                    const matchesSearch = !searchTerm || note.text.toLowerCase().includes(searchTerm);
+                    // Arama mantığını items üzerinden de yap
+                    let searchableText = note.text;
+                    if(note.items && note.items.length > 0) {
+                        searchableText = note.items.map(i => i.text).join(' ');
+                    }
+                    const matchesSearch = !searchTerm || searchableText.toLowerCase().includes(searchTerm);
                     return !note.done && matchesCategory && matchesSearch;
                 });
 
@@ -729,19 +761,43 @@
                         const priority = note.priority || defaultPriority;
                         const pClass = priorityClasses[priority];
                         
+                        // YENİ: Alt alta liste mantığı oluşturuluyor
+                        let itemsHTML = '';
+                        if (note.items && note.items.length > 0) {
+                            itemsHTML = `<ul class="space-y-2 mt-2">`;
+                            note.items.forEach((item, index) => {
+                                const checkedClass = item.done ? 'list-item-done' : 'text-theme';
+                                const isChecked = item.done ? 'checked' : '';
+                                itemsHTML += `
+                                    <li class="flex items-start gap-2">
+                                        <input type="checkbox" class="custom-checkbox mt-0.5 item-checkbox" data-note-id="${note.id}" data-item-index="${index}" ${isChecked}>
+                                        <span class="text-sm leading-snug flex-1 ${checkedClass}">${item.text}</span>
+                                    </li>
+                                `;
+                            });
+                            itemsHTML += `</ul>`;
+                        } else {
+                            // Geriye dönük uyumluluk veya tek satırlık notlar için
+                            itemsHTML = `<p class="text-theme text-sm leading-relaxed whitespace-pre-wrap">${note.text}</p>`;
+                        }
+
                         li.className = `note-card bg-theme-card rounded-xl shadow-sm flex flex-col overflow-hidden ${pClass.border}`;
                         li.dataset.id = note.id;
                         li.innerHTML = `
                             ${note.image ? `<div class="h-32 overflow-hidden relative"><img src="${note.image}" class="w-full h-full object-cover transition-transform hover:scale-105 duration-500"></div>` : ''}
                             <div class="p-4 flex-grow flex flex-col">
-                                <div class="flex justify-between items-start mb-2">
+                                <div class="flex justify-between items-start mb-3">
                                     <span class="text-[10px] uppercase font-bold tracking-wider ${categoryClasses[category].label} text-white px-2 py-1 rounded-md shadow-sm">${category}</span>
                                     <div class="flex items-center gap-1">
-                                         <button class="check-btn p-1.5 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-400 hover:bg-green-50 hover:text-green-500 transition" title="Tamamla"><i data-lucide="check" class="w-4 h-4"></i></button>
+                                         <button class="check-btn p-1.5 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-400 hover:bg-green-50 hover:text-green-500 transition" title="Kartı Tamamen Bitir"><i data-lucide="check" class="w-4 h-4"></i></button>
                                          <span class="text-sm ml-1" title="${priority}">${priorityIcons[priority]}</span>
                                     </div>
                                 </div>
-                                <p class="text-theme text-sm leading-relaxed mb-4 flex-grow whitespace-pre-wrap">${note.text}</p>
+                                
+                                <div class="flex-grow mb-4">
+                                    ${itemsHTML}
+                                </div>
+
                                 <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
                                     <span class="text-xs text-gray-400 font-medium flex items-center">
                                         ${note.date ? `<i data-lucide="calendar-days" class="w-3 h-3 mr-1"></i> ${note.date.split('-').reverse().join('.')}` : ''}
@@ -754,6 +810,17 @@
                                 </div>
                             </div>
                         `;
+
+                        // Add event listeners for internal checkboxes
+                        const checkboxes = li.querySelectorAll('.item-checkbox');
+                        checkboxes.forEach(cb => {
+                            cb.addEventListener('change', (e) => {
+                                const noteId = e.target.getAttribute('data-note-id');
+                                const itemIndex = parseInt(e.target.getAttribute('data-item-index'));
+                                toggleNoteItem(noteId, itemIndex, e.target.checked);
+                            });
+                        });
+
                         li.querySelector('.check-btn').onclick = () => toggleDone(note.id, true, li);
                         li.querySelector('.del-btn').onclick = () => deleteNote(note.id, li);
                         li.querySelector('.notif-btn').onclick = () => openNotificationModal(note.id);
@@ -774,10 +841,17 @@
                         const li = document.createElement('li');
                         li.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 group';
                         li.dataset.id = note.id;
+                        
+                        // Tamamlananlarda gösterilecek metin (ilk satırını alalım çok uzunsa)
+                        let previewText = note.text;
+                        if(note.items && note.items.length > 0) {
+                             previewText = note.items[0].text + (note.items.length > 1 ? '...' : '');
+                        }
+
                         li.innerHTML = `
                             <div class="flex items-center gap-3 overflow-hidden">
-                                <div class="w-5 h-5 rounded-full border-2 border-green-500 flex items-center justify-center bg-green-500"><i data-lucide="check" class="w-3 h-3 text-white"></i></div>
-                                <span class="text-gray-400 line-through text-sm truncate">${note.text}</span>
+                                <div class="w-5 h-5 rounded-full border-2 border-green-500 flex items-center justify-center bg-green-500 shrink-0"><i data-lucide="check" class="w-3 h-3 text-white"></i></div>
+                                <span class="text-gray-400 line-through text-sm truncate">${previewText}</span>
                             </div>
                             <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button class="reopen-btn text-blue-400 hover:bg-blue-50 p-1 rounded"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
@@ -791,13 +865,26 @@
                 }
             }
 
-            // --- Actions ---
+            // Metni satırlara bölüp items objelerine çeviren yardımcı fonksiyon
+            function parseTextToItems(rawText) {
+                if (!rawText) return [];
+                // Satırlara böl, boşlukları temizle, boş satırları at
+                const lines = rawText.split('\n').map(line => line.trim()).filter(line => line !== '');
+                return lines.map(line => {
+                    // Eğer satır "-" veya "•" ile başlıyorsa temizle ki UI'da tekrar tire gözükmesin (isteğe bağlı, şimdilik olduğu gibi alıyoruz)
+                    return { text: line, done: false };
+                });
+            }
+
             function addNote() {
                 const text = noteInput.value.trim();
                 if (text) {
+                    const itemsArray = parseTextToItems(text);
+
                     const newNote = { 
                         id: Date.now().toString(), 
-                        text, 
+                        text: text, // Orjinal texti de saklıyoruz her ihtimale karşı
+                        items: itemsArray, // YENİ: Alt alta maddeler
                         date: noteDateInput.value, 
                         category: noteCategoryInput.value, 
                         priority: notePriorityInput.value,
@@ -820,9 +907,20 @@
                 const text = editNoteInput.value.trim();
                 if (!text) { showStatus("Boş not olmaz.", true); return; }
 
+                // Edit yaparken eski "done" durumlarını korumaya çalış
+                const oldItems = allNotes[idx].items || [];
+                const newLines = text.split('\n').map(l => l.trim()).filter(l => l !== '');
+                
+                const newItemsArray = newLines.map(line => {
+                    // Eski itemlerde bu text varsa done durumunu kopyala
+                    const existing = oldItems.find(oi => oi.text === line);
+                    return { text: line, done: existing ? existing.done : false };
+                });
+
                 allNotes[idx] = {
                     ...allNotes[idx],
-                    text,
+                    text: text,
+                    items: newItemsArray,
                     date: editNoteDateInput.value,
                     category: editNoteCategoryInput.value,
                     priority: editNotePriorityInput.value,
@@ -834,6 +932,26 @@
                 showStatus("Not güncellendi.");
             }
 
+            // Kart içindeki spesifik bir maddeyi işaretleme
+            function toggleNoteItem(noteId, itemIndex, isDone) {
+                const note = allNotes.find(n => n.id === noteId);
+                if (note && note.items && note.items[itemIndex]) {
+                    note.items[itemIndex].done = isDone;
+                    
+                    // Tüm maddeler bitmişse kartı da tamamen bitir animasyonu yapabiliriz
+                    const allItemsDone = note.items.every(item => item.done);
+                    if (allItemsDone) {
+                        confetti({ particleCount: 50, spread: 40, origin: { y: 0.6 } }); 
+                        // İsterseniz otomatik kartı da done yapabilirsiniz:
+                        // toggleDone(noteId, true, document.querySelector(`.note-card[data-id="${noteId}"]`));
+                    }
+                    
+                    saveNotes();
+                    renderAll(); // Sadece görseli güncelle
+                }
+            }
+
+            // Kartı tamamen bitirme
             function toggleDone(id, isDone, element) {
                 const note = allNotes.find(n => n.id == id);
                 if (note) {
@@ -865,7 +983,6 @@
                 }
             }
             
-            // --- Helpers ---
             function addGlobalCompletedNotesEventListeners() {
                 completedNoteList.addEventListener('click', (e) => {
                     const li = e.target.closest('li');
@@ -877,7 +994,6 @@
             }
 
             function renderReminders() {
-                // Basit hatırlatma kartları (Bugün/Yarın)
                 remindersContainer.innerHTML = '';
                 const today = new Date().toISOString().split('T')[0];
                 const notes = allNotes.filter(n => !n.done && n.date === today);
@@ -885,7 +1001,11 @@
                     remindersContainer.innerHTML = `
                         <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 rounded-r-lg">
                             <h4 class="font-bold text-orange-700 dark:text-orange-400 mb-2 flex items-center"><i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Bugünün İşleri</h4>
-                            <ul class="list-disc list-inside text-sm text-orange-800 dark:text-orange-300">${notes.map(n => `<li>${n.text}</li>`).join('')}</ul>
+                            <ul class="list-disc list-inside text-sm text-orange-800 dark:text-orange-300">${notes.map(n => {
+                                let title = n.text;
+                                if(n.items && n.items.length > 0) title = n.items[0].text + '...';
+                                return `<li>${title}</li>`;
+                            }).join('')}</ul>
                         </div>`;
                 }
             }
@@ -897,8 +1017,11 @@
                 const mult = notificationUnitSelect.value === 'minutes' ? 60000 : notificationUnitSelect.value === 'hours' ? 3600000 : 86400000;
                 
                 if ('Notification' in window && Notification.permission === 'granted') {
+                    let bodyText = note.text;
+                    if(note.items && note.items.length > 0) bodyText = note.items[0].text + '...';
+
                     setTimeout(() => {
-                        new Notification("Hatırlatma: Cepte Not", { body: note.text });
+                        new Notification("Hatırlatma: Cepte Not", { body: bodyText });
                     }, val * mult);
                     showStatus("Hatırlatma kuruldu.");
                 } else {
@@ -924,7 +1047,6 @@
 
             function toggleSpeechRecognition() {
                 if(isRecording) {
-                    // Kullanıcı manuel durduruyor, döngüyü kır
                     isRecording = false; 
                     recognition.stop();
                     stopRecordingVisuals();
@@ -937,6 +1059,12 @@
                 if (!GITHUB_CONFIG.token) {
                     const local = localStorage.getItem('mersinNotes');
                     allNotes = local ? JSON.parse(local) : [];
+                    // Geriye dönük uyumluluk: eski notların items arrayi yoksa oluştur
+                    allNotes.forEach(note => {
+                        if (!note.items && note.text) {
+                            note.items = parseTextToItems(note.text);
+                        }
+                    });
                     renderAll();
                     return;
                 }
@@ -947,6 +1075,10 @@
                     if (res.ok) {
                         const data = await res.json();
                         allNotes = JSON.parse(decodeURIComponent(escape(window.atob(data.content))));
+                        // Veri dönüşümü
+                        allNotes.forEach(note => {
+                            if (!note.items && note.text) note.items = parseTextToItems(note.text);
+                        });
                         renderAll();
                         showStatus("Senkronize edildi.");
                     } else {
@@ -955,6 +1087,9 @@
                 } catch (e) {
                     const local = localStorage.getItem('mersinNotes');
                     allNotes = local ? JSON.parse(local) : [];
+                     allNotes.forEach(note => {
+                        if (!note.items && note.text) note.items = parseTextToItems(note.text);
+                    });
                     renderAll();
                 }
             }
@@ -969,7 +1104,7 @@
                         method: 'PUT',
                         headers: { 'Authorization': `token ${GITHUB_CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' },
                         body: JSON.stringify({
-                            message: 'Update via Cepte Not v3',
+                            message: 'Update via Cepte Not v4',
                             content: window.btoa(unescape(encodeURIComponent(JSON.stringify(allNotes)))),
                             sha
                         })
