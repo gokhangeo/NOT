@@ -1,1119 +1,1188 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cepte Not v4.0</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Lucide İkonları -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <!-- Konfeti Efekti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
-    <style>
-        :root {
-            --bg-color: #f7f8fc;
-            --text-color: #1f2937;
-            --card-bg: #ffffff;
-            --input-bg: #ffffff;
-            --input-border: #e5e7eb;
-            --modal-bg: #ffffff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cepte Not v4.0 - Dijital Ajanda Panosu</title>
+  
+  <!-- Tailwind CSS CDN & Config for Dark Mode -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {}
+      }
+    }
+  </script>
+  <!-- Google Fonts: Space Grotesk and Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-        body.dark {
-            --bg-color: #111827;
-            --text-color: #f3f4f6;
-            --card-bg: #1f2937;
-            --input-bg: #374151;
-            --input-border: #4b5563;
-            --modal-bg: #1f2937;
-        }
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(at top left, rgba(99,102,241,0.06), transparent 50%),
+                  radial-gradient(at bottom right, rgba(168,85,247,0.04), transparent 50%),
+                  #f1f5f9;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
+    .dark body {
+      background: radial-gradient(at top left, rgba(99,102,241,0.15), transparent 50%),
+                  radial-gradient(at bottom right, rgba(168,85,247,0.1), transparent 50%),
+                  #0f172a; /* slate-900 */
+    }
 
-        .main-container {
-            max-width: 900px;
-            margin: auto;
-        }
-        
-        .header-gradient {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        }
+    .display-font { font-family: 'Space Grotesk', sans-serif; }
+    .mono-font { font-family: 'JetBrains Mono', monospace; }
 
-        .bg-theme-card { background-color: var(--card-bg); transition: background-color 0.3s; }
-        .text-theme { color: var(--text-color); }
-        .input-theme { 
-            background-color: var(--input-bg); 
-            border-color: var(--input-border); 
-            color: var(--text-color);
-        }
-        .input-theme::placeholder { color: #9ca3af; }
+    /* Elegant frosted glass classes */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+    }
+    .dark .glass-card {
+      background: rgba(30, 41, 59, 0.6); /* slate-800 */
+      border-color: rgba(71, 85, 105, 0.5); /* slate-600 */
+    }
 
-        .modal-backdrop { transition: opacity 0.3s ease; }
-        .modal-content {
-            background-color: var(--modal-bg);
-            transition: all 0.3s ease;
-            transform: translateY(20px) scale(0.95);
-            opacity: 0;
-        }
-        .modal-backdrop.open { opacity: 1; }
-        .modal-backdrop.open .modal-content { transform: translateY(0) scale(1); opacity: 1; }
+    .glass-card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .glass-card-hover:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.12);
+      border-color: rgba(99, 102, 241, 0.2);
+    }
+    .dark .glass-card-hover:hover {
+      background: rgba(30, 41, 59, 0.8);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .note-card {
-            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            transition: all 0.3s ease;
-            border-left-width: 5px; 
-            border-top-width: 1px;
-            border-right-width: 1px;
-            border-bottom-width: 1px;
-            border-color: var(--input-border);
-        }
-        .note-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        }
-        .note-card.exiting { opacity: 0; transform: scale(0.95); }
-        
-        .fab {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .fab:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.5); }
-        
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-        .listening-active {
-            animation: pulse-red 1.5s infinite;
-            background-color: #ef4444 !important; 
-            color: white !important;
-            border-color: #ef4444 !important;
-        }
+    .glass-input {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      transition: all 0.2s ease;
+    }
+    .glass-input:focus {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+    .dark .glass-input {
+      background: rgba(15, 23, 42, 0.6);
+      border-color: rgba(71, 85, 105, 0.6);
+      color: white;
+    }
+    .dark .glass-input:focus {
+      background: rgba(15, 23, 42, 0.95);
+    }
 
-        .cat-label-İş { background-color: #3b82f6; }
-        .cat-label-Kişisel { background-color: #10b981; }
-        .cat-label-Market { background-color: #f59e0b; }
-        
-        .category-filter { transition: all 0.2s ease; border: 1px solid transparent; }
-        .category-filter.active { transform: scale(1.05); }
-        .cat-filter-İş.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
-        .cat-filter-Kişisel.active { background-color: #10b981; color: white; border-color: #10b981; }
-        .cat-filter-Market.active { background-color: #f59e0b; color: white; border-color: #f59e0b; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.5); }
+    .dark ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.2); }
 
-        .priority-Yüksek { border-left-color: #ef4444; }
-        .priority-Normal { border-left-color: #3b82f6; }
-        .priority-Düşük { border-left-color: #6b7280; }
+    #confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
 
-        .stat-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--input-border);
-            transition: transform 0.2s;
-        }
-        .stat-card:hover { transform: translateY(-2px); }
-
-        /* Yeni Eklenen: Liste elemanları için stiller */
-        .list-item-done {
-            text-decoration: line-through;
-            color: #9ca3af; /* gri renk */
-            transition: all 0.3s ease;
-        }
-        .custom-checkbox {
-            appearance: none;
-            width: 1rem;
-            height: 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.25rem;
-            display: inline-grid;
-            place-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-        }
-        .custom-checkbox::before {
-            content: "";
-            width: 0.65em;
-            height: 0.65em;
-            transform: scale(0);
-            transition: 120ms transform ease-in-out;
-            box-shadow: inset 1em 1em white;
-            background-color: white;
-            transform-origin: bottom left;
-            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-        }
-        .custom-checkbox:checked {
-            background-color: #10b981; /* Tailwind emerald-500 */
-            border-color: #10b981;
-        }
-        .custom-checkbox:checked::before {
-            transform: scale(1);
-        }
-    </style>
+    @keyframes pulse-ring { 0% { transform: scale(0.95); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(0.95); opacity: 0.5; } }
+    .voice-pulse { animation: pulse-ring 2s infinite ease-in-out; }
+    @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  </style>
 </head>
-<body class="p-4 md:p-8 transition-colors duration-300">
+<body class="selection:bg-indigo-100 selection:text-indigo-900 dark:selection:bg-indigo-900 dark:selection:text-indigo-100 pb-16 text-slate-800 dark:text-slate-200">
 
-    <div class="main-container">
-    
-        <!-- Header -->
-        <header class="p-6 header-gradient text-white rounded-2xl shadow-lg relative mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="text-center md:text-left">
-                <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-2">
-                    <i data-lucide="notebook-pen" class="w-8 h-8"></i> Cepte Not
-                </h1>
-                <p class="text-xs text-white opacity-80 mt-1">Müdürüm, işleriniz kontrol altında.</p>
-            </div>
-            
-            <div class="flex items-center gap-3">
-                <button id="export-btn" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition" title="Notları İndir">
-                    <i data-lucide="download" class="w-5 h-5"></i>
-                </button>
-                <button id="theme-toggle" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition" title="Karanlık Mod">
-                    <i data-lucide="moon" class="w-5 h-5"></i>
-                </button>
-            </div>
-            
-            <div id="status-indicator" class="absolute top-4 right-4 md:top-auto md:bottom-4 md:right-4 text-xs font-semibold px-2 py-1 rounded-full opacity-0 transition-opacity bg-white text-indigo-600 shadow"></div>
-        </header>
+  <!-- Interactive Confetti Layer -->
+  <canvas id="confetti-canvas"></canvas>
 
-        <!-- İstatistik Paneli -->
-        <div class="grid grid-cols-3 gap-3 mb-6">
-            <div class="stat-card p-3 rounded-xl shadow-sm text-center">
-                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Toplam</p>
-                <p id="stat-total" class="text-xl font-bold text-indigo-600 dark:text-indigo-400">0</p>
-            </div>
-            <div class="stat-card p-3 rounded-xl shadow-sm text-center">
-                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Bekleyen</p>
-                <p id="stat-pending" class="text-xl font-bold text-orange-500">0</p>
-            </div>
-            <div class="stat-card p-3 rounded-xl shadow-sm text-center">
-                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Biten</p>
-                <p id="stat-completed" class="text-xl font-bold text-green-500">0</p>
-            </div>
-        </div>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10">
 
-        <!-- Arama ve Filtreleme -->
-        <div class="flex flex-col md:flex-row gap-4 mb-8">
-            <div class="relative flex-grow">
-                <input type="search" id="search-input" placeholder="Notlarda ara..." class="input-theme w-full p-3 pl-10 rounded-xl shadow-sm border focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
-                <i data-lucide="search" class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            </div>
-            <div id="category-filters" class="flex flex-wrap justify-center gap-2">
-                <!-- JS ile dolacak -->
-            </div>
-        </div>
-
-        <!-- Not Listesi -->
-        <div id="note-list-container">
-            <ul id="note-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- JS ile dolacak -->
-            </ul>
-        </div>
+    <!-- HEADER STATUS RUN BAR -->
+    <header class="glass-card rounded-3xl p-6 mb-8 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-24 -top-24 w-48 h-48 bg-indigo-400/10 dark:bg-indigo-400/20 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         
-        <!-- Hatırlatma Kartları -->
-        <div id="reminders-container" class="mt-8 space-y-4"></div>
+        <!-- Logo Branding -->
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-600/20">
+            <i data-lucide="sparkles" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl sm:text-2xl font-extrabold display-font tracking-tight text-slate-800 dark:text-slate-100">Cepte Not</h1>
+              <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-indigo-200/50 dark:border-indigo-700/50 uppercase tracking-wider">v4.0 PRO</span>
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-sans tracking-wide">Yapay zekaya uyumlu, gelişmiş ses dikte ve otomatik bulut yedeklemeli ajanda</p>
+          </div>
+        </div>
+
+        <!-- Right Headers Widgets & Action buttons -->
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          
+          <!-- Cloud Synced Notification -->
+          <div id="sync-status-box" class="flex items-center gap-2 px-3 py-1.5 bg-white/65 dark:bg-slate-800/60 border border-white/80 dark:border-slate-700/80 rounded-xl text-[10px] text-slate-500 dark:text-slate-300 font-mono shadow-sm transition-colors">
+            <span class="w-2 h-2 rounded-full bg-slate-400 ring-4 ring-slate-400/20" id="sync-status-dot"></span>
+            <span id="sync-status-text">Bağlanıyor...</span>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button onclick="toggleTheme()" title="Temayı Değiştir" class="flex items-center justify-center p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl transition cursor-pointer shadow-sm">
+            <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+          </button>
+
+          <!-- Txt Export -->
+          <button onclick="exportAllAsTxt()" title="Tüm notlarımı .txt olarak indir" class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-3.5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-sm">
+            <i data-lucide="download" class="w-4 h-4 text-slate-500 dark:text-slate-400"></i>
+            <span class="hidden sm:inline">TXT Rapor</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- MIDDLE STATS & BANNER ROW -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      
+      <!-- Primary Action CTA Button -->
+      <div class="md:col-span-1">
+        <button onclick="openNoteModal()" class="w-full h-full min-h-[82px] flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white p-5 rounded-3xl transition-all duration-300 shadow-xl shadow-indigo-600/10 cursor-pointer group hover:scale-[1.01]">
+          <div class="bg-white/10 p-2 rounded-xl group-hover:scale-110 transition">
+            <i data-lucide="plus-circle" class="w-6 h-6 text-white"></i>
+          </div>
+          <div class="text-left">
+            <span class="block text-sm font-extrabold tracking-tight">Yeni Not Ekle</span>
+            <span class="block text-[10px] text-indigo-100 font-medium font-sans">Alt görevler ve alarm kur</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Quick Interactive Stats Counters -->
+      <div class="md:col-span-3 grid grid-cols-3 gap-4">
+        <!-- Stat Total -->
+        <div class="glass-card rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div class="p-3 bg-indigo-500/10 rounded-2xl text-indigo-600 dark:text-indigo-400 border border-indigo-500/10 shrink-0">
+            <i data-lucide="folder-open" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 block tracking-widest font-mono">Toplam</span>
+            <span class="text-lg sm:text-2xl font-black text-slate-800 dark:text-slate-100 display-font mt-0.5 block" id="stat-total-notes">0</span>
+          </div>
+        </div>
+        <!-- Stat Pending -->
+        <div class="glass-card rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div class="p-3 bg-amber-500/10 rounded-2xl text-amber-700 dark:text-amber-500 border border-amber-500/10 shrink-0">
+            <i data-lucide="clock" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 block tracking-widest font-mono">Yapılacak</span>
+            <span class="text-lg sm:text-2xl font-black text-slate-800 dark:text-slate-100 display-font mt-0.5 block" id="stat-pending-notes">0</span>
+          </div>
+        </div>
+        <!-- Stat Completed -->
+        <div class="glass-card rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div class="p-3 bg-emerald-500/10 rounded-2xl text-emerald-600 dark:text-emerald-400 border border-emerald-500/10 shrink-0">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 block tracking-widest font-mono">Tamamlanan</span>
+            <span class="text-lg sm:text-2xl font-black text-slate-800 dark:text-slate-100 display-font mt-0.5 block" id="stat-completed-notes">0</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MAIN INTERACTIVE FILTER TABS CONTROL -->
+    <div class="flex flex-col gap-4 mb-8">
+      
+      <!-- Category Badge buttons -->
+      <div class="flex flex-wrap items-center gap-2" id="category-filter-container">
+        <!-- Will be dynamically populated -->
+      </div>
+
+      <!-- Live Search Box with Icon overlay -->
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+          <i data-lucide="search" class="w-4.5 h-4.5"></i>
+        </div>
+        <input 
+          type="text" 
+          id="search-input" 
+          oninput="renderNotes()" 
+          placeholder="Notlarda, içerikte veya alt görevlerde gerçek zamanlı ara..." 
+          class="glass-input w-full pl-11 pr-11 py-3.5 sm:py-4 rounded-2xl shadow-sm outline-none font-medium text-sm transition text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
+        >
+        <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer">
+          <i data-lucide="x-circle" class="w-4.5 h-4.5"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- CENTRAL RESULTS CARDS GRID DISPLAY -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="notes-grid-container">
+      <!-- Notes cards will render here dynamically -->
+    </div>
+
+    <!-- Empty state banner -->
+    <div id="empty-state-banner" class="hidden glass-card rounded-3xl p-16 text-center max-w-md mx-auto flex flex-col items-center border border-dashed border-indigo-200/60 dark:border-indigo-500/30 shadow-lg animate-fade-in">
+      <div class="w-16 h-16 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-full flex items-center justify-center text-indigo-400 mb-4 border border-white/80 dark:border-slate-700 shadow-sm">
+        <i data-lucide="list-todo" class="w-8 h-8"></i>
+      </div>
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Görselde Not Bulunamadı</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs">Girdiğiniz arama terimini değiştirebilir veya kategoriler arası süzgeçleri sıfırlayabilirsiniz. Biten işler ana panoda gizlenmektedir.</p>
+      <button onclick="resetAllFilters()" class="mt-5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition cursor-pointer shadow-md">
+        Filtreleri Sıfırla
+      </button>
+    </div>
+
+  </div>
+
+  <!-- NOTE ADJUSTMENT CREATE OR EDIT MODAL DOCK -->
+  <div id="note-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-fade-in">
+    <div class="relative w-full max-w-2xl bg-white/90 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/60 dark:border-slate-700 overflow-hidden transform transition duration-300 scale-100 max-h-[92vh] flex flex-col">
+      
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-indigo-700 via-purple-700 to-indigo-800 text-white p-6 flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-white/10 rounded-xl">
+            <i data-lucide="file-text" class="w-5 h-5 text-indigo-200"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-extrabold display-font" id="modal-title-text">Yeni Not Oluştur</h2>
+            <p class="text-[10px] text-indigo-100/70 font-sans tracking-wide">Fikirler, alt görevler ve alarmlarla zenginleştirin</p>
+          </div>
+        </div>
+        <button onclick="closeNoteModal()" class="p-2 hover:bg-white/10 text-indigo-200 hover:text-white rounded-lg transition shrink-0 cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-5 flex-1 select-none">
+        <input type="hidden" id="modal-note-id" value="">
+
+        <!-- Title -->
+        <div>
+          <label class="block text-[10px] font-bold text-indigo-950 dark:text-indigo-300 uppercase tracking-wider mb-1.5 font-mono">Not Başlığı</label>
+          <input 
+            type="text" 
+            id="modal-note-title" 
+            placeholder="Toplantı hazırlığı, market listesi..." 
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 font-semibold text-sm transition"
+          >
+        </div>
+
+        <!-- Description (Content) with voice input support dock -->
+        <div>
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="block text-[10px] font-bold text-indigo-950 dark:text-indigo-300 uppercase tracking-wider font-mono">Not İçeriği / Detaylar</label>
+            <!-- STYLISH VOICE SPEECH TRANSCRIBER DOCK BUTTON -->
+            <button 
+              id="voice-dictate-btn" 
+              onclick="toggleVoiceDictation(event)" 
+              title="Mikrofon kullanarak dikte et (Sesli yazım)"
+              class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-lg transition cursor-pointer"
+            >
+              <i data-lucide="mic" class="w-3.5 h-3.5 shrink-0" id="voice-mic-icon"></i>
+              <span id="voice-btn-text">Sesli Yaz</span>
+            </button>
+          </div>
+          <textarea 
+            id="modal-note-content" 
+            rows="4" 
+            placeholder="Not detaylarını buraya girebilir veya sesten yazıya dönüştürme aracını kullanabilirsiniz..." 
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 text-sm transition leading-relaxed font-sans"
+          ></textarea>
+        </div>
+
+        <!-- Two columns for Category and Priority -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <!-- Category Selector -->
+          <div>
+            <label class="block text-[10px] font-bold text-indigo-950 dark:text-indigo-300 uppercase tracking-wider mb-1.5 font-mono">Kategori</label>
+            <select 
+              id="modal-note-category" 
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-semibold cursor-pointer"
+            >
+              <option value="İş">💼 İş</option>
+              <option value="Kişisel">🌹 Kişisel</option>
+              <option value="Market">🛒 Market</option>
+              <option value="Eğitim">🎓 Eğitim</option>
+              <option value="Diğer">🏷️ Diğer</option>
+            </select>
+          </div>
+
+          <!-- Priority Selector -->
+          <div>
+            <label class="block text-[10px] font-bold text-indigo-950 dark:text-indigo-300 uppercase tracking-wider mb-1.5 font-mono">Öncelik Derecesi</label>
+            <select 
+              id="modal-note-priority" 
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-semibold cursor-pointer"
+            >
+              <option value="düşük">🟢 Düşük Öncelik</option>
+              <option value="orta">🟡 Orta Öncelik</option>
+              <option value="yüksek">🔴 Yüksek Öncelik</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Alarms Settings Date timer picker -->
+        <div>
+          <label class="block text-[10px] font-bold text-indigo-950 dark:text-indigo-300 uppercase tracking-wider mb-1.5 font-mono">⏰ Alarm / Hatırlatıcı Zamanı (İsteğe Bağlı)</label>
+          <input 
+            type="datetime-local" 
+            id="modal-note-alarm" 
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 text-xs font-mono font-bold cursor-pointer"
+          >
+        </div>
+
+        <!-- Dynamic inline Subtask List builder -->
+        <div class="border-t border-slate-100 dark:border-slate-800 pt-4">
+          <label class="block text-[10px] font-bold text-indigo-950 dark:text-indigo-300 uppercase tracking-wider mb-2 font-mono">Alt Görevler Listesi</label>
+          <div class="flex gap-2 mb-3">
+            <input 
+              type="text" 
+              id="modal-subtask-input" 
+              placeholder="Yeni alt görev girip enter'a basın..." 
+              onkeydown="if(event.key === 'Enter') { event.preventDefault(); addSubtaskToModal(); }"
+              class="flex-1 px-4 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:border-indigo-500"
+            >
+            <button onclick="addSubtaskToModal()" class="px-4 py-2 bg-slate-900 dark:bg-indigo-600 border border-slate-800 dark:border-indigo-500 text-white font-bold text-xs rounded-xl hover:bg-slate-800 dark:hover:bg-indigo-700 transition cursor-pointer shrink-0">
+              Ekle
+            </button>
+          </div>
+          <div class="space-y-1.5 max-h-[140px] overflow-y-auto pr-1" id="modal-subtasks-container">
+            <!-- Will keep list rows with trash icons -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer actions -->
+      <div class="bg-slate-50 dark:bg-slate-800/50 p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 shrink-0">
+        <button onclick="closeNoteModal()" class="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-xl transition cursor-pointer">
+          Vazgeç
+        </button>
+        <button onclick="saveNoteFromModal()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold rounded-xl transition cursor-pointer shadow-md">
+          Notu Kaydet
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ACTIVE ALARM VISUAL PANEL DIALOG OVERLAY -->
+  <div id="alarm-ring-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-rose-950/70 backdrop-blur-md animate-fade-in">
+    <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-rose-200 dark:border-rose-900 overflow-hidden p-6 sm:p-8 text-center animate-bounce">
+      
+      <!-- Ring Icon -->
+      <div class="w-16 h-16 bg-rose-500 rounded-full flex items-center justify-center text-white mx-auto mb-4 border-4 border-rose-100 dark:border-rose-900/50 shadow-md animate-pulse">
+        <i data-lucide="bell-ring" class="w-8 h-8"></i>
+      </div>
+
+      <h2 class="text-xl font-extrabold text-slate-800 dark:text-slate-100 display-font mb-2">⏰ Çalar Saat Zamanı Geldi!</h2>
+      <p class="text-xs text-rose-800 dark:text-rose-300 font-mono font-bold bg-rose-50 dark:bg-rose-900/30 border border-rose-100 dark:border-rose-800 px-3 py-1.5 rounded-xl inline-block mb-4 uppercase">Cepte Not Hatırlatıcısı</p>
+      
+      <p class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed mb-6" id="alarm-ring-title">Not Başlığı Belirleniyor...</p>
+
+      <div class="space-y-2">
+        <button onclick="dismissAlarmChime()" class="w-full px-5 py-3 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm rounded-xl transition cursor-pointer shadow-lg shadow-rose-600/20">
+          Alarmı Kapat / Sustur
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP CONTROLLER LOGIC ENGINE -->
+  <script>
+    // Global Constants
+    const CATEGORIES = ["Tümü", "İş", "Kişisel", "Market", "Eğitim", "Diğer", "Tamamlananlar"];
+    
+    // GITHUB SETTINGS (Hardcoded from Previous Instruction)
+    const tokenPart1 = 'ghp_2KS6iY7t1ka6bK';
+    const tokenPart2 = 'yHwONJkXdwOUVhrU';
+    const tokenPart3 = '3PqlSX';
+    const GITHUB_CONFIG = {
+        token: tokenPart1 + tokenPart2 + tokenPart3,
+        owner: 'gokhangeo',
+        repo: 'NOT',
+        path: 'notes.json'
+    };
+
+    // State Management
+    let notes = [];
+    let selectedCategory = "Tümü";
+    let currentModalSubtasks = [];
+    let activeAlarmId = null;
+    let alarmSoundTimer = null;
+    let audioCtx = null;
+    let dictationInstance = null;
+    let isDictating = false;
+
+    // THEME HANDLING
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        // Varsayılan karanlık mod (veya localStorage 'dark' ise)
+        document.documentElement.classList.add('dark');
+      }
+    }
+
+    // AUDIO CHIME SYNTHESIZER
+    function playAlarmSynthesizer() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
         
-        <!-- Tamamlanan Notlar -->
-        <div id="global-completed-container" class="mt-8">
-            <div id="completed-notes-accordion" class="bg-theme-card p-4 rounded-xl shadow-md hidden border border-gray-200 dark:border-gray-700">
-                <button id="completed-notes-toggle" class="w-full flex justify-between items-center text-left text-theme font-semibold">
-                    <span class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-500"></i> Tamamlananlar</span>
-                    <div class="flex items-center">
-                        <span id="completed-count" class="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 rounded-full px-2.5 py-0.5 mr-2 font-bold">0</span>
-                        <i data-lucide="chevron-down" id="completed-chevron" class="w-5 h-5 transition-transform"></i>
-                    </div>
-                </button>
-                <div id="completed-notes-panel" class="hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <ul id="completed-note-list" class="space-y-2"></ul>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- FAB -->
-    <button id="open-add-note-modal" class="fab w-14 h-14 md:w-16 md:h-16 rounded-full fixed bottom-6 right-6 md:bottom-8 md:right-8 flex items-center justify-center text-white shadow-2xl z-40 hover:rotate-90 transition-transform">
-        <i data-lucide="plus" class="w-8 h-8"></i>
-    </button>
-    
-    <!-- Ekleme Modalı -->
-    <div id="add-note-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">
-        <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700">
-            <h3 class="text-xl font-bold mb-4 text-theme">Yeni Not Oluştur</h3>
-            <p class="text-xs text-gray-500 mb-2">İpucu: Her yeni satır otomatik olarak bir liste maddesi olur.</p>
-            <div class="flex flex-col gap-4">
-                <!-- Textarea for input -->
-                <textarea id="note-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 min-h-[100px]" placeholder="- ŞANTİYE DEFTERİ&#10;- KONTROL DEFTERİ&#10;- BİLGİLENDİRME TOPL."></textarea>
-                
-                <div class="flex items-center gap-3">
-                    <label for="image-input" class="cursor-pointer flex-1 p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm flex items-center justify-center gap-2">
-                        <i data-lucide="image" class="w-4 h-4"></i>
-                        <span>Görsel Ekle</span>
-                    </label>
-                    <input type="file" id="image-input" class="hidden" accept="image/*">
-                    <div id="image-preview-container" class="hidden relative w-12 h-12 shrink-0">
-                        <img id="image-preview" src="" class="w-full h-full object-cover rounded-lg border dark:border-gray-600">
-                        <button id="remove-image-btn" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-sm"><i data-lucide="x" class="w-3 h-3"></i></button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="date" id="note-date-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
-                    <select id="note-category-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
-                        <option value="İş">İş</option>
-                        <option value="Kişisel" selected>Kişisel</option>
-                        <option value="Market">Market</option>
-                    </select>
-                </div>
-                
-                <select id="note-priority-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
-                    <option value="Normal" selected>Öncelik: Normal 🔵</option>
-                    <option value="Yüksek">Öncelik: Yüksek 🔥</option>
-                    <option value="Düşük">Öncelik: Düşük 🔽</option>
-                </select>
-            </div>
-            <div class="mt-6 flex justify-between items-center">
-                <button id="start-speech-btn" class="p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition relative group border-2 border-transparent" title="Sesli Yaz">
-                    <i data-lucide="mic" class="w-6 h-6"></i>
-                    <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">Konuş</span>
-                </button>
-                <div class="flex gap-3">
-                    <button id="cancel-add-note-btn" class="px-5 py-2 text-gray-500 hover:text-theme transition">İptal</button>
-                    <button id="add-note-btn" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-500/30 transition transform active:scale-95">Kaydet</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Düzenleme Modalı -->
-    <div id="edit-note-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">
-        <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700">
-            <h3 class="text-xl font-bold mb-4 text-theme">Notu Düzenle</h3>
-            <div class="flex flex-col gap-4">
-                <textarea id="edit-note-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 min-h-[100px]"></textarea>
-                
-                <div class="flex items-center gap-3">
-                    <label for="edit-image-input" class="cursor-pointer flex-1 p-3 bg-gray-100 dark:bg-gray-700 text-theme rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm flex items-center justify-center gap-2">
-                        <i data-lucide="image" class="w-4 h-4"></i>
-                        <span>Görseli Değiştir</span>
-                    </label>
-                    <input type="file" id="edit-image-input" class="hidden" accept="image/*">
-                    <div id="edit-image-preview-container" class="hidden relative w-12 h-12 shrink-0">
-                        <img id="edit-image-preview" src="" class="w-full h-full object-cover rounded-lg border dark:border-gray-600">
-                        <button id="edit-remove-image-btn" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-sm"><i data-lucide="x" class="w-3 h-3"></i></button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="date" id="edit-note-date-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
-                    <select id="edit-note-category-input" class="input-theme p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
-                        <option value="İş">İş</option>
-                        <option value="Kişisel">Kişisel</option>
-                        <option value="Market">Market</option>
-                    </select>
-                </div>
-                
-                <select id="edit-note-priority-input" class="input-theme w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500">
-                    <option value="Normal">Öncelik: Normal 🔵</option>
-                    <option value="Yüksek">Öncelik: Yüksek 🔥</option>
-                    <option value="Düşük">Öncelik: Düşük 🔽</option>
-                </select>
-            </div>
-            <div class="mt-6 flex justify-end gap-3">
-                <button id="cancel-edit-note-btn" class="px-5 py-2 text-gray-500 hover:text-theme transition">İptal</button>
-                <button id="save-edit-note-btn" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-500/30 transition transform active:scale-95">Güncelle</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bildirim Modalı -->
-    <div id="notification-modal" class="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 hidden">
-        <div class="modal-content p-6 rounded-2xl shadow-2xl w-full max-w-sm border border-gray-200 dark:border-gray-700 text-center">
-            <div class="mx-auto w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mb-4">
-                <i data-lucide="bell" class="w-6 h-6 text-indigo-600 dark:text-indigo-300"></i>
-            </div>
-            <h3 class="text-lg font-bold mb-2 text-theme">Hatırlatma Kur</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Bu notu size ne zaman hatırlatayım?</p>
-            
-            <div class="flex items-center gap-2 mb-6">
-                <input type="number" id="notification-time" min="1" class="input-theme w-20 p-2 border rounded-lg text-center font-bold" value="5">
-                <select id="notification-unit" class="input-theme flex-1 p-2 border rounded-lg">
-                    <option value="minutes">Dakika Sonra</option>
-                    <option value="hours">Saat Sonra</option>
-                    <option value="days">Gün Sonra</option>
-                </select>
-            </div>
-            
-            <div class="flex justify-center gap-3">
-                <button id="cancel-notification-btn" class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-theme rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">Vazgeç</button>
-                <button id="save-notification-btn" class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-lg shadow-indigo-500/30">Kur</button>
-            </div>
-        </div>
-    </div>
-    
-    <footer class="text-center text-xs text-gray-400 py-6 mt-8">
-        © Gökhan ELGÜL tarafından tasarlanmıştır. v4.0
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Veri yapısı güncellendi: 'text' artık doğrudan gösterilmiyor, 
-            // text içindeki satırlar 'items' arrayine dönüştürülecek.
-            // Fakat geriye dönük uyumluluk için ana yapıyı bozmayacağız.
-            let allNotes = [];
-            let currentNoteForNotification = null;
-            let activeCategoryFilter = 'Tümü';
-            let currentBase64Image = null; 
-            let currentBase64ImageEdit = null;
-            let currentEditingNoteId = null;
-            const IMAGE_MAX_SIZE = 250 * 1024;
-            
-            const categoryClasses = {
-                'İş': { label: 'cat-label-İş', filter: 'cat-filter-İş' },
-                'Kişisel': { label: 'cat-label-Kişisel', filter: 'cat-filter-Kişisel' },
-                'Market': { label: 'cat-label-Market', filter: 'cat-filter-Market' }
-            };
-            const defaultCategory = 'Kişisel';
-
-            const priorityClasses = {
-                'Yüksek': { border: 'priority-Yüksek', color: 'text-red-500' },
-                'Normal': { border: 'priority-Normal', color: 'text-blue-500' },
-                'Düşük': { border: 'priority-Düşük', color: 'text-gray-500' }
-            };
-            const priorityIcons = { 'Yüksek': '🔥', 'Normal': '🔵', 'Düşük': '🔽' };
-            const defaultPriority = 'Normal';
-
-            // DOM Elements
-            const noteList = document.getElementById('note-list');
-            const statusIndicator = document.getElementById('status-indicator');
-            const remindersContainer = document.getElementById('reminders-container');
-            const categoryFiltersContainer = document.getElementById('category-filters');
-            const searchInput = document.getElementById('search-input');
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            const exportBtn = document.getElementById('export-btn');
-            const body = document.body;
-
-            // Stats Elements
-            const statTotal = document.getElementById('stat-total');
-            const statPending = document.getElementById('stat-pending');
-            const statCompleted = document.getElementById('stat-completed');
-
-            // Add Modal
-            const addNoteModal = document.getElementById('add-note-modal');
-            const openAddNoteModalBtn = document.getElementById('open-add-note-modal');
-            const cancelAddNoteBtn = document.getElementById('cancel-add-note-btn');
-            const addNoteBtn = document.getElementById('add-note-btn');
-            const noteInput = document.getElementById('note-input');
-            const noteDateInput = document.getElementById('note-date-input');
-            const noteCategoryInput = document.getElementById('note-category-input');
-            const notePriorityInput = document.getElementById('note-priority-input');
-            const imageInput = document.getElementById('image-input');
-            const imagePreviewContainer = document.getElementById('image-preview-container');
-            const imagePreview = document.getElementById('image-preview');
-            const removeImageBtn = document.getElementById('remove-image-btn');
-
-            // Edit Modal
-            const editNoteModal = document.getElementById('edit-note-modal');
-            const cancelEditNoteBtn = document.getElementById('cancel-edit-note-btn');
-            const saveEditNoteBtn = document.getElementById('save-edit-note-btn');
-            const editNoteInput = document.getElementById('edit-note-input');
-            const editNoteDateInput = document.getElementById('edit-note-date-input');
-            const editNoteCategoryInput = document.getElementById('edit-note-category-input');
-            const editNotePriorityInput = document.getElementById('edit-note-priority-input');
-            const editImageInput = document.getElementById('edit-image-input');
-            const editImagePreviewContainer = document.getElementById('edit-image-preview-container');
-            const editImagePreview = document.getElementById('edit-image-preview');
-            const editRemoveImageBtn = document.getElementById('edit-remove-image-btn');
-
-            // Speech Variables
-            const startSpeechBtn = document.getElementById('start-speech-btn');
-            let recognition;
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            let isRecording = false;
-            let finalTranscript = ''; 
-
-            // Completed Notes
-            const completedNotesToggle = document.getElementById('completed-notes-toggle');
-            const completedChevron = document.getElementById('completed-chevron');
-            const completedNotesPanel = document.getElementById('completed-notes-panel');
-            const completedNoteList = document.getElementById('completed-note-list');
-            const completedCount = document.getElementById('completed-count');
-            
-            // Notification Modal
-            const notificationModal = document.getElementById('notification-modal');
-            const notificationTimeInput = document.getElementById('notification-time');
-            const notificationUnitSelect = document.getElementById('notification-unit');
-            const saveNotificationBtn = document.getElementById('save-notification-btn');
-            const cancelNotificationBtn = document.getElementById('cancel-notification-btn');
-
-            // GitHub Config
-            const tokenPart1 = 'ghp_2KS6iY7t1ka6bK';
-            const tokenPart2 = 'yHwONJkXdwOUVhrU';
-            const tokenPart3 = '3PqlSX';
-            const GITHUB_CONFIG = {
-                token: tokenPart1 + tokenPart2 + tokenPart3,
-                owner: 'gokhangeo',
-                repo: 'NOT',
-                path: 'notes.json'
-            };
-
-            function init() {
-                fetchNotesFromGitHub();
-                loadTheme();
-                
-                // Listeners
-                openAddNoteModalBtn.addEventListener('click', openAddNoteModal);
-                cancelAddNoteBtn.addEventListener('click', closeAddNoteModal);
-                addNoteBtn.addEventListener('click', addNote);
-                addNoteModal.addEventListener('click', (e) => { if (e.target === addNoteModal) closeAddNoteModal(); });
-                imageInput.addEventListener('change', (e) => handleImageUpload(e, 'add'));
-                removeImageBtn.addEventListener('click', () => removeImage('add'));
-
-                cancelEditNoteBtn.addEventListener('click', closeEditModal);
-                saveEditNoteBtn.addEventListener('click', saveEditNote);
-                editNoteModal.addEventListener('click', (e) => { if (e.target === editNoteModal) closeEditModal(); });
-                editImageInput.addEventListener('change', (e) => handleImageUpload(e, 'edit'));
-                editRemoveImageBtn.addEventListener('click', () => removeImage('edit'));
-
-                searchInput.addEventListener('input', renderAll);
-                themeToggleBtn.addEventListener('click', toggleTheme);
-                exportBtn.addEventListener('click', exportNotes);
-
-                // GÜÇLENDİRİLMİŞ SESLİ YAZMA ÖZELLİĞİ
-                if (SpeechRecognition) {
-                    recognition = new SpeechRecognition();
-                    recognition.lang = 'tr-TR';
-                    recognition.interimResults = true;
-                    recognition.continuous = true;
-                    recognition.maxAlternatives = 3;
-                    
-                    startSpeechBtn.addEventListener('click', toggleSpeechRecognition);
-                    
-                    recognition.onstart = () => {
-                        isRecording = true;
-                        startSpeechBtn.classList.add('listening-active');
-                        showStatus("Dinliyorum...", false);
-                        finalTranscript = noteInput.value;
-                        if (finalTranscript && !finalTranscript.endsWith('\n')) {
-                            // Cümle sonuna yeni satır ekle ki maddeler alta alta gelsin
-                            finalTranscript += '\n- ';
-                        } else if (!finalTranscript) {
-                             finalTranscript += '- '; // İlk başta tire koy
-                        }
-                    };
-                    
-                    recognition.onresult = (event) => {
-                        let interimTranscript = '';
-                        for (let i = event.resultIndex; i < event.results.length; ++i) {
-                            if (event.results[i].isFinal) {
-                                // Cümle bitince yeni satıra geç ve tire koy
-                                finalTranscript += event.results[i][0].transcript + '\n- ';
-                            } else {
-                                interimTranscript += event.results[i][0].transcript;
-                            }
-                        }
-                        noteInput.value = finalTranscript + interimTranscript;
-                    };
-                    
-                    recognition.onerror = (event) => {
-                        console.error("Ses Hatası:", event.error);
-                        if (event.error !== 'no-speech') stopRecordingVisuals();
-                        if(event.error === 'not-allowed') showStatus("Mikrofon izni gerekli", true);
-                    };
-                    
-                    recognition.onend = () => {
-                        if (isRecording) {
-                             try { recognition.start(); } catch(e) {}
-                        } else {
-                             stopRecordingVisuals();
-                        }
-                    };
-                } else {
-                    startSpeechBtn.style.display = 'none';
-                    console.log("Tarayıcı ses tanımayı desteklemiyor.");
-                }
-
-                saveNotificationBtn.addEventListener('click', saveNotification);
-                cancelNotificationBtn.addEventListener('click', closeNotificationModal);
-                notificationModal.addEventListener('click', (e) => { if (e.target === notificationModal) closeNotificationModal(); });
-                
-                addGlobalCompletedNotesEventListeners();
-
-                completedNotesToggle.addEventListener('click', () => {
-                    completedNotesPanel.classList.toggle('hidden');
-                    completedChevron.classList.toggle('rotate-180');
-                });
-
-                if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') Notification.requestPermission();
-                lucide.createIcons();
-            }
-
-            function stopRecordingVisuals() {
-                isRecording = false;
-                startSpeechBtn.classList.remove('listening-active');
-            }
-
-            function toggleTheme() {
-                body.classList.toggle('dark');
-                const isDark = body.classList.contains('dark');
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                const icon = isDark ? 'sun' : 'moon';
-                themeToggleBtn.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i>`;
-                lucide.createIcons();
-            }
-
-            function loadTheme() {
-                const savedTheme = localStorage.getItem('theme');
-                if (savedTheme === 'dark') {
-                    body.classList.add('dark');
-                    themeToggleBtn.innerHTML = `<i data-lucide="sun" class="w-5 h-5"></i>`;
-                }
-            }
-
-            function exportNotes() {
-                if (allNotes.length === 0) {
-                    showStatus("İndirilecek not yok.", true);
-                    return;
-                }
-                let textContent = "CEPTE NOT - YEDEKLERİM\n\n";
-                allNotes.forEach(note => {
-                    const status = note.done ? "[TAMAMLANDI]" : "[BEKLIYOR]";
-                    textContent += `--- ${status} ---\nTarih: ${note.date || 'Yok'}\nKategori: ${note.category}\nÖncelik: ${note.priority || 'Normal'}\nİçerik:\n${note.text}\n\n`;
-                });
-
-                const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = `notlarim_${new Date().toLocaleDateString()}.txt`;
-                link.click();
-                showStatus("Notlar indirildi.");
-            }
-
-            function updateStats() {
-                const total = allNotes.length;
-                const completed = allNotes.filter(n => n.done).length;
-                const pending = total - completed;
-
-                statTotal.textContent = total;
-                statPending.textContent = pending;
-                statCompleted.textContent = completed;
-            }
-
-            function openAddNoteModal() {
-                addNoteModal.classList.remove('hidden');
-                setTimeout(() => addNoteModal.classList.add('open'), 10);
-                noteInput.value = '';
-                noteDateInput.value = '';
-                noteCategoryInput.value = 'Kişisel';
-                notePriorityInput.value = 'Normal';
-                removeImage('add');
-                noteInput.focus();
-                
-                stopRecordingVisuals();
-                if(isRecording && recognition) recognition.stop();
-            }
-            
-            function closeAddNoteModal() {
-                addNoteModal.classList.remove('open');
-                setTimeout(() => addNoteModal.classList.add('hidden'), 300);
-                if(isRecording && recognition) {
-                    isRecording = false; 
-                    recognition.stop();
-                    stopRecordingVisuals();
-                }
-            }
-
-            function openEditModal(id) {
-                const note = allNotes.find(n => n.id === id);
-                if (!note) return;
-                currentEditingNoteId = id;
-                // Textbox'ta gösterirken, eğer items arrayi varsa text'i oluştur, yoksa eski usül texti bas
-                let textToShow = note.text;
-                if(note.items && note.items.length > 0) {
-                     textToShow = note.items.map(item => item.text).join('\n');
-                }
-
-                editNoteInput.value = textToShow;
-                editNoteDateInput.value = note.date || '';
-                editNoteCategoryInput.value = note.category || defaultCategory;
-                editNotePriorityInput.value = note.priority || defaultPriority;
-                
-                currentBase64ImageEdit = note.image || null;
-                if (note.image) {
-                    editImagePreview.src = note.image;
-                    editImagePreviewContainer.classList.remove('hidden');
-                } else {
-                    removeImage('edit');
-                }
-                editNoteModal.classList.remove('hidden');
-                setTimeout(() => editNoteModal.classList.add('open'), 10);
-            }
-
-            function closeEditModal() {
-                editNoteModal.classList.remove('open');
-                setTimeout(() => editNoteModal.classList.add('hidden'), 300);
-                currentEditingNoteId = null;
-            }
-
-            function openNotificationModal(id) {
-                currentNoteForNotification = id;
-                notificationModal.classList.remove('hidden');
-                setTimeout(() => notificationModal.classList.add('open'), 10);
-                notificationTimeInput.value = '5';
-                notificationUnitSelect.value = 'minutes';
-            }
-
-            function closeNotificationModal() {
-                 notificationModal.classList.remove('open');
-                setTimeout(() => notificationModal.classList.add('hidden'), 300);
-                 currentNoteForNotification = null;
-            }
-
-            function handleImageUpload(event, mode) {
-                const file = event.target.files[0];
-                if (!file) return;
-                if (file.size > IMAGE_MAX_SIZE) {
-                    showStatus(`Resim çok büyük (Max 250KB)`, true);
-                    event.target.value = null;
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    if (mode === 'add') {
-                        currentBase64Image = e.target.result;
-                        imagePreview.src = currentBase64Image;
-                        imagePreviewContainer.classList.remove('hidden');
-                    } else {
-                        currentBase64ImageEdit = e.target.result;
-                        editImagePreview.src = currentBase64ImageEdit;
-                        editImagePreviewContainer.classList.remove('hidden');
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-
-            function removeImage(mode) {
-                if (mode === 'add') {
-                    currentBase64Image = null;
-                    imageInput.value = null;
-                    imagePreviewContainer.classList.add('hidden');
-                } else {
-                    currentBase64ImageEdit = null;
-                    editImageInput.value = null;
-                    editImagePreviewContainer.classList.add('hidden');
-                }
-            }
-
-            function renderAll() {
-                renderCategories();
-                renderNotes();
-                renderReminders();
-                renderGlobalCompletedNotes();
-                updateStats();
-                lucide.createIcons();
-            }
-
-            function renderCategories() {
-                const categories = ['İş', 'Kişisel', 'Market'];
-                categoryFiltersContainer.innerHTML = '';
-                ['Tümü', ...categories].forEach(category => {
-                    const button = document.createElement('button');
-                    button.textContent = category;
-                    let cls = 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600';
-                    if (category !== 'Tümü') cls += ` ${categoryClasses[category].filter}`;
-                    button.className = `category-filter px-3 py-1.5 text-xs font-bold rounded-lg shadow-sm ${category === activeCategoryFilter ? 'active' : cls}`;
-                    if (category === activeCategoryFilter && category === 'Tümü') button.classList.add('bg-indigo-600', 'text-white', 'dark:bg-indigo-500');
-                    
-                    button.onclick = () => { activeCategoryFilter = category; renderAll(); };
-                    categoryFiltersContainer.appendChild(button);
-                });
-            }
-
-            function renderNotes() {
-                noteList.innerHTML = '';
-                const searchTerm = searchInput.value.toLowerCase();
-                const activeNotes = allNotes.filter(note => {
-                    const matchesCategory = activeCategoryFilter === 'Tümü' || (note.category || defaultCategory) === activeCategoryFilter;
-                    // Arama mantığını items üzerinden de yap
-                    let searchableText = note.text;
-                    if(note.items && note.items.length > 0) {
-                        searchableText = note.items.map(i => i.text).join(' ');
-                    }
-                    const matchesSearch = !searchTerm || searchableText.toLowerCase().includes(searchTerm);
-                    return !note.done && matchesCategory && matchesSearch;
-                });
-
-                if (activeNotes.length === 0) {
-                    noteList.innerHTML = `<li class="col-span-full text-center text-gray-400 py-10 flex flex-col items-center"><i data-lucide="clipboard-list" class="w-10 h-10 mb-2 opacity-50"></i><p>Burada gösterilecek not yok Müdürüm.</p></li>`;
-                } else {
-                    activeNotes.forEach(note => {
-                        const li = document.createElement('li');
-                        const category = note.category || defaultCategory;
-                        const priority = note.priority || defaultPriority;
-                        const pClass = priorityClasses[priority];
-                        
-                        // YENİ: Alt alta liste mantığı oluşturuluyor
-                        let itemsHTML = '';
-                        if (note.items && note.items.length > 0) {
-                            itemsHTML = `<ul class="space-y-2 mt-2">`;
-                            note.items.forEach((item, index) => {
-                                const checkedClass = item.done ? 'list-item-done' : 'text-theme';
-                                const isChecked = item.done ? 'checked' : '';
-                                itemsHTML += `
-                                    <li class="flex items-start gap-2">
-                                        <input type="checkbox" class="custom-checkbox mt-0.5 item-checkbox" data-note-id="${note.id}" data-item-index="${index}" ${isChecked}>
-                                        <span class="text-sm leading-snug flex-1 ${checkedClass}">${item.text}</span>
-                                    </li>
-                                `;
-                            });
-                            itemsHTML += `</ul>`;
-                        } else {
-                            // Geriye dönük uyumluluk veya tek satırlık notlar için
-                            itemsHTML = `<p class="text-theme text-sm leading-relaxed whitespace-pre-wrap">${note.text}</p>`;
-                        }
-
-                        li.className = `note-card bg-theme-card rounded-xl shadow-sm flex flex-col overflow-hidden ${pClass.border}`;
-                        li.dataset.id = note.id;
-                        li.innerHTML = `
-                            ${note.image ? `<div class="h-32 overflow-hidden relative"><img src="${note.image}" class="w-full h-full object-cover transition-transform hover:scale-105 duration-500"></div>` : ''}
-                            <div class="p-4 flex-grow flex flex-col">
-                                <div class="flex justify-between items-start mb-3">
-                                    <span class="text-[10px] uppercase font-bold tracking-wider ${categoryClasses[category].label} text-white px-2 py-1 rounded-md shadow-sm">${category}</span>
-                                    <div class="flex items-center gap-1">
-                                         <button class="check-btn p-1.5 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-400 hover:bg-green-50 hover:text-green-500 transition" title="Kartı Tamamen Bitir"><i data-lucide="check" class="w-4 h-4"></i></button>
-                                         <span class="text-sm ml-1" title="${priority}">${priorityIcons[priority]}</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex-grow mb-4">
-                                    ${itemsHTML}
-                                </div>
-
-                                <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
-                                    <span class="text-xs text-gray-400 font-medium flex items-center">
-                                        ${note.date ? `<i data-lucide="calendar-days" class="w-3 h-3 mr-1"></i> ${note.date.split('-').reverse().join('.')}` : ''}
-                                    </span>
-                                    <div class="flex items-center gap-1">
-                                        <button class="edit-btn p-1.5 text-gray-400 hover:text-indigo-500 transition" title="Düzenle"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-                                        <button class="notif-btn p-1.5 text-gray-400 hover:text-orange-500 transition" title="Hatırlat"><i data-lucide="bell" class="w-4 h-4"></i></button>
-                                        <button class="del-btn p-1.5 text-gray-400 hover:text-red-500 transition" title="Sil"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-
-                        // Add event listeners for internal checkboxes
-                        const checkboxes = li.querySelectorAll('.item-checkbox');
-                        checkboxes.forEach(cb => {
-                            cb.addEventListener('change', (e) => {
-                                const noteId = e.target.getAttribute('data-note-id');
-                                const itemIndex = parseInt(e.target.getAttribute('data-item-index'));
-                                toggleNoteItem(noteId, itemIndex, e.target.checked);
-                            });
-                        });
-
-                        li.querySelector('.check-btn').onclick = () => toggleDone(note.id, true, li);
-                        li.querySelector('.del-btn').onclick = () => deleteNote(note.id, li);
-                        li.querySelector('.notif-btn').onclick = () => openNotificationModal(note.id);
-                        li.querySelector('.edit-btn').onclick = () => openEditModal(note.id);
-                        noteList.appendChild(li);
-                    });
-                }
-            }
-
-            function renderGlobalCompletedNotes() {
-                completedNoteList.innerHTML = '';
-                const doneNotes = allNotes.filter(n => n.done);
-                
-                if (doneNotes.length > 0) {
-                    document.getElementById('completed-notes-accordion').classList.remove('hidden');
-                    completedCount.textContent = doneNotes.length;
-                    doneNotes.forEach(note => {
-                        const li = document.createElement('li');
-                        li.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 group';
-                        li.dataset.id = note.id;
-                        
-                        // Tamamlananlarda gösterilecek metin (ilk satırını alalım çok uzunsa)
-                        let previewText = note.text;
-                        if(note.items && note.items.length > 0) {
-                             previewText = note.items[0].text + (note.items.length > 1 ? '...' : '');
-                        }
-
-                        li.innerHTML = `
-                            <div class="flex items-center gap-3 overflow-hidden">
-                                <div class="w-5 h-5 rounded-full border-2 border-green-500 flex items-center justify-center bg-green-500 shrink-0"><i data-lucide="check" class="w-3 h-3 text-white"></i></div>
-                                <span class="text-gray-400 line-through text-sm truncate">${previewText}</span>
-                            </div>
-                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button class="reopen-btn text-blue-400 hover:bg-blue-50 p-1 rounded"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
-                                <button class="delete-btn-completed text-red-400 hover:bg-red-50 p-1 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                            </div>
-                        `;
-                        completedNoteList.appendChild(li);
-                    });
-                } else {
-                    document.getElementById('completed-notes-accordion').classList.add('hidden');
-                }
-            }
-
-            // Metni satırlara bölüp items objelerine çeviren yardımcı fonksiyon
-            function parseTextToItems(rawText) {
-                if (!rawText) return [];
-                // Satırlara böl, boşlukları temizle, boş satırları at
-                const lines = rawText.split('\n').map(line => line.trim()).filter(line => line !== '');
-                return lines.map(line => {
-                    // Eğer satır "-" veya "•" ile başlıyorsa temizle ki UI'da tekrar tire gözükmesin (isteğe bağlı, şimdilik olduğu gibi alıyoruz)
-                    return { text: line, done: false };
-                });
-            }
-
-            function addNote() {
-                const text = noteInput.value.trim();
-                if (text) {
-                    const itemsArray = parseTextToItems(text);
-
-                    const newNote = { 
-                        id: Date.now().toString(), 
-                        text: text, // Orjinal texti de saklıyoruz her ihtimale karşı
-                        items: itemsArray, // YENİ: Alt alta maddeler
-                        date: noteDateInput.value, 
-                        category: noteCategoryInput.value, 
-                        priority: notePriorityInput.value,
-                        image: currentBase64Image,
-                        done: false 
-                    };
-                    allNotes.unshift(newNote);
-                    saveNotes();
-                    renderAll();
-                    closeAddNoteModal();
-                    showStatus("Not eklendi.");
-                }
-            }
-
-            function saveEditNote() {
-                if (!currentEditingNoteId) return;
-                const idx = allNotes.findIndex(n => n.id === currentEditingNoteId);
-                if (idx === -1) return;
-                
-                const text = editNoteInput.value.trim();
-                if (!text) { showStatus("Boş not olmaz.", true); return; }
-
-                // Edit yaparken eski "done" durumlarını korumaya çalış
-                const oldItems = allNotes[idx].items || [];
-                const newLines = text.split('\n').map(l => l.trim()).filter(l => l !== '');
-                
-                const newItemsArray = newLines.map(line => {
-                    // Eski itemlerde bu text varsa done durumunu kopyala
-                    const existing = oldItems.find(oi => oi.text === line);
-                    return { text: line, done: existing ? existing.done : false };
-                });
-
-                allNotes[idx] = {
-                    ...allNotes[idx],
-                    text: text,
-                    items: newItemsArray,
-                    date: editNoteDateInput.value,
-                    category: editNoteCategoryInput.value,
-                    priority: editNotePriorityInput.value,
-                    image: currentBase64ImageEdit
-                };
-                saveNotes();
-                renderAll();
-                closeEditModal();
-                showStatus("Not güncellendi.");
-            }
-
-            // Kart içindeki spesifik bir maddeyi işaretleme
-            function toggleNoteItem(noteId, itemIndex, isDone) {
-                const note = allNotes.find(n => n.id === noteId);
-                if (note && note.items && note.items[itemIndex]) {
-                    note.items[itemIndex].done = isDone;
-                    
-                    // Tüm maddeler bitmişse kartı da tamamen bitir animasyonu yapabiliriz
-                    const allItemsDone = note.items.every(item => item.done);
-                    if (allItemsDone) {
-                        confetti({ particleCount: 50, spread: 40, origin: { y: 0.6 } }); 
-                        // İsterseniz otomatik kartı da done yapabilirsiniz:
-                        // toggleDone(noteId, true, document.querySelector(`.note-card[data-id="${noteId}"]`));
-                    }
-                    
-                    saveNotes();
-                    renderAll(); // Sadece görseli güncelle
-                }
-            }
-
-            // Kartı tamamen bitirme
-            function toggleDone(id, isDone, element) {
-                const note = allNotes.find(n => n.id == id);
-                if (note) {
-                    note.done = isDone;
-                    if(isDone) {
-                        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); // KUTLAMA!
-                    }
-                    const action = () => { saveNotes(); renderAll(); };
-                    if (element && isDone) {
-                        element.classList.add('exiting');
-                        setTimeout(action, 300);
-                    } else {
-                        action();
-                    }
-                }
-            }
-
-            function deleteNote(id, element) {
-                if(!confirm("Silmek istediğine emin misin Müdürüm?")) return;
-                const idx = allNotes.findIndex(n => n.id == id);
-                if (idx > -1) {
-                    const action = () => { allNotes.splice(idx, 1); saveNotes(); renderAll(); };
-                    if (element) {
-                        element.classList.add('exiting');
-                        setTimeout(action, 300);
-                    } else {
-                        action();
-                    }
-                }
-            }
-            
-            function addGlobalCompletedNotesEventListeners() {
-                completedNoteList.addEventListener('click', (e) => {
-                    const li = e.target.closest('li');
-                    if (!li) return;
-                    const id = li.dataset.id;
-                    if (e.target.closest('.reopen-btn')) toggleDone(id, false, null);
-                    if (e.target.closest('.delete-btn-completed')) deleteNote(id, null);
-                });
-            }
-
-            function renderReminders() {
-                remindersContainer.innerHTML = '';
-                const today = new Date().toISOString().split('T')[0];
-                const notes = allNotes.filter(n => !n.done && n.date === today);
-                if(notes.length > 0) {
-                    remindersContainer.innerHTML = `
-                        <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 rounded-r-lg">
-                            <h4 class="font-bold text-orange-700 dark:text-orange-400 mb-2 flex items-center"><i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Bugünün İşleri</h4>
-                            <ul class="list-disc list-inside text-sm text-orange-800 dark:text-orange-300">${notes.map(n => {
-                                let title = n.text;
-                                if(n.items && n.items.length > 0) title = n.items[0].text + '...';
-                                return `<li>${title}</li>`;
-                            }).join('')}</ul>
-                        </div>`;
-                }
-            }
-
-            function saveNotification() {
-                if (!currentNoteForNotification) return;
-                const note = allNotes.find(n => n.id == currentNoteForNotification);
-                const val = parseInt(notificationTimeInput.value);
-                const mult = notificationUnitSelect.value === 'minutes' ? 60000 : notificationUnitSelect.value === 'hours' ? 3600000 : 86400000;
-                
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    let bodyText = note.text;
-                    if(note.items && note.items.length > 0) bodyText = note.items[0].text + '...';
-
-                    setTimeout(() => {
-                        new Notification("Hatırlatma: Cepte Not", { body: bodyText });
-                    }, val * mult);
-                    showStatus("Hatırlatma kuruldu.");
-                } else {
-                    if (!('Notification' in window)) {
-                         showStatus("Bu tarayıcı bildirimleri desteklemiyor.", true);
-                    } else {
-                         showStatus("İzin verilmedi.", true);
-                    }
-                }
-                closeNotificationModal();
-            }
-
-            function showStatus(msg, err = false) {
-                statusIndicator.textContent = msg;
-                statusIndicator.className = `absolute top-4 right-4 md:top-auto md:bottom-4 md:right-4 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transition-opacity duration-300 ${err ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'} opacity-100`;
-                setTimeout(() => statusIndicator.classList.replace('opacity-100', 'opacity-0'), 3000);
-            }
-
-            function saveNotes() {
-                localStorage.setItem('mersinNotes', JSON.stringify(allNotes));
-                saveNotesToGitHub();
-            }
-
-            function toggleSpeechRecognition() {
-                if(isRecording) {
-                    isRecording = false; 
-                    recognition.stop();
-                    stopRecordingVisuals();
-                } else {
-                    recognition.start();
-                }
-            }
-
-            async function fetchNotesFromGitHub() {
-                if (!GITHUB_CONFIG.token) {
-                    const local = localStorage.getItem('mersinNotes');
-                    allNotes = local ? JSON.parse(local) : [];
-                    // Geriye dönük uyumluluk: eski notların items arrayi yoksa oluştur
-                    allNotes.forEach(note => {
-                        if (!note.items && note.text) {
-                            note.items = parseTextToItems(note.text);
-                        }
-                    });
-                    renderAll();
-                    return;
-                }
-                try {
-                    const res = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
-                        headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` }
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        allNotes = JSON.parse(decodeURIComponent(escape(window.atob(data.content))));
-                        // Veri dönüşümü
-                        allNotes.forEach(note => {
-                            if (!note.items && note.text) note.items = parseTextToItems(note.text);
-                        });
-                        renderAll();
-                        showStatus("Senkronize edildi.");
-                    } else {
-                        throw new Error();
-                    }
-                } catch (e) {
-                    const local = localStorage.getItem('mersinNotes');
-                    allNotes = local ? JSON.parse(local) : [];
-                     allNotes.forEach(note => {
-                        if (!note.items && note.text) note.items = parseTextToItems(note.text);
-                    });
-                    renderAll();
-                }
-            }
-
-            async function saveNotesToGitHub() {
-                if (!GITHUB_CONFIG.token) return;
-                try {
-                    const getRes = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, { headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` } });
-                    const sha = getRes.ok ? (await getRes.json()).sha : null;
-                    
-                    await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
-                        method: 'PUT',
-                        headers: { 'Authorization': `token ${GITHUB_CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' },
-                        body: JSON.stringify({
-                            message: 'Update via Cepte Not v4',
-                            content: window.btoa(unescape(encodeURIComponent(JSON.stringify(allNotes)))),
-                            sha
-                        })
-                    });
-                } catch (e) { console.error(e); }
-            }
-
-            init();
+        let freqToggle = true;
+        alarmSoundTimer = setInterval(() => {
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freqToggle ? 880 : 1200, audioCtx.currentTime);
+          freqToggle = !freqToggle;
+          
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.65);
+        }, 800);
+      } catch (err) {
+        console.error("Audio contextual error:", err);
+      }
+    }
+
+    function stopAlarmSynthesizer() {
+      if (alarmSoundTimer) {
+        clearInterval(alarmSoundTimer);
+        alarmSoundTimer = null;
+      }
+    }
+
+    // CONFETTI CANVAS EFFECT
+    const confettiColors = ['#6366f1', '#a855f7', '#10b981', '#f59e0b', '#ec4899', '#3b82f6'];
+    let confettiParticles = [];
+    let confettiAnimationFrame = null;
+
+    function startConfettiExplosion() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      // Seed particles
+      confettiParticles = [];
+      for (let i = 0; i < 110; i++) {
+        confettiParticles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * -canvas.height - 20,
+          size: Math.random() * 8 + 4,
+          color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+          speedX: Math.random() * 4 - 2,
+          speedY: Math.random() * 5 + 3,
+          rotation: Math.random() * 360,
+          rotationSpeed: Math.random() * 6 - 3
         });
-    </script>
+      }
+
+      if (confettiAnimationFrame) {
+        cancelAnimationFrame(confettiAnimationFrame);
+      }
+      animateConfetti(ctx, canvas);
+    }
+
+    function animateConfetti(ctx, canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let active = false;
+
+      confettiParticles.forEach((p) => {
+        p.y += p.speedY;
+        p.x += p.speedX;
+        p.rotation += p.rotationSpeed;
+
+        if (p.y < canvas.height) {
+          active = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        }
+      });
+
+      if (active) {
+        confettiAnimationFrame = requestAnimationFrame(() => animateConfetti(ctx, canvas));
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // INITIALIZATION ON LOAD
+    window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      lucide.createIcons();
+      fetchNotesFromGitHub();
+      
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+
+      setInterval(alarmChronoTick, 2000);
+
+      window.addEventListener('resize', () => {
+        const canvas = document.getElementById('confetti-canvas');
+        if (canvas) {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+      });
+    });
+
+    // DATABASE HANDLERS (GITHUB & LOCAL STORAGE)
+    async function fetchNotesFromGitHub() {
+      setSyncStatus('Senkronize ediliyor...', 'bg-amber-500', 'ring-amber-500/20');
+      try {
+        const res = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
+          headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          notes = JSON.parse(decodeURIComponent(escape(window.atob(data.content))));
+          notes = notes.map(n => ({
+              id: n.id || Date.now().toString(),
+              title: n.title || n.text || "Başlıksız",
+              content: n.content || "",
+              category: n.category || "Diğer",
+              priority: n.priority || "orta",
+              alarmAt: n.alarmAt || null,
+              alarmTriggered: n.alarmTriggered || false,
+              completed: n.completed || n.done || false,
+              subTasks: n.subTasks || (n.items ? n.items.map(i => ({text: i.text, completed: i.done})) : []),
+              createdAt: n.createdAt || new Date().toISOString(),
+              updatedAt: n.updatedAt || new Date().toISOString()
+          }));
+          localStorage.setItem('cepte_not_notes_v4', JSON.stringify(notes));
+          setSyncStatus('Güncel (Bulut)', 'bg-emerald-500', 'ring-emerald-500/20');
+        } else {
+          loadLocalNotes();
+          setSyncStatus('Lokal (Hata)', 'bg-rose-500', 'ring-rose-500/20');
+        }
+      } catch (e) {
+        loadLocalNotes();
+        setSyncStatus('Lokal (Bağlantı Yok)', 'bg-slate-400', 'ring-slate-400/20');
+      }
+      refreshUI();
+    }
+
+    async function saveNotesToGitHub() {
+      setSyncStatus('Kaydediliyor...', 'bg-amber-500', 'ring-amber-500/20');
+      try {
+        const getRes = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, { headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` } });
+        const sha = getRes.ok ? (await getRes.json()).sha : null;
+        
+        const putRes = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${GITHUB_CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' },
+          body: JSON.stringify({
+            message: 'Update via Cepte Not',
+            content: window.btoa(unescape(encodeURIComponent(JSON.stringify(notes)))),
+            sha
+          })
+        });
+
+        if (putRes.ok) {
+            setSyncStatus('Güncel (Bulut)', 'bg-emerald-500', 'ring-emerald-500/20');
+        } else {
+            setSyncStatus('Lokal (Kaydedilemedi)', 'bg-rose-500', 'ring-rose-500/20');
+        }
+      } catch (e) { 
+        console.error(e); 
+        setSyncStatus('Lokal (Bağlantı Yok)', 'bg-slate-400', 'ring-slate-400/20');
+      }
+    }
+
+    function loadLocalNotes() {
+      const saved = localStorage.getItem('cepte_not_notes_v4');
+      if (saved) {
+        try { notes = JSON.parse(saved); } catch (e) { notes = []; }
+      }
+    }
+
+    function persistNotes() {
+      localStorage.setItem('cepte_not_notes_v4', JSON.stringify(notes));
+      recalculateStats();
+      saveNotesToGitHub();
+    }
+
+    function setSyncStatus(text, bgClass, ringClass) {
+        document.getElementById('sync-status-text').innerText = text;
+        document.getElementById('sync-status-dot').className = `w-2 h-2 rounded-full ${bgClass} ring-4 ${ringClass}`;
+    }
+
+    function refreshUI() {
+        recalculateStats();
+        renderFilters();
+        renderNotes();
+    }
+
+    function recalculateStats() {
+      const total = notes.length;
+      const completed = notes.filter(n => n.completed).length;
+      const pending = total - completed;
+
+      document.getElementById('stat-total-notes').innerText = total;
+      document.getElementById('stat-pending-notes').innerText = pending;
+      document.getElementById('stat-completed-notes').innerText = completed;
+    }
+
+    // CATEGORY FILTERS
+    function renderFilters() {
+      const container = document.getElementById('category-filter-container');
+      container.innerHTML = "";
+
+      CATEGORIES.forEach((cat) => {
+        let count = 0;
+        if (cat === "Tümü") {
+          count = notes.filter(n => !n.completed).length;
+        } else if (cat === "Tamamlananlar") {
+          count = notes.filter(n => n.completed).length;
+        } else {
+          count = notes.filter(n => !n.completed && n.category === cat).length;
+        }
+
+        const isActive = (selectedCategory === cat);
+
+        const btn = document.createElement('button');
+        btn.id = "filter-category-" + cat.toLowerCase();
+        btn.className = isActive 
+          ? "px-4 py-2 bg-indigo-600 border border-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-600/10 text-xs font-bold rounded-xl transition cursor-pointer flex items-center gap-1.5"
+          : "px-4 py-2 bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border border-white/50 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-800/80 text-xs font-bold rounded-xl transition cursor-pointer flex items-center gap-1.5";
+        
+        btn.onclick = () => {
+          selectedCategory = cat;
+          renderFilters();
+          renderNotes();
+        };
+
+        let iconName = "tag";
+        if (cat === 'Tümü') iconName = "folder-open";
+        if (cat === 'İş') iconName = "briefcase";
+        if (cat === 'Kişisel') iconName = "user";
+        if (cat === 'Market') iconName = "shopping-cart";
+        if (cat === 'Eğitim') iconName = "graduation-cap";
+        if (cat === 'Diğer') iconName = "hash";
+        if (cat === 'Tamamlananlar') iconName = "archive";
+
+        btn.innerHTML = `<i data-lucide="${iconName}" class="w-3.5 h-3.5"></i> <span>${cat}</span> <span class="ml-0.5 bg-black/10 dark:bg-white/10 text-[10px] px-1.5 py-0.5 rounded-full">${count}</span>`;
+        container.appendChild(btn);
+      });
+
+      lucide.createIcons();
+    }
+
+    // CLEAR SEARCH UTILITY
+    function clearSearch() {
+      document.getElementById('search-input').value = "";
+      document.getElementById('clear-search-btn').classList.add('hidden');
+      renderNotes();
+    }
+
+    function resetAllFilters() {
+      selectedCategory = "Tümü";
+      clearSearch();
+      renderFilters();
+    }
+
+    // MAIN NOTES LIST RENDERING CONTROLLER (HIDES COMPLETED TASKS)
+    function renderNotes() {
+      const grid = document.getElementById('notes-grid-container');
+      const emptyBanner = document.getElementById('empty-state-banner');
+      grid.innerHTML = "";
+
+      const queryInput = document.getElementById('search-input');
+      const searchQuery = queryInput.value.trim().toLowerCase();
+
+      if (searchQuery) {
+        document.getElementById('clear-search-btn').classList.remove('hidden');
+      } else {
+        document.getElementById('clear-search-btn').classList.add('hidden');
+      }
+
+      // Filter array
+      const filtered = notes.filter((note) => {
+        if (selectedCategory === "Tamamlananlar") {
+          if (!note.completed) return false;
+        } else {
+          if (note.completed) return false; // Biten işleri ana ekranda gizle
+          if (selectedCategory !== "Tümü" && note.category !== selectedCategory) return false;
+        }
+
+        let matchesQuery = true;
+        if (searchQuery) {
+          const inTitle = note.title.toLowerCase().includes(searchQuery);
+          const inContent = note.content ? note.content.toLowerCase().includes(searchQuery) : false;
+          const inSubtasks = note.subTasks ? note.subTasks.some(st => st.text.toLowerCase().includes(searchQuery)) : false;
+          matchesQuery = (inTitle || inContent || inSubtasks);
+        }
+        return matchesQuery;
+      });
+
+      recalculateStats();
+
+      if (filtered.length === 0) {
+        emptyBanner.classList.remove('hidden');
+        grid.classList.add('hidden');
+        return;
+      }
+
+      emptyBanner.classList.add('hidden');
+      grid.classList.remove('hidden');
+      grid.classList.add('grid');
+
+      filtered.forEach((note) => {
+        const colStyle = getCategoryStyles(note.category);
+        const prioStyle = getPriorityStyles(note.priority);
+
+        const totalSubtasks = note.subTasks ? note.subTasks.length : 0;
+        const completedSubtasks = note.subTasks ? note.subTasks.filter(s => s.completed).length : 0;
+        const subtasksProgressPercent = totalSubtasks > 0 ? Math.round((completedSubtasks / totalSubtasks) * 100) : 0;
+
+        const card = document.createElement('div');
+        card.id = "note-card-" + note.id;
+        card.className = "group relative flex flex-col justify-between glass-card rounded-2xl p-5 hover:shadow-xl glass-card-hover animate-fade-in border-white/50 dark:border-slate-700/50" + (note.completed ? " opacity-80" : "");
+
+        let subtasksListHtml = '';
+        if (totalSubtasks > 0) {
+          let rowsHtml = '';
+          note.subTasks.forEach((sub, sIdx) => {
+            const checkIcon = sub.completed 
+              ? '<i data-lucide="check-square" class="w-4 h-4 fill-indigo-100 dark:fill-indigo-900/50 text-indigo-600 dark:text-indigo-400"></i>' 
+              : '<i data-lucide="square" class="w-4 h-4 text-slate-300 dark:text-slate-600"></i>';
+            const strikeClass = sub.completed ? 'line-through text-slate-400 dark:text-slate-500 font-normal' : 'text-slate-600 dark:text-slate-300';
+            
+            rowsHtml += `<div id="note-${note.id}-subtask-row-${sIdx}" onclick="toggleSubtaskStatus('${note.id}', ${sIdx})" class="flex items-start gap-2.5 text-xs font-semibold cursor-pointer select-none py-0.5 hover:translate-x-0.5 transition">
+              <span class="mt-0.5 shrink-0">${checkIcon}</span>
+              <span class="leading-snug break-words ${strikeClass}">${sub.text}</span>
+            </div>`;
+          });
+
+          subtasksListHtml = `<div class="ml-8 mb-4 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md rounded-xl p-3 border border-white/60 dark:border-slate-700">
+              <div class="flex justify-between items-center mb-2.5">
+                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono">Alt Görevler (${completedSubtasks}/${totalSubtasks})</span>
+                <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 font-mono">${subtasksProgressPercent}%</span>
+              </div>
+              <div class="w-full bg-slate-200/50 dark:bg-slate-700/50 rounded-full h-1 mb-3 overflow-hidden">
+                <div class="bg-indigo-600 dark:bg-indigo-500 h-full transition-all duration-300" style="width: ${subtasksProgressPercent}%"></div>
+              </div>
+              <div class="space-y-2">${rowsHtml}</div>
+            </div>`;
+        }
+
+        const noteDate = new Date(note.updatedAt || note.createdAt).toLocaleDateString('tr-TR');
+        let alarmBadgeHtml = '';
+        if (note.alarmAt) {
+          const isFired = new Date(note.alarmAt).getTime() < Date.now();
+          const alarmBadgeClass = isFired ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200/50 dark:border-rose-900/50' : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200/50 dark:border-amber-900/50 animate-pulse';
+          const alarmTimeStr = new Date(note.alarmAt).toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+          const alarmDateStr = new Date(note.alarmAt).toLocaleDateString('tr-TR');
+
+          alarmBadgeHtml = `<div class="flex items-center gap-1.5 px-2 py-0.5 rounded text-[9px] font-mono font-bold ${alarmBadgeClass}">
+              <i data-lucide="bell" class="w-3 h-3"></i>
+              <span>Alarm: ${alarmTimeStr} ${alarmDateStr}</span>
+            </div>`;
+        }
+
+        const masterCheckIcon = note.completed 
+          ? '<i data-lucide="check-circle-2" class="w-5.5 h-5.5 fill-emerald-500/20 text-emerald-500"></i>' 
+          : '<i data-lucide="circle" class="w-5.5 h-5.5"></i>';
+
+        const strikeClassTitle = note.completed ? 'line-through text-slate-400 dark:text-slate-500 font-normal' : 'text-slate-800 dark:text-slate-100';
+        const descStrikeClass = note.completed ? 'line-through text-slate-400 dark:text-slate-500 font-light' : 'text-slate-600 dark:text-slate-300';
+
+        const descHtml = note.content ? `<p class="text-xs ${descStrikeClass} leading-relaxed mb-4 pl-8 break-words opacity-90 font-medium">${note.content.replace(/\n/g, '<br>')}</p>` : '';
+
+        card.innerHTML = `<div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-lg text-[9px] font-bold border border-white dark:border-slate-700 bg-gradient-to-br ${colStyle.bgGradient} font-mono shadow-sm">${note.category}</span>
+              <span class="px-2.5 py-0.5 rounded-lg text-[9px] font-bold border ${prioStyle.border} ${prioStyle.text} ${prioStyle.bg} tracking-wide uppercase font-mono shadow-sm">${note.priority} Öncelik</span>
+            </div>
+            <div class="flex items-start gap-2.5 mb-3">
+              <button onclick="toggleMasterComplete('${note.id}')" title="Görevi ${note.completed ? 'Geri Al' : 'Tamamla'}" class="mt-1 bg-transparent hover:bg-indigo-300/10 border-0 p-0 text-left cursor-pointer transition text-slate-300 dark:text-slate-500 hover:text-emerald-500 dark:hover:text-emerald-400">
+                ${masterCheckIcon}
+              </button>
+              <h4 class="text-base font-bold leading-snug tracking-tight ${strikeClassTitle}">${note.title}</h4>
+            </div>
+            ${descHtml}
+            ${subtasksListHtml}
+          </div>
+          <div class="mt-4 pt-3 border-t border-indigo-100/30 dark:border-slate-700/50 flex items-center justify-between">
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-1.5 text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                <i data-lucide="calendar" class="w-3 h-3"></i>
+                <span>${noteDate}</span>
+              </div>
+              ${alarmBadgeHtml}
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="editNote('${note.id}')" title="Notu düzenle" class="p-1.5 hover:bg-white/50 dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition cursor-pointer">
+                <i data-lucide="edit-3" class="w-4 h-4"></i>
+              </button>
+              <button onclick="deleteNote('${note.id}')" title="Notu sil" class="p-1.5 hover:bg-rose-500/10 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition cursor-pointer">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>`;
+
+        grid.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    // CATEGORIES STYLES CORRELATION
+    function getCategoryStyles(catName) {
+      switch (catName) {
+        case 'İş': return { bgGradient: 'from-indigo-600/10 to-indigo-600/20 text-indigo-900 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800' };
+        case 'Kişisel': return { bgGradient: 'from-rose-600/10 to-rose-600/20 text-rose-900 dark:text-rose-300 border-rose-200 dark:border-rose-800' };
+        case 'Market': return { bgGradient: 'from-emerald-600/10 to-emerald-600/20 text-emerald-900 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' };
+        case 'Eğitim': return { bgGradient: 'from-amber-600/10 to-amber-600/20 text-amber-900 dark:text-amber-300 border-amber-200 dark:border-amber-800' };
+        case 'Diğer':
+        default: return { bgGradient: 'from-slate-600/10 to-slate-600/20 text-slate-900 dark:text-slate-300 border-slate-200 dark:border-slate-700' };
+      }
+    }
+
+    function getPriorityStyles(priority) {
+      switch (priority) {
+        case 'yüksek': return { bg: 'bg-rose-500/10', text: 'text-rose-800 dark:text-rose-300', border: 'border-rose-200/50 dark:border-rose-800/50' };
+        case 'orta': return { bg: 'bg-amber-500/10', text: 'text-amber-800 dark:text-amber-300', border: 'border-amber-200/50 dark:border-amber-800/50' };
+        case 'düşük':
+        default: return { bg: 'bg-sky-500/10', text: 'text-sky-800 dark:text-sky-300', border: 'border-sky-200/50 dark:border-sky-800/50' };
+      }
+    }
+
+    // TOGGLE SELECTIONS & COMPLETE COUNTS
+    function toggleMasterComplete(id) {
+      notes = notes.map((note) => {
+        if (note.id === id) {
+          const finished = !note.completed;
+          if (finished) startConfettiExplosion();
+          const updatedSubtasks = note.subTasks ? note.subTasks.map(s => ({ ...s, completed: finished })) : [];
+          return { ...note, completed: finished, subTasks: updatedSubtasks, updatedAt: new Date().toISOString() };
+        }
+        return note;
+      });
+      persistNotes();
+      refreshUI();
+    }
+
+    function toggleSubtaskStatus(noteId, subtaskIdx) {
+      notes = notes.map((note) => {
+        if (note.id === noteId) {
+          const copySubtasks = [...note.subTasks];
+          copySubtasks[subtaskIdx].completed = !copySubtasks[subtaskIdx].completed;
+
+          const allDone = copySubtasks.every(s => s.completed);
+          if (allDone && !note.completed) startConfettiExplosion();
+
+          return { ...note, subTasks: copySubtasks, completed: allDone, updatedAt: new Date().toISOString() };
+        }
+        return note;
+      });
+      persistNotes();
+      refreshUI();
+    }
+
+    // REMOVE NOTE
+    function deleteNote(id) {
+      if(!confirm("Silmek istediğinize emin misiniz?")) return;
+      notes = notes.filter(n => n.id !== id);
+      persistNotes();
+      refreshUI();
+    }
+
+    // DICTATION SPEECH DETECTOR TRIGGER
+    function toggleVoiceDictation(event) {
+      event.preventDefault();
+      
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Üzgünüz, tarayıcınız ses tanımlama API teknolojisini desteklemiyor. Chrome kullanmayı deneyebilirsiniz.");
+        return;
+      }
+
+      if (isDictating) {
+        if (dictationInstance) dictationInstance.stop();
+        return;
+      }
+
+      try {
+        dictationInstance = new SpeechRecognition();
+        dictationInstance.lang = 'tr-TR';
+        dictationInstance.interimResults = false;
+        dictationInstance.maxAlternatives = 1;
+
+        dictationInstance.onstart = () => {
+          isDictating = true;
+          document.getElementById('voice-btn-text').innerText = "Dinleniyor...";
+          document.getElementById('voice-dictate-btn').classList.add('bg-red-500/10', 'text-red-600', 'dark:text-red-400', 'border-red-500/30');
+          document.getElementById('voice-mic-icon').classList.add('text-red-600', 'dark:text-red-400', 'voice-pulse');
+        };
+
+        dictationInstance.onerror = (e) => {
+          console.error("Speech Error:", e);
+          stopSpeechUIVisual();
+        };
+
+        dictationInstance.onend = () => { stopSpeechUIVisual(); };
+
+        dictationInstance.onresult = (e) => {
+          const speechResult = e.results[0][0].transcript;
+          if (speechResult) {
+            const contentTextArea = document.getElementById('modal-note-content');
+            if (contentTextArea.value) {
+              contentTextArea.value += " " + speechResult;
+            } else {
+              contentTextArea.value = speechResult;
+            }
+          }
+        };
+
+        dictationInstance.start();
+
+      } catch (err) {
+        console.error("Failed to start speech:", err);
+        stopSpeechUIVisual();
+      }
+    }
+
+    function stopSpeechUIVisual() {
+      isDictating = false;
+      document.getElementById('voice-btn-text').innerText = "Sesli Yaz";
+      document.getElementById('voice-dictate-btn').className = "flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-lg transition cursor-pointer";
+      document.getElementById('voice-mic-icon').className = "w-3.5 h-3.5 shrink-0";
+    }
+
+    // MODAL WINDOW DOCKS FOR ADD/EDIT
+    function openNoteModal(editId = "") {
+      const modal = document.getElementById('note-modal');
+      
+      document.getElementById('modal-note-id').value = editId;
+      document.getElementById('modal-note-title').value = "";
+      document.getElementById('modal-note-content').value = "";
+      document.getElementById('modal-note-category').value = "İş";
+      document.getElementById('modal-note-priority').value = "orta";
+      document.getElementById('modal-note-alarm').value = "";
+      document.getElementById('modal-subtask-input').value = "";
+      
+      currentModalSubtasks = [];
+      renderModalSubtasks();
+
+      if (editId) {
+        const note = notes.find(n => n.id === editId);
+        if (note) {
+          document.getElementById('modal-title-text').innerText = "Notu Düzenle";
+          document.getElementById('modal-note-title').value = note.title;
+          document.getElementById('modal-note-content').value = note.content || "";
+          document.getElementById('modal-note-category').value = note.category;
+          document.getElementById('modal-note-priority').value = note.priority;
+          document.getElementById('modal-note-alarm').value = note.alarmAt || "";
+          
+          currentModalSubtasks = note.subTasks ? [...note.subTasks] : [];
+          renderModalSubtasks();
+        }
+      } else {
+        document.getElementById('modal-title-text').innerText = "Yeni Not Oluştur";
+      }
+
+      modal.classList.remove('hidden');
+      document.getElementById('modal-note-title').focus();
+    }
+
+    function closeNoteModal() {
+      document.getElementById('note-modal').classList.add('hidden');
+      if (isDictating && dictationInstance) { dictationInstance.stop(); }
+    }
+
+    function editNote(id) { openNoteModal(id); }
+
+    function addSubtaskToModal() {
+      const inp = document.getElementById('modal-subtask-input');
+      const val = inp.value.trim();
+      if (!val) return;
+
+      currentModalSubtasks.push({ text: val, completed: false });
+      inp.value = "";
+      renderModalSubtasks();
+      document.getElementById('modal-subtask-input').focus();
+    }
+
+    function removeSubtaskFromModal(idx) {
+      currentModalSubtasks.splice(idx, 1);
+      renderModalSubtasks();
+    }
+
+    function renderModalSubtasks() {
+      const container = document.getElementById('modal-subtasks-container');
+      container.innerHTML = "";
+
+      currentModalSubtasks.forEach((sub, idx) => {
+        const row = document.createElement('div');
+        row.className = "flex items-center justify-between gap-2 p-2 bg-slate-50/80 dark:bg-slate-800/80 rounded-lg border border-slate-100 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 animate-fade-in";
+        row.innerHTML = `<div class="flex items-center gap-2"><span class="text-indigo-400">#${idx + 1}</span><span>${sub.text}</span></div>
+          <button onclick="removeSubtaskFromModal(${idx})" class="p-1 text-slate-300 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition cursor-pointer">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>`;
+        container.appendChild(row);
+      });
+
+      lucide.createIcons();
+    }
+
+    function saveNoteFromModal() {
+      const id = document.getElementById('modal-note-id').value;
+      const title = document.getElementById('modal-note-title').value.trim();
+      const content = document.getElementById('modal-note-content').value.trim();
+      const category = document.getElementById('modal-note-category').value;
+      const priority = document.getElementById('modal-note-priority').value;
+      const alarmAt = document.getElementById('modal-note-alarm').value;
+
+      if (!title) {
+        alert("Lütfen en azından bir not başlığı belirtin.");
+        return;
+      }
+
+      if (id) {
+        notes = notes.map((note) => {
+          if (note.id === id) {
+            const hasAlarmChanged = note.alarmAt !== alarmAt;
+            return { ...note, title, content, category, priority, alarmAt: alarmAt || null, alarmTriggered: hasAlarmChanged ? false : note.alarmTriggered, subTasks: currentModalSubtasks, updatedAt: new Date().toISOString() };
+          }
+          return note;
+        });
+      } else {
+        const newNote = {
+          id: 'note-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          title, content, category, priority, alarmAt: alarmAt || null, alarmTriggered: false, completed: false, subTasks: currentModalSubtasks, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+        };
+        notes.unshift(newNote);
+      }
+
+      persistNotes();
+      closeNoteModal();
+      refreshUI();
+    }
+
+    // SCHEDULER ALARMS
+    function alarmChronoTick() {
+      const now = Date.now();
+      let hasChange = false;
+
+      notes.forEach((note) => {
+        if (note.alarmAt && !note.alarmTriggered && !note.completed) {
+          const alarmTime = new Date(note.alarmAt).getTime();
+          if (now >= alarmTime) {
+            note.alarmTriggered = true;
+            hasChange = true;
+            triggerAlarmModalRing(note);
+          }
+        }
+      });
+
+      if (hasChange) persistNotes();
+    }
+
+    function triggerAlarmModalRing(note) {
+      activeAlarmId = note.id;
+      document.getElementById('alarm-ring-title').innerText = '"' + note.title + '" için süreniz doldu!';
+      document.getElementById('alarm-ring-modal').classList.remove('hidden');
+
+      playAlarmSynthesizer();
+
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try { new Notification('⏰ Cepte Not Hatırlatıcısı!', { body: '"' + note.title + '" işinin vakti geldi.', tag: note.id }); } catch (e) { console.error("Notification API failed:", e); }
+      }
+    }
+
+    function dismissAlarmChime() {
+      document.getElementById('alarm-ring-modal').classList.add('hidden');
+      stopAlarmSynthesizer();
+      activeAlarmId = null;
+      renderNotes();
+    }
+
+    // EXPORT ALL AS TXT REPORT FOR ALL CARDS
+    function exportAllAsTxt() {
+      let t = "CEPTE NOT - TOPLU RAPOR VE AJANDA CIKTISI\n";
+      t += "Tarih: " + new Date().toLocaleString('tr-TR') + "\n";
+      t += "======================================================\n\n";
+
+      notes.forEach((n, idx) => {
+        t += (idx + 1) + ". NOT: " + n.title + "\n";
+        t += "   Kategori    : " + n.category + "\n";
+        t += "   Öncelik     : " + n.priority.toUpperCase() + "\n";
+        t += "   Tamamlandı mı: " + (n.completed ? 'EVET' : 'HAYIR') + "\n";
+        if (n.alarmAt) t += "   Aktif Alarm : " + new Date(n.alarmAt).toLocaleString('tr-TR') + "\n";
+        t += "   Detaylar    : " + (n.content || '(İçerik boş)').replace(/\n/g, ' ') + "\n";
+        if (n.subTasks && n.subTasks.length > 0) {
+          t += "   Alt Görevler:\n";
+          n.subTasks.forEach((s) => { t += "     [" + (s.completed ? 'X' : ' ') + "] " + s.text + "\n"; });
+        }
+        t += "------------------------------------------------------\n\n";
+      });
+
+      triggerDownloadBlob(t, "cepte-not-toplu-rapor-" + new Date().toISOString().substring(0, 10) + ".txt", 'text/plain');
+    }
+
+    function triggerDownloadBlob(content, fileName, contentType) {
+      const blob = new Blob([content], { type: contentType + ';charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  </script>
 </body>
 </html>
