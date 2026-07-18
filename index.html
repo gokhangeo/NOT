@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cepte Not v4.0 - Dijital Ajanda Panosu</title>
+  <title>Cepte Not Pro - Kurumsal Görev Panosu</title>
   
   <!-- Tailwind CSS CDN & Config for Dark Mode -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -99,6 +99,322 @@
     @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .animate-fade-in { animation: fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
+
+
+  <!-- Minimal Kurumsal Tasarım Katmanı -->
+  <style>
+    :root {
+      --app-bg: #f4f7fb;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --line: #e2e8f0;
+      --text: #172033;
+      --muted: #64748b;
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --shadow: 0 10px 30px rgba(15, 23, 42, .07);
+    }
+
+    body {
+      background: var(--app-bg) !important;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .dark body {
+      --app-bg: #0b1120;
+      --panel: #111827;
+      --panel-soft: #0f172a;
+      --line: #263449;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      background: var(--app-bg) !important;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 240px;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(79,70,229,.06), transparent);
+      z-index: -1;
+    }
+
+    .max-w-6xl {
+      max-width: 1320px !important;
+    }
+
+    .glass-card,
+    .dark .glass-card {
+      background: var(--panel) !important;
+      border: 1px solid var(--line) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      box-shadow: var(--shadow) !important;
+    }
+
+    .glass-card-hover,
+    .glass-card-hover:hover,
+    .dark .glass-card-hover:hover {
+      transform: none !important;
+      background: var(--panel) !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 16px 38px rgba(15, 23, 42, .11) !important;
+    }
+
+    header.glass-card {
+      position: sticky;
+      top: 14px;
+      z-index: 30;
+      border-radius: 20px !important;
+      padding: 18px 20px !important;
+      margin-bottom: 24px !important;
+    }
+
+    header .absolute {
+      display: none !important;
+    }
+
+    header h1 {
+      font-size: 1.35rem !important;
+    }
+
+    header p {
+      max-width: 560px;
+      color: var(--muted) !important;
+    }
+
+    #sync-status-box {
+      background: var(--panel-soft) !important;
+      border-color: var(--line) !important;
+      border-radius: 10px !important;
+    }
+
+    .md\\:grid-cols-4 {
+      gap: 14px !important;
+    }
+
+    .md\\:col-span-1 > button {
+      min-height: 88px !important;
+      border-radius: 18px !important;
+      background: linear-gradient(135deg, var(--primary), #6366f1) !important;
+      box-shadow: 0 14px 28px rgba(79,70,229,.22) !important;
+    }
+
+    .md\\:col-span-1 > button:hover {
+      background: linear-gradient(135deg, var(--primary-dark), #4f46e5) !important;
+      transform: translateY(-1px) !important;
+    }
+
+    #stat-total-notes,
+    #stat-pending-notes,
+    #stat-completed-notes {
+      font-size: 1.65rem !important;
+    }
+
+    .md\\:col-span-3 .glass-card {
+      border-radius: 18px !important;
+      padding: 16px !important;
+      min-height: 88px;
+      box-shadow: 0 6px 18px rgba(15,23,42,.05) !important;
+    }
+
+    #category-filter-container {
+      gap: 8px !important;
+      overflow-x: auto;
+      flex-wrap: nowrap !important;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    #category-filter-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    #category-filter-container button {
+      flex: 0 0 auto;
+      border-radius: 10px !important;
+      padding: 9px 13px !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+    }
+
+    #search-input,
+    .glass-input,
+    .dark .glass-input {
+      background: var(--panel) !important;
+      border: 1px solid var(--line) !important;
+      backdrop-filter: none !important;
+      border-radius: 14px !important;
+      box-shadow: 0 4px 14px rgba(15,23,42,.04) !important;
+    }
+
+    #search-input:focus,
+    .glass-input:focus,
+    .dark .glass-input:focus {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 4px rgba(79,70,229,.10) !important;
+    }
+
+    #notes-grid-container {
+      gap: 18px !important;
+      align-items: start;
+    }
+
+    #notes-grid-container > div {
+      border-radius: 16px !important;
+      padding: 18px !important;
+      overflow: hidden;
+    }
+
+    #notes-grid-container > div::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary);
+      opacity: .9;
+    }
+
+    #notes-grid-container h4 {
+      font-size: 1rem !important;
+      letter-spacing: -0.015em;
+    }
+
+    #notes-grid-container p {
+      line-height: 1.65 !important;
+    }
+
+    #notes-grid-container [class*="rounded-lg"][class*="text-[9px]"] {
+      border-radius: 999px !important;
+      padding: 4px 8px !important;
+      box-shadow: none !important;
+    }
+
+    #empty-state-banner {
+      border-radius: 18px !important;
+      box-shadow: none !important;
+      background: var(--panel) !important;
+    }
+
+    #note-modal > div,
+    #alarm-ring-modal > div {
+      border-radius: 20px !important;
+      border-color: var(--line) !important;
+      box-shadow: 0 30px 80px rgba(2, 6, 23, .28) !important;
+    }
+
+    #note-modal > div > div:first-child {
+      background: var(--panel) !important;
+      color: var(--text) !important;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #note-modal > div > div:first-child p,
+    #note-modal > div > div:first-child button,
+    #note-modal > div > div:first-child i {
+      color: var(--muted) !important;
+    }
+
+    #note-modal input,
+    #note-modal textarea,
+    #note-modal select {
+      border-radius: 12px !important;
+    }
+
+    #note-modal .bg-slate-50,
+    #note-modal .dark\\:bg-slate-800\\/50 {
+      background: var(--panel-soft) !important;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    @media (max-width: 767px) {
+      body {
+        padding-bottom: 92px !important;
+      }
+
+      .max-w-6xl {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+        padding-top: 14px !important;
+      }
+
+      header.glass-card {
+        position: static;
+        border-radius: 16px !important;
+        padding: 16px !important;
+      }
+
+      header .flex-wrap {
+        width: 100%;
+      }
+
+      .md\\:col-span-1 {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        width: auto;
+        z-index: 40;
+      }
+
+      .md\\:col-span-1 > button {
+        width: 58px !important;
+        height: 58px !important;
+        min-height: 58px !important;
+        border-radius: 18px !important;
+        padding: 0 !important;
+      }
+
+      .md\\:col-span-1 > button > div:last-child {
+        display: none !important;
+      }
+
+      .md\\:col-span-1 > button > div:first-child {
+        padding: 0 !important;
+        background: transparent !important;
+      }
+
+      .md\\:col-span-3 {
+        grid-column: span 1 / span 1 !important;
+      }
+
+      .md\\:col-span-3.grid-cols-3 {
+        gap: 8px !important;
+      }
+
+      .md\\:col-span-3 .glass-card {
+        min-height: 76px;
+        padding: 12px !important;
+        gap: 8px !important;
+      }
+
+      .md\\:col-span-3 .glass-card > div:first-child {
+        display: none;
+      }
+
+      #stat-total-notes,
+      #stat-pending-notes,
+      #stat-completed-notes {
+        font-size: 1.3rem !important;
+      }
+
+      #note-modal {
+        padding: 8px !important;
+      }
+
+      #note-modal > div {
+        max-height: 96vh !important;
+        border-radius: 16px !important;
+      }
+    }
+  </style>
+
 </head>
 <body class="selection:bg-indigo-100 selection:text-indigo-900 dark:selection:bg-indigo-900 dark:selection:text-indigo-100 pb-16 text-slate-800 dark:text-slate-200">
 
@@ -123,7 +439,7 @@
               <h1 class="text-xl sm:text-2xl font-extrabold display-font tracking-tight text-slate-800 dark:text-slate-100">Cepte Not</h1>
               <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-indigo-200/50 dark:border-indigo-700/50 uppercase tracking-wider">v4.0 PRO</span>
             </div>
-            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-sans tracking-wide">Yapay zekaya uyumlu, gelişmiş ses dikte ve otomatik bulut yedeklemeli ajanda</p>
+            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-sans tracking-wide">Görevlerinizi, notlarınızı ve hatırlatmalarınızı tek ekrandan yönetin</p>
           </div>
         </div>
 
@@ -241,7 +557,7 @@
       <div class="w-16 h-16 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-full flex items-center justify-center text-indigo-400 mb-4 border border-white/80 dark:border-slate-700 shadow-sm">
         <i data-lucide="list-todo" class="w-8 h-8"></i>
       </div>
-      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Görselde Not Bulunamadı</h3>
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Not Bulunamadı</h3>
       <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs">Girdiğiniz arama terimini değiştirebilir veya kategoriler arası süzgeçleri sıfırlayabilirsiniz. Biten işler ana panoda gizlenmektedir.</p>
       <button onclick="resetAllFilters()" class="mt-5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition cursor-pointer shadow-md">
         Filtreleri Sıfırla
