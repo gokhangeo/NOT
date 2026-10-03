@@ -53,7 +53,7 @@
     list.forEach((n,i)=>{const note=normalize(n,i);if(note){if(seen.has(note.id))note.id=uid();seen.add(note.id);notes.push(note);}});
     const categories = Array.isArray(input.categories)?input.categories.filter(c=>c&&typeof c.name==='string').map((c,i)=>({name:c.name,color:COLORS.includes(c.color)?c.color:COLORS[i%COLORS.length],icon:String(c.icon||'tag')})):[];
     [...(Array.isArray(input.categories)?['Diğer']:DEFAULT_CATEGORIES),...notes.map(n=>n.category)].forEach((name,i)=>{if(!categories.some(c=>c.name===name))categories.push({name,color:COLORS[i%COLORS.length],icon:name==='İş'?'briefcase':name==='Kişisel'?'user':'tag'});});
-    return {dataVersion:5,notes,categories,settings:{theme:input.settings?.theme||'system',autoArchive:!!input.settings?.autoArchive},
+    return {dataVersion:5,notes,categories,categoriesUpdatedAt:validTime(input.categoriesUpdatedAt)||'1970-01-01T00:00:00.000Z',settings:{theme:input.settings?.theme||'system',autoArchive:!!input.settings?.autoArchive},
       tombstones: Array.isArray(input.tombstones)?input.tombstones.filter(t=>t&&t.id&&validTime(t.deletedAt)):[]};
   }
   function load(storage) {
@@ -113,8 +113,9 @@
     const other=migrate(remote), result=migrate(local), records=new Map(result.notes.map(n=>[n.id,n]));
     const tombs=new Map([...other.tombstones,...result.tombstones].map(t=>[String(t.id),t]));
     other.notes.forEach(n=>{const old=records.get(n.id);if(!old||Date.parse(n.updatedAt)>Date.parse(old.updatedAt))records.set(n.id,n);});
-    result.notes=[...records.values()].filter(n=>!tombs.has(n.id));result.tombstones=[...tombs.values()];
-    // Categories are device-owned preferences; task categories are added by migration.
+    result.notes=[...records.values()].filter(n=>!tombs.has(n.id)||Date.parse(n.updatedAt)>Date.parse(tombs.get(n.id).deletedAt));
+    result.notes.forEach(n=>{if(tombs.has(n.id))tombs.delete(n.id);});result.tombstones=[...tombs.values()];
+    if(Date.parse(other.categoriesUpdatedAt)>Date.parse(result.categoriesUpdatedAt)){result.categories=other.categories;result.categoriesUpdatedAt=other.categoriesUpdatedAt;}
     result.notes.forEach(n=>{if(!result.categories.some(c=>c.name===n.category)){const c=other.categories.find(c=>c.name===n.category);result.categories.push(c||{name:n.category,color:COLORS[0],icon:'tag'});}});return result;
   }
   function housekeeping(state,now=new Date()) {
