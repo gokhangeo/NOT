@@ -5,7 +5,7 @@
   else root.CepteCore = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const KEY = 'cepte_not_qa_data_v5', LEGACY = 'cepte_not_qa_notes_v4';
+  const KEY = 'cepte_not_data_v5', LEGACY = 'cepte_not_notes_v4';
   const STATUSES = ['Yapılacak', 'Devam Ediyor', 'Bekliyor', 'Tamamlandı', 'İptal'];
   const PRIORITIES = ['Acil', 'Yüksek', 'Normal', 'Düşük'];
   const DEFAULT_CATEGORIES = ['İş', 'Kişisel', 'Aile', 'Toplantı', 'Telefon', 'Takip', 'Fikir', 'Diğer', 'Market', 'Eğitim'];
@@ -60,7 +60,7 @@
     const issues=[]; let current=storage.getItem(KEY), old=storage.getItem(LEGACY), state;
     if(current){try{state=migrate(JSON.parse(current));}catch(e){issues.push('Son kayıt okunamadı; güvenli yedek deneniyor.');}}
     if(!state&&current){const last=storage.getItem(KEY+'_lastgood');if(last){try{state=migrate(JSON.parse(last));}catch{}}}
-    if(!state&&old){try{const parsed=JSON.parse(old);state=migrate(parsed);storage.setItem('cepte_not_qa_v4_backup',old);}catch(e){issues.push('Eski kayıtlar okunamadı. Ham veri korunuyor.');}}
+    if(!state&&old){try{const parsed=JSON.parse(old);state=migrate(parsed);storage.setItem('cepte_not_v4_backup',old);}catch(e){issues.push('Eski kayıtlar okunamadı. Ham veri korunuyor.');}}
     if(!state)state=migrate([]);
     if(!current && old && !issues.length) { storage.setItem(KEY,JSON.stringify(state)); }
     return {state,issues};
