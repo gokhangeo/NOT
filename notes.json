@@ -27,6 +27,11 @@
           "completed": false
         },
         {
+          "id": "note-9fb5aeb6-feb7-42d3-8eec-22abc810dc66",
+          "text": "Gülnar/Kayrak 112-3(4 parseller sorunlu)-Karaman Başsavcısı-21513534",
+          "completed": false
+        },
+        {
           "id": "note-3de1079f-751a-4c24-b42c-d4510613eb5a",
           "text": "Silifke 2/b onaysız parseller",
           "completed": false
@@ -55,15 +60,10 @@
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
-        },
-        {
-          "id": "note-9fb5aeb6-feb7-42d3-8eec-22abc810dc66",
-          "text": "Gülnar/Kayrak 112-3(4 parseller sorunlu)-Karaman Başsavcısı-21513534",
-          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T10:22:57.148Z",
+      "updatedAt": "2026-10-06T10:23:02.741Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
