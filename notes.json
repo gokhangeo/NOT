@@ -32,6 +32,11 @@
           "completed": false
         },
         {
+          "id": "note-226c47db-d61f-493e-9cfe-fc5a26aaff4f",
+          "text": "Silifke orman yazısı",
+          "completed": false
+        },
+        {
           "id": "note-588c1ef3-9b8f-4940-9618-b90929b6308b",
           "text": "Turunçlu(Görüş)",
           "completed": false
@@ -50,15 +55,10 @@
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
-        },
-        {
-          "id": "note-226c47db-d61f-493e-9cfe-fc5a26aaff4f",
-          "text": "Silifke orman yazısı",
-          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:57:59.378Z",
+      "updatedAt": "2026-10-06T08:58:04.420Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
