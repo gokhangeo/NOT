@@ -45,10 +45,15 @@
           "id": "note-226c47db-d61f-493e-9cfe-fc5a26aaff4f",
           "text": "Silifke orman yazısı",
           "completed": false
+        },
+        {
+          "id": "note-566e395e-08a7-45a4-8fcf-d425cc27e8cc",
+          "text": "Erdemli(Doğusandal, Pınarbaşı, Koyuncu(Bölgeye yazıldı))",
+          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:37:00.254Z",
+      "updatedAt": "2026-10-06T08:37:41.328Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
