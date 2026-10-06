@@ -32,6 +32,11 @@
           "completed": false
         },
         {
+          "id": "note-588c1ef3-9b8f-4940-9618-b90929b6308b",
+          "text": "Turunçlu(Görüş)",
+          "completed": false
+        },
+        {
           "text": "Silifke Jeneratör",
           "completed": false,
           "id": "sub-4"
@@ -50,15 +55,10 @@
           "id": "note-566e395e-08a7-45a4-8fcf-d425cc27e8cc",
           "text": "Erdemli(Doğusandal, Pınarbaşı, Koyuncu(Bölgeye yazıldı))",
           "completed": false
-        },
-        {
-          "id": "note-588c1ef3-9b8f-4940-9618-b90929b6308b",
-          "text": "Turunçlu(Görüş)",
-          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:57:49.898Z",
+      "updatedAt": "2026-10-06T08:57:55.291Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
