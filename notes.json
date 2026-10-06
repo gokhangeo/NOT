@@ -24,11 +24,11 @@
         {
           "id": "note-ad0ec72b-d91d-447c-859f-51abc108a8ed",
           "text": "Fındıkpınarı görevlendirme",
-          "completed": true
+          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:13:43.327Z",
+      "updatedAt": "2026-10-06T08:13:44.225Z",
       "status": "Yapılacak",
       "dueDate": null,
       "startDate": null,
