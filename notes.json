@@ -48,7 +48,7 @@
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:21:27.024Z",
+      "updatedAt": "2026-10-06T08:21:38.777Z",
       "status": "Yapılacak",
       "dueDate": null,
       "startDate": null,
@@ -60,7 +60,7 @@
       "notes": "",
       "links": [],
       "attachments": [],
-      "pinned": false,
+      "pinned": true,
       "archivedAt": null,
       "deletedAt": null,
       "completedAt": null,
