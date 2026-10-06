@@ -17,6 +17,11 @@
           "completed": false
         },
         {
+          "id": "note-ad0ec72b-d91d-447c-859f-51abc108a8ed",
+          "text": "Fındıkpınarı görevlendirme",
+          "completed": false
+        },
+        {
           "text": "Silifke Jeneratör",
           "completed": false,
           "id": "sub-4"
@@ -25,11 +30,6 @@
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
-        },
-        {
-          "id": "note-ad0ec72b-d91d-447c-859f-51abc108a8ed",
-          "text": "Fındıkpınarı görevlendirme",
-          "completed": false
         },
         {
           "id": "note-3de1079f-751a-4c24-b42c-d4510613eb5a",
@@ -58,7 +58,7 @@
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:57:31.284Z",
+      "updatedAt": "2026-10-06T08:57:38.220Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
