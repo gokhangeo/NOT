@@ -1,5 +1,5 @@
-const CACHE = 'cepte-not-v5.0.3';
-const SHELL = ['./', './index.html', './styles.css?v=5.0.3', './core.js?v=5.0.3', './cloud-config.js?v=5.0.3', './app.js?v=5.0.3', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
+const CACHE = 'cepte-not-v5.0.4';
+const SHELL = ['./', './index.html', './styles.css?v=5.0.4', './core.js?v=5.0.4', './cloud-config.js?v=5.0.4', './app.js?v=5.0.4', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL))));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('cepte-not-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch', event => {
