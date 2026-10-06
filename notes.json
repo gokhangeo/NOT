@@ -12,48 +12,18 @@
       "completed": false,
       "subTasks": [
         {
-          "text": "DÜĞDÜÖREN(VERİ YÜKLEME)-CİHAN",
-          "completed": true,
-          "id": "sub-0"
-        },
-        {
-          "text": "YİKOB",
-          "completed": true,
-          "id": "sub-1"
-        },
-        {
-          "text": "Orman ŞM ile orman tescilleri paylaşılacak",
-          "completed": true,
-          "id": "sub-2"
-        },
-        {
-          "text": "Zeynep EKİCİ",
-          "completed": false,
-          "id": "sub-3"
-        },
-        {
           "text": "Silifke Jeneratör",
           "completed": false,
           "id": "sub-4"
         },
         {
-          "text": "Silifke temizlik",
-          "completed": true,
-          "id": "sub-5"
-        },
-        {
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
-        },
-        {
-          "text": "5. GRUP TESCİL OLAN BİRİMLERİN MEGSİS'E ATILMASI",
-          "completed": true,
-          "id": "sub-7"
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-03T13:49:47.768Z",
+      "updatedAt": "2026-10-06T08:13:32.578Z",
       "status": "Yapılacak",
       "dueDate": null,
       "startDate": null,
@@ -961,7 +931,7 @@
   ],
   "categoriesUpdatedAt": "1970-01-01T00:00:00.000Z",
   "settings": {
-    "theme": "dark",
+    "theme": "system",
     "autoArchive": false
   },
   "tombstones": []
