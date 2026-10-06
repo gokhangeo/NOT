@@ -12,6 +12,11 @@
       "completed": false,
       "subTasks": [
         {
+          "id": "note-442d5fc3-3afb-4c45-99d4-e2aa7cefeb87",
+          "text": "Ayıklama-imha",
+          "completed": false
+        },
+        {
           "text": "Silifke Jeneratör",
           "completed": false,
           "id": "sub-4"
@@ -29,11 +34,6 @@
         {
           "id": "note-3de1079f-751a-4c24-b42c-d4510613eb5a",
           "text": "Silifke 2/b onaysız parseller",
-          "completed": false
-        },
-        {
-          "id": "note-442d5fc3-3afb-4c45-99d4-e2aa7cefeb87",
-          "text": "Ayıklama-imha",
           "completed": false
         },
         {
@@ -58,7 +58,7 @@
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:53:11.152Z",
+      "updatedAt": "2026-10-06T08:57:31.284Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
