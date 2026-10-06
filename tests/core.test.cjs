@@ -1,7 +1,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),C=require('../core.js');
 const note=(data={})=>C.normalize({id:'a',title:'MERSİN İŞ TAKİBİ',createdAt:'2026-10-01T09:00:00Z',updatedAt:'2026-10-01T09:00:00Z',...data});
-test('all 19 real v4 records retain ids, text, alarms, categories and subtasks',()=>{
- const old=JSON.parse(fs.readFileSync(__dirname+'/../notes.json','utf8')),state=C.migrate(old);assert.equal(state.notes.length,old.length);
+test('stored v4 or v5 records retain ids, text, alarms, categories and subtasks',()=>{
+ const source=JSON.parse(fs.readFileSync(__dirname+'/../notes.json','utf8')),old=Array.isArray(source)?source:source.notes,state=C.migrate(source);assert.equal(state.notes.length,old.length);
  old.forEach((n,i)=>{const converted=state.notes[i];assert.equal(converted.id,String(n.id));for(const key of ['title','content','category','createdAt','updatedAt'])assert.equal(converted[key],n[key]);assert.equal(converted.alarmAt,n.alarmAt);assert.deepEqual(converted.subTasks.map(s=>[s.text,s.completed]),n.subTasks.map(s=>[s.text,s.completed]));});
 });
 test('legacy text/done/items aliases and unknown fields are preserved',()=>{const n=C.normalize({text:'Not',done:true,items:[{text:'Alt',done:true}],custom:'keep'});assert.equal(n.title,'Not');assert.equal(n.completed,true);assert.equal(n.custom,'keep');assert.equal(n.subTasks[0].completed,true);});

@@ -7,6 +7,7 @@ Mevcut v4 uygulamasının görev, takip ve ajanda özellikleriyle geliştirilmi�
 - Açılışta Bugünüm: gecikenler, bugünkü görevler, hatırlatmalar, kontrol edilecek bekleyenler ve yaklaşan önemli işler.
 - Sadece başlık ve Enter ile hızlı not; Daha Fazla ile durum, kategori, tarihler, etiketler, bekleme bilgisi, alt görev, tekrar, bağlantı ve dosya.
 - Liste, sürüklenebilir Kanban ve aylık takvim. Mobilde durum seçimi ve uzun basarak taşıma.
+- Bekleyen alt görevlerin tamamı kart üzerinde görünür ve kutularından işaretlenebilir; bekleme açıklaması da kartta okunabilir.
 - Türkçe arama; bugün, yarın, geciken, bekleyen, tamamlanan ve #etiket komutları. Arama arşivi de kapsar.
 - Toplu tamamlama, kategori/tarih değiştirme, arşivleme ve silme.
 - 30 günlük çöp kutusu, geri alma, sabitleme ve isteğe bağlı 7 günlük otomatik arşiv.
