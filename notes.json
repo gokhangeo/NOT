@@ -55,10 +55,15 @@
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
+        },
+        {
+          "id": "note-9fb5aeb6-feb7-42d3-8eec-22abc810dc66",
+          "text": "Gülnar/Kayrak 112-3(4 parseller sorunlu)-Karaman Başsavcısı-21513534",
+          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:58:04.420Z",
+      "updatedAt": "2026-10-06T10:22:57.148Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
