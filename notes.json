@@ -40,10 +40,15 @@
           "id": "note-0239fb83-d38c-47e0-8cb0-ede93c1731e7",
           "text": "Orman tescil dosyaları",
           "completed": false
+        },
+        {
+          "id": "note-226c47db-d61f-493e-9cfe-fc5a26aaff4f",
+          "text": "Silifke orman yazısı",
+          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:17:21.728Z",
+      "updatedAt": "2026-10-06T08:21:21.687Z",
       "status": "Yapılacak",
       "dueDate": null,
       "startDate": null,
