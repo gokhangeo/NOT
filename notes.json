@@ -34,7 +34,7 @@
         {
           "id": "note-442d5fc3-3afb-4c45-99d4-e2aa7cefeb87",
           "text": "Ayıklama-imha",
-          "completed": true
+          "completed": false
         },
         {
           "id": "note-0239fb83-d38c-47e0-8cb0-ede93c1731e7",
@@ -48,7 +48,7 @@
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:36:54.725Z",
+      "updatedAt": "2026-10-06T08:37:00.254Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
