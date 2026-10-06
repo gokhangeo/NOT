@@ -22,6 +22,11 @@
           "completed": false
         },
         {
+          "id": "note-0239fb83-d38c-47e0-8cb0-ede93c1731e7",
+          "text": "Orman tescil dosyaları",
+          "completed": false
+        },
+        {
           "id": "note-3de1079f-751a-4c24-b42c-d4510613eb5a",
           "text": "Silifke 2/b onaysız parseller",
           "completed": false
@@ -35,11 +40,6 @@
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
-        },
-        {
-          "id": "note-0239fb83-d38c-47e0-8cb0-ede93c1731e7",
-          "text": "Orman tescil dosyaları",
-          "completed": false
         },
         {
           "id": "note-226c47db-d61f-493e-9cfe-fc5a26aaff4f",
@@ -58,7 +58,7 @@
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T08:57:44.941Z",
+      "updatedAt": "2026-10-06T08:57:49.898Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
