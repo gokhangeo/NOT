@@ -8,7 +8,7 @@
       "category": "İş",
       "priority": "Yüksek",
       "alarmAt": "2026-10-07T08:21:00.000Z",
-      "alarmTriggered": false,
+      "alarmTriggered": true,
       "completed": false,
       "subTasks": [
         {
@@ -63,7 +63,7 @@
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-06T10:23:02.741Z",
+      "updatedAt": "2026-10-07T09:41:09.546Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
@@ -971,7 +971,7 @@
   ],
   "categoriesUpdatedAt": "1970-01-01T00:00:00.000Z",
   "settings": {
-    "theme": "system",
+    "theme": "dark",
     "autoArchive": false
   },
   "tombstones": []
