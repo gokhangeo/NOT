@@ -60,10 +60,15 @@
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
+        },
+        {
+          "id": "note-f9f7c17f-a734-4d5a-91b9-e72ff3f47649",
+          "text": "Orman 7139 ihale Orman Bölgeye bilgi yazılacak",
+          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-08T11:21:30.396Z",
+      "updatedAt": "2026-10-08T11:22:38.541Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
