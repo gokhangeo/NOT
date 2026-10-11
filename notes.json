@@ -65,10 +65,15 @@
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
+        },
+        {
+          "id": "note-3b83f2e3-369b-4794-80c4-da2c2eaa935e",
+          "text": "2027 ihsle(Merkez, Erdemli, Tarsus)",
+          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-08T11:22:46.159Z",
+      "updatedAt": "2026-10-11T21:31:42.949Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
@@ -976,7 +981,7 @@
   ],
   "categoriesUpdatedAt": "1970-01-01T00:00:00.000Z",
   "settings": {
-    "theme": "system",
+    "theme": "dark",
     "autoArchive": false
   },
   "tombstones": []
