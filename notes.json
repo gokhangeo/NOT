@@ -22,6 +22,11 @@
           "completed": true
         },
         {
+          "id": "note-3b83f2e3-369b-4794-80c4-da2c2eaa935e",
+          "text": "2027 ihsle(Merkez, Erdemli, Tarsus)",
+          "completed": false
+        },
+        {
           "id": "note-f9f7c17f-a734-4d5a-91b9-e72ff3f47649",
           "text": "Orman 7139 ihale Orman Bölgeye bilgi yazılacak",
           "completed": false
@@ -65,15 +70,10 @@
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
-        },
-        {
-          "id": "note-3b83f2e3-369b-4794-80c4-da2c2eaa935e",
-          "text": "2027 ihsle(Merkez, Erdemli, Tarsus)",
-          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-11T21:31:42.949Z",
+      "updatedAt": "2026-10-11T21:31:59.611Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
