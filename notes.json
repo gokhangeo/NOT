@@ -44,7 +44,7 @@
         {
           "id": "note-3de1079f-751a-4c24-b42c-d4510613eb5a",
           "text": "Silifke 2/b onaysız parseller",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-226c47db-d61f-493e-9cfe-fc5a26aaff4f",
@@ -73,7 +73,7 @@
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-11T21:31:59.611Z",
+      "updatedAt": "2026-10-12T06:14:19.868Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
@@ -981,7 +981,7 @@
   ],
   "categoriesUpdatedAt": "1970-01-01T00:00:00.000Z",
   "settings": {
-    "theme": "dark",
+    "theme": "system",
     "autoArchive": false
   },
   "tombstones": []
