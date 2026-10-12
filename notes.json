@@ -39,7 +39,7 @@
         {
           "id": "note-9fb5aeb6-feb7-42d3-8eec-22abc810dc66",
           "text": "Gülnar/Kayrak 112-3(4 parseller sorunlu)-Karaman Başsavcısı-21513534",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-3de1079f-751a-4c24-b42c-d4510613eb5a",
@@ -73,7 +73,7 @@
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-12T06:14:19.868Z",
+      "updatedAt": "2026-10-12T06:14:50.590Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
