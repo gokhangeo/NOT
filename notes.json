@@ -2,6 +2,61 @@
   "dataVersion": 5,
   "notes": [
     {
+      "id": "note-c768c9c7-5d23-4b0c-af78-393ecf1ca2c3",
+      "title": "MÜHENDİSLERLE TOPLANTI",
+      "content": "",
+      "category": "İş",
+      "priority": "Yüksek",
+      "status": "Yapılacak",
+      "completed": false,
+      "dueDate": null,
+      "startDate": "2026-10-19",
+      "alarmAt": "2026-10-19T05:15:00.000Z",
+      "alarmTriggered": false,
+      "tags": [],
+      "waitingFor": "",
+      "waitingSince": null,
+      "checkDate": null,
+      "waitingNote": "",
+      "notes": "",
+      "links": [],
+      "attachments": [],
+      "subTasks": [
+        {
+          "id": "note-67d8c1b4-d9c8-4674-b8e5-06ab146f8fc1",
+          "text": "- MÜDÜRLÜK İMKANI İLE YAPILAN İŞLER",
+          "completed": false
+        },
+        {
+          "id": "note-14eb8865-9087-4f7b-9aa9-8c5d52e72aa1",
+          "text": "İMAR UYG. HİSSE AYRIMI",
+          "completed": false
+        },
+        {
+          "id": "note-2e19fbcf-74ff-4bb8-9151-9ee25fa952a4",
+          "text": "MÜLKİYET RAPORLARI",
+          "completed": false
+        },
+        {
+          "id": "note-89c13664-62db-4e54-9cb2-34259c4e743c",
+          "text": "İDARİ SINIRLARIN DURUMU",
+          "completed": false
+        }
+      ],
+      "repeat": "none",
+      "repeatEvery": 1,
+      "repeatUnit": "days",
+      "repeatDays": [],
+      "createdAt": "2026-10-14T18:42:55.606Z",
+      "updatedAt": "2026-10-14T18:42:55.606Z",
+      "completedAt": null,
+      "pinned": false,
+      "archivedAt": null,
+      "deletedAt": null,
+      "recurrenceParent": null,
+      "nextOccurrenceId": null
+    },
+    {
       "id": "note-1783001768035-52",
       "title": "İŞ",
       "content": "",
@@ -981,7 +1036,7 @@
   ],
   "categoriesUpdatedAt": "1970-01-01T00:00:00.000Z",
   "settings": {
-    "theme": "system",
+    "theme": "dark",
     "autoArchive": false
   },
   "tombstones": []
