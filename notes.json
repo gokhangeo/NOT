@@ -709,32 +709,32 @@
       "priority": "Normal",
       "alarmAt": null,
       "alarmTriggered": false,
-      "completed": false,
+      "completed": true,
       "subTasks": [
         {
           "text": "Film: Pluribus",
-          "completed": false,
+          "completed": true,
           "id": "sub-0"
         },
         {
           "text": "Westworld",
-          "completed": false,
+          "completed": true,
           "id": "sub-1"
         },
         {
           "text": "Supernatural",
-          "completed": false,
+          "completed": true,
           "id": "sub-2"
         },
         {
           "text": "Kaleidoscope",
-          "completed": false,
+          "completed": true,
           "id": "sub-3"
         }
       ],
       "createdAt": "2026-06-20T17:13:28.671Z",
-      "updatedAt": "2026-06-20T17:13:28.671Z",
-      "status": "Yapılacak",
+      "updatedAt": "2026-10-14T18:43:12.417Z",
+      "status": "Tamamlandı",
       "dueDate": null,
       "startDate": null,
       "tags": [],
@@ -748,7 +748,7 @@
       "pinned": false,
       "archivedAt": null,
       "deletedAt": null,
-      "completedAt": null,
+      "completedAt": "2026-10-14T18:43:12.417Z",
       "repeat": "none",
       "repeatEvery": 1,
       "repeatUnit": "days",
