@@ -91,6 +91,11 @@
           "id": "note-89c13664-62db-4e54-9cb2-34259c4e743c",
           "text": "İDARİ SINIRLARIN DURUMU",
           "completed": false
+        },
+        {
+          "id": "note-caa82424-3c11-48f7-b557-830130021d3a",
+          "text": "MESAİ SAATLERİNE RİAYET",
+          "completed": false
         }
       ],
       "repeat": "none",
@@ -98,7 +103,7 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-14T18:42:55.606Z",
-      "updatedAt": "2026-10-14T18:42:55.606Z",
+      "updatedAt": "2026-10-15T06:17:23.950Z",
       "completedAt": null,
       "pinned": false,
       "archivedAt": null,
