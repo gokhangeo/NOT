@@ -2,6 +2,56 @@
   "dataVersion": 5,
   "notes": [
     {
+      "id": "note-952bc749-847b-4fbc-b837-224f65c3abfe",
+      "title": "KAD. DAİ.",
+      "content": "",
+      "category": "İş",
+      "priority": "Normal",
+      "status": "Yapılacak",
+      "completed": false,
+      "dueDate": null,
+      "startDate": null,
+      "alarmAt": null,
+      "alarmTriggered": false,
+      "tags": [],
+      "waitingFor": "",
+      "waitingSince": null,
+      "checkDate": null,
+      "waitingNote": "",
+      "notes": "",
+      "links": [],
+      "attachments": [],
+      "subTasks": [
+        {
+          "id": "note-76eba728-b409-4dbc-915d-b368631db39c",
+          "text": "22-A İHALE PAKETİ",
+          "completed": false
+        },
+        {
+          "id": "note-35cbcf8a-3228-496a-a691-fa8861b15392",
+          "text": "3402/4-7139/35 İHALE PAKETİ",
+          "completed": false
+        },
+        {
+          "id": "note-c58e0b3b-f3a2-477e-9b7e-85860b2516ed",
+          "text": "THA",
+          "completed": false
+        }
+      ],
+      "repeat": "none",
+      "repeatEvery": 1,
+      "repeatUnit": "days",
+      "repeatDays": [],
+      "createdAt": "2026-10-15T05:19:27.945Z",
+      "updatedAt": "2026-10-15T05:19:27.945Z",
+      "completedAt": null,
+      "pinned": false,
+      "archivedAt": null,
+      "deletedAt": null,
+      "recurrenceParent": null,
+      "nextOccurrenceId": null
+    },
+    {
       "id": "note-c768c9c7-5d23-4b0c-af78-393ecf1ca2c3",
       "title": "MÜHENDİSLERLE TOPLANTI",
       "content": "",
@@ -1036,7 +1086,7 @@
   ],
   "categoriesUpdatedAt": "1970-01-01T00:00:00.000Z",
   "settings": {
-    "theme": "dark",
+    "theme": "system",
     "autoArchive": false
   },
   "tombstones": []
