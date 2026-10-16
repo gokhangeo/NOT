@@ -2,6 +2,56 @@
   "dataVersion": 5,
   "notes": [
     {
+      "id": "note-d5bc549c-776f-4770-a4c1-ea5cbeeb3fdb",
+      "title": "BİNA",
+      "content": "",
+      "category": "İş",
+      "priority": "Normal",
+      "status": "Yapılacak",
+      "completed": false,
+      "dueDate": null,
+      "startDate": null,
+      "alarmAt": null,
+      "alarmTriggered": false,
+      "tags": [],
+      "waitingFor": "",
+      "waitingSince": null,
+      "checkDate": null,
+      "waitingNote": "",
+      "notes": "",
+      "links": [],
+      "attachments": [],
+      "subTasks": [
+        {
+          "id": "note-4933c196-f4da-47de-90b1-bc2f11a9a8cf",
+          "text": "ARŞİV KAPISI",
+          "completed": false
+        },
+        {
+          "id": "note-36faabb3-cc85-4345-b36f-fc6bd358f44a",
+          "text": "TEKN. ODA BÖLME",
+          "completed": false
+        },
+        {
+          "id": "note-b954ee93-0149-48c0-9eaa-c2707a144973",
+          "text": "MESAİ TAKİP",
+          "completed": false
+        }
+      ],
+      "repeat": "none",
+      "repeatEvery": 1,
+      "repeatUnit": "days",
+      "repeatDays": [],
+      "createdAt": "2026-10-16T14:03:17.645Z",
+      "updatedAt": "2026-10-16T14:03:17.645Z",
+      "completedAt": null,
+      "pinned": false,
+      "archivedAt": null,
+      "deletedAt": null,
+      "recurrenceParent": null,
+      "nextOccurrenceId": null
+    },
+    {
       "id": "note-952bc749-847b-4fbc-b837-224f65c3abfe",
       "title": "KAD. DAİ.",
       "content": "",
