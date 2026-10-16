@@ -35,7 +35,7 @@
         {
           "id": "note-c58e0b3b-f3a2-477e-9b7e-85860b2516ed",
           "text": "THA",
-          "completed": false
+          "completed": true
         }
       ],
       "repeat": "none",
@@ -43,7 +43,7 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-15T05:19:27.945Z",
-      "updatedAt": "2026-10-15T05:19:27.945Z",
+      "updatedAt": "2026-10-16T14:02:21.544Z",
       "completedAt": null,
       "pinned": false,
       "archivedAt": null,
