@@ -2,171 +2,6 @@
   "dataVersion": 5,
   "notes": [
     {
-      "id": "note-d5bc549c-776f-4770-a4c1-ea5cbeeb3fdb",
-      "title": "BİNA",
-      "content": "",
-      "category": "İş",
-      "priority": "Normal",
-      "status": "Yapılacak",
-      "completed": false,
-      "dueDate": null,
-      "startDate": null,
-      "alarmAt": null,
-      "alarmTriggered": false,
-      "tags": [],
-      "waitingFor": "",
-      "waitingSince": null,
-      "checkDate": null,
-      "waitingNote": "",
-      "notes": "",
-      "links": [],
-      "attachments": [],
-      "subTasks": [
-        {
-          "id": "note-4933c196-f4da-47de-90b1-bc2f11a9a8cf",
-          "text": "ARŞİV KAPISI",
-          "completed": false
-        },
-        {
-          "id": "note-36faabb3-cc85-4345-b36f-fc6bd358f44a",
-          "text": "TEKN. ODA BÖLME",
-          "completed": false
-        },
-        {
-          "id": "note-b954ee93-0149-48c0-9eaa-c2707a144973",
-          "text": "MESAİ TAKİP",
-          "completed": false
-        }
-      ],
-      "repeat": "none",
-      "repeatEvery": 1,
-      "repeatUnit": "days",
-      "repeatDays": [],
-      "createdAt": "2026-10-16T14:03:17.645Z",
-      "updatedAt": "2026-10-16T14:03:17.645Z",
-      "completedAt": null,
-      "pinned": false,
-      "archivedAt": null,
-      "deletedAt": null,
-      "recurrenceParent": null,
-      "nextOccurrenceId": null
-    },
-    {
-      "id": "note-952bc749-847b-4fbc-b837-224f65c3abfe",
-      "title": "KAD. DAİ.",
-      "content": "",
-      "category": "İş",
-      "priority": "Normal",
-      "status": "Yapılacak",
-      "completed": false,
-      "dueDate": null,
-      "startDate": null,
-      "alarmAt": null,
-      "alarmTriggered": false,
-      "tags": [],
-      "waitingFor": "",
-      "waitingSince": null,
-      "checkDate": null,
-      "waitingNote": "",
-      "notes": "",
-      "links": [],
-      "attachments": [],
-      "subTasks": [
-        {
-          "id": "note-76eba728-b409-4dbc-915d-b368631db39c",
-          "text": "22-A İHALE PAKETİ",
-          "completed": false
-        },
-        {
-          "id": "note-35cbcf8a-3228-496a-a691-fa8861b15392",
-          "text": "3402/4-7139/35 İHALE PAKETİ",
-          "completed": false
-        },
-        {
-          "id": "note-c58e0b3b-f3a2-477e-9b7e-85860b2516ed",
-          "text": "THA",
-          "completed": true
-        }
-      ],
-      "repeat": "none",
-      "repeatEvery": 1,
-      "repeatUnit": "days",
-      "repeatDays": [],
-      "createdAt": "2026-10-15T05:19:27.945Z",
-      "updatedAt": "2026-10-16T14:02:21.544Z",
-      "completedAt": null,
-      "pinned": false,
-      "archivedAt": null,
-      "deletedAt": null,
-      "recurrenceParent": null,
-      "nextOccurrenceId": null
-    },
-    {
-      "id": "note-c768c9c7-5d23-4b0c-af78-393ecf1ca2c3",
-      "title": "MÜHENDİSLERLE TOPLANTI",
-      "content": "",
-      "category": "İş",
-      "priority": "Yüksek",
-      "status": "Yapılacak",
-      "completed": false,
-      "dueDate": null,
-      "startDate": "2026-10-19",
-      "alarmAt": "2026-10-19T06:54:47.132Z",
-      "alarmTriggered": true,
-      "tags": [],
-      "waitingFor": "",
-      "waitingSince": null,
-      "checkDate": null,
-      "waitingNote": "",
-      "notes": "",
-      "links": [],
-      "attachments": [],
-      "subTasks": [
-        {
-          "id": "note-67d8c1b4-d9c8-4674-b8e5-06ab146f8fc1",
-          "text": "- MÜDÜRLÜK İMKANI İLE YAPILAN İŞLER",
-          "completed": false
-        },
-        {
-          "id": "note-14eb8865-9087-4f7b-9aa9-8c5d52e72aa1",
-          "text": "İMAR UYG. HİSSE AYRIMI",
-          "completed": false
-        },
-        {
-          "id": "note-2e19fbcf-74ff-4bb8-9151-9ee25fa952a4",
-          "text": "MÜLKİYET RAPORLARI",
-          "completed": false
-        },
-        {
-          "id": "note-89c13664-62db-4e54-9cb2-34259c4e743c",
-          "text": "İDARİ SINIRLARIN DURUMU",
-          "completed": false
-        },
-        {
-          "id": "note-caa82424-3c11-48f7-b557-830130021d3a",
-          "text": "MESAİ SAATLERİNE RİAYET",
-          "completed": false
-        },
-        {
-          "id": "note-4d4eaaf0-a6cc-4862-a704-f8a799b3657f",
-          "text": "ORMAN TESCİLLERİ",
-          "completed": false
-        }
-      ],
-      "repeat": "none",
-      "repeatEvery": 1,
-      "repeatUnit": "days",
-      "repeatDays": [],
-      "createdAt": "2026-10-14T18:42:55.606Z",
-      "updatedAt": "2026-10-19T06:54:52.161Z",
-      "completedAt": null,
-      "pinned": false,
-      "archivedAt": null,
-      "deletedAt": null,
-      "recurrenceParent": null,
-      "nextOccurrenceId": null
-    },
-    {
       "id": "note-1783001768035-52",
       "title": "İŞ",
       "content": "",
@@ -1065,6 +900,176 @@
       "repeatDays": [],
       "recurrenceParent": null,
       "nextOccurrenceId": null
+    },
+    {
+      "id": "note-d5bc549c-776f-4770-a4c1-ea5cbeeb3fdb",
+      "title": "BİNA",
+      "content": "",
+      "category": "İş",
+      "priority": "Normal",
+      "status": "Yapılacak",
+      "completed": false,
+      "dueDate": null,
+      "startDate": null,
+      "alarmAt": null,
+      "alarmTriggered": false,
+      "tags": [],
+      "waitingFor": "",
+      "waitingSince": null,
+      "checkDate": null,
+      "waitingNote": "",
+      "notes": "",
+      "links": [],
+      "attachments": [],
+      "subTasks": [
+        {
+          "id": "note-4933c196-f4da-47de-90b1-bc2f11a9a8cf",
+          "text": "ARŞİV KAPISI",
+          "completed": false
+        },
+        {
+          "id": "note-36faabb3-cc85-4345-b36f-fc6bd358f44a",
+          "text": "TEKN. ODA BÖLME",
+          "completed": false
+        },
+        {
+          "id": "note-b954ee93-0149-48c0-9eaa-c2707a144973",
+          "text": "MESAİ TAKİP",
+          "completed": false
+        },
+        {
+          "id": "note-6e64e86e-7921-4c08-8fcf-44e43ab22aac",
+          "text": "Alet Dolabı",
+          "completed": false
+        }
+      ],
+      "repeat": "none",
+      "repeatEvery": 1,
+      "repeatUnit": "days",
+      "repeatDays": [],
+      "createdAt": "2026-10-16T14:03:17.645Z",
+      "updatedAt": "2026-10-19T10:09:35.999Z",
+      "completedAt": null,
+      "pinned": false,
+      "archivedAt": null,
+      "deletedAt": null,
+      "recurrenceParent": null,
+      "nextOccurrenceId": null
+    },
+    {
+      "id": "note-952bc749-847b-4fbc-b837-224f65c3abfe",
+      "title": "KAD. DAİ.",
+      "content": "",
+      "category": "İş",
+      "priority": "Normal",
+      "status": "Yapılacak",
+      "completed": false,
+      "dueDate": null,
+      "startDate": null,
+      "alarmAt": null,
+      "alarmTriggered": false,
+      "tags": [],
+      "waitingFor": "",
+      "waitingSince": null,
+      "checkDate": null,
+      "waitingNote": "",
+      "notes": "",
+      "links": [],
+      "attachments": [],
+      "subTasks": [
+        {
+          "id": "note-76eba728-b409-4dbc-915d-b368631db39c",
+          "text": "22-A İHALE PAKETİ",
+          "completed": false
+        },
+        {
+          "id": "note-35cbcf8a-3228-496a-a691-fa8861b15392",
+          "text": "3402/4-7139/35 İHALE PAKETİ",
+          "completed": false
+        },
+        {
+          "id": "note-c58e0b3b-f3a2-477e-9b7e-85860b2516ed",
+          "text": "THA",
+          "completed": true
+        }
+      ],
+      "repeat": "none",
+      "repeatEvery": 1,
+      "repeatUnit": "days",
+      "repeatDays": [],
+      "createdAt": "2026-10-15T05:19:27.945Z",
+      "updatedAt": "2026-10-16T14:02:21.544Z",
+      "completedAt": null,
+      "pinned": false,
+      "archivedAt": null,
+      "deletedAt": null,
+      "recurrenceParent": null,
+      "nextOccurrenceId": null
+    },
+    {
+      "id": "note-c768c9c7-5d23-4b0c-af78-393ecf1ca2c3",
+      "title": "MÜHENDİSLERLE TOPLANTI",
+      "content": "",
+      "category": "İş",
+      "priority": "Yüksek",
+      "status": "Yapılacak",
+      "completed": false,
+      "dueDate": null,
+      "startDate": "2026-10-19",
+      "alarmAt": "2026-10-19T06:54:47.132Z",
+      "alarmTriggered": true,
+      "tags": [],
+      "waitingFor": "",
+      "waitingSince": null,
+      "checkDate": null,
+      "waitingNote": "",
+      "notes": "",
+      "links": [],
+      "attachments": [],
+      "subTasks": [
+        {
+          "id": "note-67d8c1b4-d9c8-4674-b8e5-06ab146f8fc1",
+          "text": "- MÜDÜRLÜK İMKANI İLE YAPILAN İŞLER",
+          "completed": false
+        },
+        {
+          "id": "note-14eb8865-9087-4f7b-9aa9-8c5d52e72aa1",
+          "text": "İMAR UYG. HİSSE AYRIMI",
+          "completed": false
+        },
+        {
+          "id": "note-2e19fbcf-74ff-4bb8-9151-9ee25fa952a4",
+          "text": "MÜLKİYET RAPORLARI",
+          "completed": false
+        },
+        {
+          "id": "note-89c13664-62db-4e54-9cb2-34259c4e743c",
+          "text": "İDARİ SINIRLARIN DURUMU",
+          "completed": false
+        },
+        {
+          "id": "note-caa82424-3c11-48f7-b557-830130021d3a",
+          "text": "MESAİ SAATLERİNE RİAYET",
+          "completed": false
+        },
+        {
+          "id": "note-4d4eaaf0-a6cc-4862-a704-f8a799b3657f",
+          "text": "ORMAN TESCİLLERİ",
+          "completed": false
+        }
+      ],
+      "repeat": "none",
+      "repeatEvery": 1,
+      "repeatUnit": "days",
+      "repeatDays": [],
+      "createdAt": "2026-10-14T18:42:55.606Z",
+      "updatedAt": "2026-10-19T06:54:52.161Z",
+      "completedAt": null,
+      "pinned": false,
+      "archivedAt": null,
+      "deletedAt": null,
+      "recurrenceParent": null,
+      "nextOccurrenceId": null
     }
   ],
   "categories": [
@@ -1146,7 +1151,7 @@
   ],
   "categoriesUpdatedAt": "1970-01-01T00:00:00.000Z",
   "settings": {
-    "theme": "system",
+    "theme": "dark",
     "autoArchive": false
   },
   "tombstones": []
