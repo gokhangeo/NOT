@@ -41,6 +41,11 @@
           "id": "note-6e64e86e-7921-4c08-8fcf-44e43ab22aac",
           "text": "Alet Dolabı",
           "completed": false
+        },
+        {
+          "id": "note-c5fce870-785b-4e5d-aa46-d1569cfb32de",
+          "text": "SEKRETERLİK DOLAP",
+          "completed": false
         }
       ],
       "repeat": "none",
@@ -48,7 +53,7 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-16T14:03:17.645Z",
-      "updatedAt": "2026-10-19T10:09:35.999Z",
+      "updatedAt": "2026-10-19T11:49:07.608Z",
       "completedAt": null,
       "pinned": false,
       "archivedAt": null,
