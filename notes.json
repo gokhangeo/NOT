@@ -117,8 +117,8 @@
       "content": "",
       "category": "İş",
       "priority": "Yüksek",
-      "status": "Yapılacak",
-      "completed": false,
+      "status": "Tamamlandı",
+      "completed": true,
       "dueDate": "2026-10-20",
       "startDate": "2026-10-19",
       "alarmAt": "2026-10-20T08:57:52.417Z",
@@ -135,37 +135,37 @@
         {
           "id": "note-67d8c1b4-d9c8-4674-b8e5-06ab146f8fc1",
           "text": "- MÜDÜRLÜK İMKANI İLE YAPILAN İŞLER",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-14eb8865-9087-4f7b-9aa9-8c5d52e72aa1",
           "text": "İMAR UYG. HİSSE AYRIMI",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-2e19fbcf-74ff-4bb8-9151-9ee25fa952a4",
           "text": "MÜLKİYET RAPORLARI",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-89c13664-62db-4e54-9cb2-34259c4e743c",
           "text": "İDARİ SINIRLARIN DURUMU",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-caa82424-3c11-48f7-b557-830130021d3a",
           "text": "MESAİ SAATLERİNE RİAYET",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-4d4eaaf0-a6cc-4862-a704-f8a799b3657f",
           "text": "ORMAN TESCİLLERİ",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-5db47c4a-e85a-4f96-9830-a1da618f9722",
           "text": "TEDAŞ ESKİ KAM. GNSS FORMU İSTENİYOR",
-          "completed": false
+          "completed": true
         }
       ],
       "repeat": "none",
@@ -173,8 +173,8 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-14T18:42:55.606Z",
-      "updatedAt": "2026-10-20T08:57:55.993Z",
-      "completedAt": null,
+      "updatedAt": "2026-10-20T08:58:26.368Z",
+      "completedAt": "2026-10-20T08:58:26.368Z",
       "pinned": false,
       "archivedAt": null,
       "deletedAt": null,
