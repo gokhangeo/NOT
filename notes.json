@@ -51,6 +51,11 @@
           "id": "note-7ec0fa7e-b193-4af4-b2e8-ed68ef546273",
           "text": "BAYRAK DİREKLERİ",
           "completed": false
+        },
+        {
+          "id": "note-3dc36555-d2f3-4c8c-9d8d-708d9f654934",
+          "text": "MAKAM BAYRAĞI-FLAMA",
+          "completed": false
         }
       ],
       "repeat": "none",
@@ -58,7 +63,7 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-16T14:03:17.645Z",
-      "updatedAt": "2026-10-21T13:47:27.711Z",
+      "updatedAt": "2026-10-21T13:47:40.127Z",
       "completedAt": null,
       "pinned": false,
       "archivedAt": null,
