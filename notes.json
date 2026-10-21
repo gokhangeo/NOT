@@ -46,6 +46,11 @@
           "id": "note-c5fce870-785b-4e5d-aa46-d1569cfb32de",
           "text": "SEKRETERLİK DOLAP",
           "completed": false
+        },
+        {
+          "id": "note-7ec0fa7e-b193-4af4-b2e8-ed68ef546273",
+          "text": "BAYRAK DİREKLERİ",
+          "completed": false
         }
       ],
       "repeat": "none",
@@ -53,7 +58,7 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-16T14:03:17.645Z",
-      "updatedAt": "2026-10-19T11:49:07.608Z",
+      "updatedAt": "2026-10-21T13:47:27.711Z",
       "completedAt": null,
       "pinned": false,
       "archivedAt": null,
