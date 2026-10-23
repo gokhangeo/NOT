@@ -260,10 +260,15 @@
           "text": "Karalarbahşiş yolların açılması-Refik başkan",
           "completed": false,
           "id": "sub-6"
+        },
+        {
+          "id": "note-e5178223-80de-450b-9f5f-28f6f4d77e1d",
+          "text": "ARAÇ ÜCRETİ KM BAŞINA 5₺, TÜM BİLİRKİŞİLİKLERDE YEMEK ÜCRETİ 750₺(KEŞİF BAKILACAK)",
+          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-12T06:14:50.590Z",
+      "updatedAt": "2026-10-23T06:56:58.523Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
