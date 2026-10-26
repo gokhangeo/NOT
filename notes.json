@@ -61,6 +61,11 @@
           "id": "note-6864d6eb-f22f-4486-b7f3-37ec1b9407a9",
           "text": "SIĞINAK BÖLME",
           "completed": false
+        },
+        {
+          "id": "note-b7ddccae-3292-421f-a0fc-3974b29aae3f",
+          "text": "JENERATÖR",
+          "completed": false
         }
       ],
       "repeat": "none",
@@ -68,7 +73,7 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-16T14:03:17.645Z",
-      "updatedAt": "2026-10-26T09:42:36.629Z",
+      "updatedAt": "2026-10-26T09:42:43.431Z",
       "completedAt": null,
       "pinned": false,
       "archivedAt": null,
