@@ -56,6 +56,11 @@
           "id": "note-3dc36555-d2f3-4c8c-9d8d-708d9f654934",
           "text": "MAKAM BAYRAĞI-FLAMA",
           "completed": false
+        },
+        {
+          "id": "note-6864d6eb-f22f-4486-b7f3-37ec1b9407a9",
+          "text": "SIĞINAK BÖLME",
+          "completed": false
         }
       ],
       "repeat": "none",
@@ -63,7 +68,7 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-16T14:03:17.645Z",
-      "updatedAt": "2026-10-21T13:47:40.127Z",
+      "updatedAt": "2026-10-26T09:42:36.629Z",
       "completedAt": null,
       "pinned": false,
       "archivedAt": null,
