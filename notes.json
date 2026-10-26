@@ -265,10 +265,15 @@
           "id": "note-e5178223-80de-450b-9f5f-28f6f4d77e1d",
           "text": "ARAÇ ÜCRETİ KM BAŞINA 5₺, TÜM BİLİRKİŞİLİKLERDE YEMEK ÜCRETİ 750₺(KEŞİF BAKILACAK)",
           "completed": false
+        },
+        {
+          "id": "note-a11b7108-49cd-4062-8ba2-d0cba1baa455",
+          "text": "22153431 sayılı yazı Keşif toplantı tutanağına eklenecek",
+          "completed": false
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-10-23T06:56:58.523Z",
+      "updatedAt": "2026-10-26T09:40:12.324Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
