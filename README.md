@@ -1,4 +1,12 @@
-# Cepte Not Pro v5.0
+# Ajandam (eski adıyla Cepte Not Pro)
+
+Kaynak ve Windows/iPhone sürümleri: gokhangeo/rea deposunda `ajandam/`. Bu depo web sürümünü (GitHub Pages) ve `notes.json` eşitleme dosyasını barındırır.
+
+## Google Takvim
+
+Ayarlar → Google Takvim bölümünden mersinkadastro33@gmail.com takvimine bağlanılır. Tarihli ve hatırlatmalı notlar etkinlik olarak yazılır; takvimdeki toplantılar Bugünüm, Takvim ve Gündem panelinde görünür.
+
+## Önceki sürüm notları (v5)
 
 Mevcut v4 uygulamasının görev, takip ve ajanda özellikleriyle geliştirilmiş sürümü. GitHub Pages üzerinde derleme gerektirmeyen HTML, CSS ve JavaScript ile çalışır. Harici arayüz kütüphanesi ve CDN bağımlılığı yoktur.
 
