@@ -4,7 +4,7 @@
 // desktop + desktopSecret: "Masaüstü uygulaması" türü (Windows exe)
 // ios: "iOS" türü (paket kimliği: com.gokhan.ajandam)
 window.CEPTE_GOOGLE = {
-  web: '',
+  web: '516884884735-nu2h82t69hjtrhs38q90d18hde86cog9.apps.googleusercontent.com',
   desktop: '',
   desktopSecret: '',
   ios: '',
