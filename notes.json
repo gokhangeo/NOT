@@ -29,7 +29,7 @@
         {
           "id": "note-f9f7c17f-a734-4d5a-91b9-e72ff3f47649",
           "text": "Orman 7139 ihale Orman Bölgeye bilgi yazılacak",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-0239fb83-d38c-47e0-8cb0-ede93c1731e7",
@@ -83,7 +83,7 @@
         }
       ],
       "createdAt": "2026-07-02T14:16:08.035Z",
-      "updatedAt": "2026-11-09T05:57:51.870Z",
+      "updatedAt": "2026-11-09T05:57:57.502Z",
       "status": "Bekliyor",
       "dueDate": null,
       "startDate": null,
