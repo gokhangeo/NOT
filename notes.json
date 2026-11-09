@@ -67,11 +67,11 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-11-09T06:00:14.210Z",
-      "updatedAt": "2026-11-09T07:12:56.173Z",
+      "updatedAt": "2026-11-09T07:13:10.799Z",
       "completedAt": "2026-11-09T06:14:28.352Z",
       "pinned": false,
       "archivedAt": null,
-      "deletedAt": null,
+      "deletedAt": "2026-11-09T07:13:10.799Z",
       "recurrenceParent": null,
       "nextOccurrenceId": null
     },
