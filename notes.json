@@ -981,6 +981,11 @@
           "id": "note-5c0f5ab8-f213-4768-8255-cc3eaae169cc",
           "text": "Oda sırtlık",
           "completed": false
+        },
+        {
+          "id": "note-beea036e-a215-40ee-b06a-ba4396b141ab",
+          "text": "Karton pafta dolabı",
+          "completed": false
         }
       ],
       "repeat": "none",
@@ -988,7 +993,7 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-16T14:03:17.645Z",
-      "updatedAt": "2026-11-23T10:09:37.580Z",
+      "updatedAt": "2026-11-24T06:32:42.379Z",
       "completedAt": null,
       "pinned": false,
       "archivedAt": null,
