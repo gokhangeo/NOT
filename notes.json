@@ -940,7 +940,7 @@
         {
           "id": "note-36faabb3-cc85-4345-b36f-fc6bd358f44a",
           "text": "TEKN. ODA BÖLME",
-          "completed": false
+          "completed": true
         },
         {
           "id": "note-b954ee93-0149-48c0-9eaa-c2707a144973",
@@ -993,7 +993,7 @@
       "repeatUnit": "days",
       "repeatDays": [],
       "createdAt": "2026-10-16T14:03:17.645Z",
-      "updatedAt": "2026-11-24T06:32:42.379Z",
+      "updatedAt": "2026-11-24T06:32:49.627Z",
       "completedAt": null,
       "pinned": false,
       "archivedAt": null,
